@@ -6,6 +6,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 {
 
     [SerializeField] float maxHealth = 100f;
+    [SerializeField] int hearts = 0;
     [SerializeField] float currentHealth;
 
     public float MaxHealth => maxHealth;
@@ -42,6 +43,35 @@ public class PlayerHealth : MonoBehaviour, IDamageable
             Die();
         }
     }
+
+    public void TakeHeart()
+    {
+        hearts--;
+        Debug.Log("Gracz trafiony w zaświatach! pozostało " + hearts + " serc!");
+        if (hearts < 0) //do zmiany, zależnie czy gracz kiedy ma 0 serc nadal może żyć
+        {
+            Annihilate();
+        } 
+    }
+
+    public void AddHeart()
+    {
+        hearts++;
+        Debug.Log("Gracz zdobył serce! Aktualnie posiada " + hearts);
+    }
+
+    public void Annihilate()
+    {
+        Debug.Log("Player's soul got annihilated!");
+        Destroy(gameObject);
+    }
+
+
+
+
+
+
+
 
     void Update()
     {

@@ -5,14 +5,15 @@ using UnityEngine;
 public class PlayerAbilities : MonoBehaviour
 {
 
-    [SerializeField] float attackRange = 1f;
-    [SerializeField] float attackRadius = 0.5f;
     [SerializeField] LayerMask enemyLayers;
     Camera cam;
 
     //TODO: dodać atak i promień podstawowego ataku
     [Header("Basic Attack")]
     [SerializeField] float basicAttackDamage = 10f;
+    [SerializeField] float basicAttackRange = 1f;
+    [SerializeField] float basicAttackRadius = 0.5f;
+
 
     [Header("Special Attack")]
     [SerializeField] float specialAttackDamage = 10f;
@@ -21,6 +22,7 @@ public class PlayerAbilities : MonoBehaviour
     [Header("Ultimate")]
     [SerializeField] float ultimateDamage = 100f;
     [SerializeField] float ultimateRadius = 10f;
+    [SerializeField] float ultimateMaxHealthCost = 0.7f;
     PlayerHealth health;
 
     void Awake()
@@ -45,13 +47,14 @@ public class PlayerAbilities : MonoBehaviour
         if (health.CurrentHealth >= health.MaxHealth)
         {
             Debug.Log("Ultimate used!");
-            health.TakeDamage(health.MaxHealth * 0.7f);
+            health.TakeDamage(health.MaxHealth * ultimateMaxHealthCost);
             Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, ultimateRadius, enemyLayers);
 
             foreach (var enemy in hits)
             {
                 enemy.GetComponent<IDamageable>()?.TakeDamage(ultimateDamage);
             }
+            health.AddHeart();
         }
         else
         {
@@ -65,8 +68,8 @@ public class PlayerAbilities : MonoBehaviour
         Debug.Log("Basic attack used!");
         Vector3 mousePos = GetMousePosition();
         Vector2 direction = (mousePos - transform.position).normalized;
-        Vector2 attackPoint = (Vector2)transform.position + direction * attackRange;
-        Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint, attackRadius, enemyLayers);
+        Vector2 attackPoint = (Vector2)transform.position + direction * basicAttackRange;
+        Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint, basicAttackRadius, enemyLayers);
 
         foreach (var enemy in hits)
         {
