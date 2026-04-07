@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PlayerTestScript : MonoBehaviour
 {
+
+    public bool isStunned = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -14,9 +17,21 @@ public class PlayerTestScript : MonoBehaviour
     void Update()
     {
         //basic movement:
-        float moveX = Input.GetAxis("Horizontal");
-        float moveY = Input.GetAxis("Vertical");
+        if (!isStunned)
+        {
+            float moveX = Input.GetAxis("Horizontal");
+            float moveY = Input.GetAxis("Vertical");
 
-        transform.position += new Vector3(moveX, moveY, 0).normalized * Time.deltaTime * 5f;
+            transform.position += new Vector3(moveX, moveY, 0).normalized * Time.deltaTime * 5f;
+        }
+    }
+
+    public IEnumerator Stun(float duration)
+    {
+        Debug.Log("Player stunned for " + duration + " seconds");
+        isStunned = true;
+        yield return new WaitForSeconds(duration);
+        isStunned = false;
+        Debug.Log("Player unstunned");
     }
 }

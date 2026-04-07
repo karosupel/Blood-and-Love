@@ -19,7 +19,8 @@ public class EnemyStateManager : MonoBehaviour
     void Awake()
     {
         enemy_rb = GetComponent<Rigidbody2D>();
-        stats = GetComponent<Enemy>().stats;
+        Enemy enemy = GetComponent<Enemy>();
+        player = GameObject.FindGameObjectWithTag("Player");
     }
 
     void Start()

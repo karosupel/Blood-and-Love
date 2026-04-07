@@ -28,6 +28,9 @@ public class SuccubiAttack : EnemyBaseState
     {
         Debug.Log("Attacking player...");
 
+        PlayerTestScript playerScript = player.GetComponent<PlayerTestScript>();
+        playerScript.StartCoroutine(playerScript.Stun(0.8f)); // Stun player for 0.5 seconds
+
         yield return new WaitForSeconds(cooldown); // Attack every cooldown seconds
 
         //checks if player is still in range after cooldown, if not, switch back to chase state
