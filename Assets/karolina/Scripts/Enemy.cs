@@ -6,13 +6,18 @@ public class Enemy : MonoBehaviour, IDamageable
 {
     // TODO: take damage, knockback, die, health bars
 
-    [SerializeField] private float health; //will be overwritten in scripts later
+    [SerializeField] public EnemyStats stats;
+    [SerializeField] public float currentHealth;
 
+    private void Awake()
+    {
+        currentHealth = stats.health;
+    }
     public void TakeDamage(float damage)
     {
-        health -= damage;
+        currentHealth -= damage;
         Debug.Log("Enemy took " + damage);
-        if (health <= 0)
+        if (currentHealth <= 0)
         {
             Die();
         }
@@ -24,4 +29,11 @@ public class Enemy : MonoBehaviour, IDamageable
         //Destroy(gameObject);
     }
 
+    public void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            TakeDamage(10f);
+        }
+    }
 }
