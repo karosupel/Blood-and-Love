@@ -8,6 +8,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     [SerializeField] public EnemyStats stats;
     [SerializeField] public float currentHealth;
+    public Rigidbody2D rb;
 
     private void Awake()
     {
@@ -17,6 +18,7 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         currentHealth -= damage;
         Debug.Log("Enemy took " + damage);
+        Knockback(Vector2.up, stats.knockbackForce);
         if (currentHealth <= 0)
         {
             Die();
@@ -27,6 +29,11 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         Debug.Log("Enemy died");
         //Destroy(gameObject);
+    }
+
+    public void Knockback(Vector2 direction, float force)
+    {
+        rb.AddForce(direction * force, ForceMode2D.Impulse);
     }
 
     public void Update()
