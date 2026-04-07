@@ -6,18 +6,22 @@ using UnityEngine.UIElements;
 public class PlayerController : MonoBehaviour
 {
 
-    [SerializeField] float movementSpeed = 5f;
+    [SerializeField]  public float basicSpeed = 5f;
+    float speed;
     [SerializeField] float regenRate = 1;
     Rigidbody2D rb;
     PlayerAbilities abilities;
     Vector2 movement;
     PlayerHealth health;
+    Collider2D col;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         abilities = GetComponent<PlayerAbilities>();
         health = GetComponent<PlayerHealth>();
+        speed = basicSpeed;
+        col = GetComponent<BoxCollider2D>();
     }
     // Start is called before the first frame update
     void Start()
@@ -51,8 +55,19 @@ public class PlayerController : MonoBehaviour
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
         Vector2 movementDirection = new Vector2 (horizontal, vertical).normalized;
-        movement = movementDirection * movementSpeed * Time.fixedDeltaTime;
+        movement = movementDirection * speed * Time.fixedDeltaTime;
         rb.MovePosition(rb.position + movement);
 
     }
+
+    public void IncreaseSpeed(float multiplier)
+    {
+        speed *= multiplier;
+    }
+
+    public void NormalSpeed()
+    {
+        speed = basicSpeed;
+    }
+
 }

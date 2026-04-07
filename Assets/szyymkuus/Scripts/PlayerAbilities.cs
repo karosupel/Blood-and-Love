@@ -23,11 +23,22 @@ public class PlayerAbilities : MonoBehaviour
     [SerializeField] float ultimateDamage = 100f;
     [SerializeField] float ultimateRadius = 10f;
     [SerializeField] float ultimateMaxHealthCost = 0.7f;
+    [Header("Lesbian Panic")]
+    [SerializeField] public float panicDuration = 3f;
+    [SerializeField] public float panicCooldown = 60f;
+    [SerializeField] public float panicSpeedMultiplier = 1.5f;
+    float lastPanicTime = float.MinValue;
+    PlayerController playerController;
+    BoxCollider2D col;
     PlayerHealth health;
+    SpriteRenderer sprite;
 
     void Awake()
     {
         health = GetComponent<PlayerHealth>();
+        playerController = GetComponent<PlayerController>();
+        sprite = GetComponent<SpriteRenderer>();
+        col = GetComponent<BoxCollider2D>();
     }
     void Start()
     {
@@ -88,5 +99,32 @@ public class PlayerAbilities : MonoBehaviour
         hit.collider?.GetComponent<IDamageable>()?.TakeDamage(specialAttackDamage);
 
     }
+
+    public void LesbianPanic()
+    {
+        if (lastPanicTime + panicCooldown <= Time.time)
+        {
+            lastPanicTime = Time.time;
+            StartCoroutine(LesbianPanicCoroutine());    
+        }
+        else
+        {
+            Debug.Log("Lesbian Panic still on cooldown! " + (lastPanicTime + panicCooldown - Time.time) + " seconds remaining");
+        }
+    }
+
+
+    IEnumerator LesbianPanicCoroutine()
+    {
+         playerController.IncreaseSpeed(panicSpeedMultiplier);
+         Color originalSpriteColor = sprite.color;
+         sprite.color = Color.yellow;
+         col.enabled = false;
+         yield return new WaitForSeconds(panicDuration);
+         playerController.NormalSpeed();
+         sprite.color = originalSpriteColor;
+         col.enabled = true;
+    }
+
 
 }

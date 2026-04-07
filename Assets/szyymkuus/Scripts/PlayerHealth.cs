@@ -6,8 +6,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 {
 
     [SerializeField] float maxHealth = 100f;
+    [SerializeField] float panicMaxHealth = 0.25f;
     [SerializeField] int hearts = 0;
     [SerializeField] float currentHealth;
+    PlayerAbilities playerAbilities;
 
     public float MaxHealth => maxHealth;
 
@@ -16,6 +18,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     void Awake()
     {
+        playerAbilities = GetComponent<PlayerAbilities>();
         currentHealth = maxHealth;
     }
 
@@ -37,6 +40,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
+        if (currentHealth <= MaxHealth * panicMaxHealth)
+        {
+            playerAbilities.LesbianPanic();
+        }
+
         Debug.Log("Player took damage, current health: " + currentHealth);
         if (currentHealth <= 0)
         {
