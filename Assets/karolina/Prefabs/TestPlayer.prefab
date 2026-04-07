@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 3526821985411996273}
   - component: {fileID: 726641928339799113}
   - component: {fileID: 6888562512406370315}
-  - component: {fileID: 4276709929362584915}
   m_Layer: 0
   m_Name: TestPlayer
   m_TagString: Player
@@ -163,17 +162,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isStunned: 0
---- !u!114 &4276709929362584915
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2042421123167681590}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 43610a228ef5e7d4eb435b496b96de26, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 2042421123167681590}
-  stats: {fileID: 11400000, guid: e8d85f9c8d6703d4ea74eb900ff882af, type: 2}
