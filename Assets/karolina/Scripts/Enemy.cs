@@ -28,7 +28,7 @@ public class Enemy : MonoBehaviour, IDamageable
     public void Die()
     {
         Debug.Log("Enemy died");
-        //Destroy(gameObject);
+        Destroy(gameObject);
     }
 
     public void Knockback(Vector2 direction, float force)

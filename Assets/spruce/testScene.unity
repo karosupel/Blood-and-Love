@@ -16262,6 +16262,8 @@ GameObject:
   - component: {fileID: 1272289912}
   - component: {fileID: 1272289908}
   - component: {fileID: 1272289907}
+  - component: {fileID: 1272289916}
+  - component: {fileID: 1272289915}
   - component: {fileID: 1272289914}
   m_Layer: 0
   m_Name: playerph
@@ -16418,10 +16420,53 @@ MonoBehaviour:
   m_GameObject: {fileID: 1272289906}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f65bd7088be24924b98568528b642e47, type: 3}
+  m_Script: {fileID: 11500000, guid: 0ea553125c32518408724f8e1c0824b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isStunned: 0
+  enemyLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  basicAttackDamage: 10
+  basicAttackRange: 1
+  basicAttackRadius: 0.5
+  specialAttackDamage: 10
+  specialAttackRange: 5
+  ultimateDamage: 100
+  ultimateRadius: 10
+  ultimateMaxHealthCost: 0.7
+  panicDuration: 3
+  panicCooldown: 60
+  panicSpeedMultiplier: 1.5
+--- !u!114 &1272289915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1272289906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33e36705781f0f740b7f4216bbc17514, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 100
+  panicMaxHealth: 0.25
+  hearts: 0
+  currentHealth: 0
+--- !u!114 &1272289916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1272289906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 629b3adf22130a04680856db430b7249, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  basicSpeed: 5
+  regenRate: 1
 --- !u!1 &1417365697
 GameObject:
   m_ObjectHideFlags: 0
