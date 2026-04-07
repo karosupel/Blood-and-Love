@@ -40,6 +40,7 @@ public class RoomManager : MonoBehaviour
 
     [SerializeField] List<RoomChoiceOption> availableRooms = new List<RoomChoiceOption>();
     [SerializeField] int choicesPerTransition = 3;
+    [SerializeField] string bossRoomOptionId = "Boss";
     [SerializeField] float arrivalOffset = 0.75f;
     [SerializeField] List<RoomInstance> roomInstances = new List<RoomInstance>();
     [SerializeField] List<RoomConnection> connections = new List<RoomConnection>();
@@ -122,7 +123,7 @@ public class RoomManager : MonoBehaviour
             return;
         }
 
-        RoomChoiceOption[] options = BuildRandomRoomOptions(choicesPerTransition);
+        RoomChoiceOption[] options = BuildTransitionOptions();
         if (options.Length == 0)
         {
             Debug.LogWarning("No valid destination rooms available for transition.");
@@ -165,7 +166,7 @@ public class RoomManager : MonoBehaviour
         for (int i = 0; i < availableRooms.Count; i++)
         {
             RoomChoiceOption room = availableRooms[i];
-            if (room != null && room.optionId == roomId)
+            if (room != null && string.Equals(room.optionId, roomId, System.StringComparison.OrdinalIgnoreCase))
             {
                 return room;
             }
@@ -183,6 +184,11 @@ public class RoomManager : MonoBehaviour
         {
             RoomChoiceOption room = availableRooms[i];
             if (room == null || string.IsNullOrEmpty(room.optionId))
+            {
+                continue;
+            }
+
+            if (string.Equals(room.optionId, bossRoomOptionId, System.StringComparison.OrdinalIgnoreCase))
             {
                 continue;
             }
@@ -211,6 +217,23 @@ public class RoomManager : MonoBehaviour
         }
 
         return result;
+    }
+
+    RoomChoiceOption[] BuildTransitionOptions()
+    {
+        if (roomVisitStack.Count >= 7)
+        {
+            RoomChoiceOption bossRoom = FindAvailableRoomById(bossRoomOptionId);
+            if (bossRoom == null)
+            {
+                Debug.LogWarning("Boss room option is not configured or missing from available rooms.");
+                return new RoomChoiceOption[0];
+            }
+
+            return new[] { bossRoom };
+        }
+
+        return BuildRandomRoomOptions(choicesPerTransition);
     }
 
     RoomInstance FindRoomInstance(string instanceId)
@@ -341,6 +364,7 @@ public class RoomManager : MonoBehaviour
 
         promptText.text = "Choose next room";
         int optionCount = pendingTransition.options.Length;
+        LayoutOptionButtons(optionCount);
         for (int i = 0; i < optionButtons.Count; i++)
         {
             bool active = i < optionCount && pendingTransition.options[i] != null;
@@ -362,6 +386,41 @@ public class RoomManager : MonoBehaviour
         }
 
         choiceCanvas.gameObject.SetActive(true);
+    }
+
+    void LayoutOptionButtons(int optionCount)
+    {
+        if (optionCount <= 0)
+        {
+            return;
+        }
+
+        float width = 0.22f;
+        float spacing = 0.08f;
+        float bottom = 0.08f;
+        float top = 0.53f;
+
+        float totalWidth = optionCount * width + (optionCount - 1) * spacing;
+        float startX = Mathf.Clamp01((1f - totalWidth) * 0.5f);
+
+        for (int i = 0; i < optionButtons.Count; i++)
+        {
+            RectTransform rect = optionButtons[i].GetComponent<RectTransform>();
+            if (rect == null)
+            {
+                continue;
+            }
+
+            if (i < optionCount)
+            {
+                float x = startX + i * (width + spacing);
+                rect.anchorMin = new Vector2(x, bottom);
+                rect.anchorMax = new Vector2(x + width, top);
+            }
+
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+        }
     }
 
     void SelectOption(int optionIndex)
