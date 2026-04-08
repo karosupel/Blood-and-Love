@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2783594300361953632}
   - component: {fileID: 8015572126581151120}
   - component: {fileID: -8623020888915101707}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Succubus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
