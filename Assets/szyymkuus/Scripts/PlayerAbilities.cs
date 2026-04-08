@@ -96,7 +96,7 @@ public class PlayerAbilities : MonoBehaviour
         Vector2 direction = (mousePos - transform.position).normalized;
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, specialAttackRange, enemyLayers);
         Debug.DrawLine(transform.position, transform.position + (Vector3)direction*specialAttackRange, Color.red, 1f);
-
+    
         hit.collider?.GetComponent<IDamageable>()?.TakeDamage(specialAttackDamage);
 
     }
@@ -122,10 +122,12 @@ public class PlayerAbilities : MonoBehaviour
          sprite.color = Color.yellow;
          col.enabled = false;
          playerController.Cleanse();
+         playerController.StunImmunitySwitch(true);
          yield return new WaitForSeconds(panicDuration);
          playerController.NormalSpeed();
          sprite.color = originalSpriteColor;
          col.enabled = true;
+         playerController.StunImmunitySwitch(false);
     }
 
 
