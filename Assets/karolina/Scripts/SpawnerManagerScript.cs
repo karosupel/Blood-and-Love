@@ -15,9 +15,14 @@ public class SpawnerManagerScript : MonoBehaviour
     [SerializeField] public PlayerHealth playerHealthScript;
     private RoomManager roomManagerScript;
 
+    //variables:
     [SerializeField] public List<GameObject> ActiveEnemiesInScene = new List<GameObject>();
 
-    //variables:
+    private Dictionary<string, RoomSpawnData> spawnDataDict;
+
+    private Dictionary<string, System.Action> spawnActions;
+
+    private Dictionary<string, List<Vector3>> spawnPointsDict;
     public List<string> roomVisitStack = new List<string>();
     public string instanceId;
     public string roomTypeId;
@@ -27,33 +32,35 @@ public class SpawnerManagerScript : MonoBehaviour
         roomManagerScript = roomManager.GetComponent<RoomManager>();
         roomVisitStack = new List<string>(roomManagerScript.roomVisitStack);
         playerHealthScript = player.GetComponent<PlayerHealth>();
+
+        spawnActions = new Dictionary<string, System.Action>()
+        {
+            { "Blue_", () => SpawnEnemies() },
+            { "Red_", SpawnEnemyRed },
+            { "Green_", SpawnEnemyGreen },
+            { "Boss_", SpawnEnemyBoss },
+            { "Yellow_", SpawnEnemyYellow }
+        };
+
+        /*spawnDataDict = new Dictionary<string, RoomSpawnData>();
+
+        foreach (var data in spawnDataDict)
+        {
+            spawnDataDict[data.roomTypeId] = data;
+        }*/
     }
 
     private void Update()
     {
         if (roomVisitStackChanges())
         {
-            switch(roomTypeId)
+            if (spawnActions.TryGetValue(roomTypeId, out var spawnAction))
             {
-                case ("Blue_"):
-                    Debug.Log("Blue Room");
-                    SpawnEnemyBlue(succubusPrefab, maidPrefab);
-                    break;
-                case ("Red_"):
-                    //twoja matka
-                    break;
-                case ("Green_"):
-                    //twoja matka
-                    break;
-                case ("Boss_"):
-                    //twoja matka
-                    break;
-                case ("Yellow_"):
-                    //twoja matka
-                    break;
-                default:
-                    //twoja matka
-                    break;
+                spawnAction.Invoke();
+            }
+            else
+            {
+                Debug.LogWarning("Unknown room type: " + roomTypeId);
             }
         }
 
@@ -83,10 +90,28 @@ public class SpawnerManagerScript : MonoBehaviour
         return false;
     }
 
-    public void SpawnEnemyBlue(GameObject succubusPrefab, GameObject maidPrefab)
+    /*public void SpawnEnemyBlue(GameObject succubusPrefab, GameObject maidPrefab)
     {
-        GameObject succubus1 = Instantiate(succubusPrefab, new Vector3(-5, -11, 0), Quaternion.identity);
-        ActiveEnemiesInScene.Add(succubus1);
+        if (!spawnPointsDict.TryGetValue("Blue_", out var points))
+            return;
+
+        foreach (var point in points)
+        {
+            GameObject enemy = Instantiate(succubusPrefab, point, Quaternion.identity);
+            ActiveEnemiesInScene.Add(enemy);
+        }
+    }*/
+
+    public void SpawnEnemies()
+    {
+        if (!spawnDataDict.TryGetValue(roomTypeId, out var data))
+            return;
+
+        foreach (var spawn in data.spawnPoints)
+        {
+            var enemy = Instantiate(spawn.enemyPrefab, spawn.position, Quaternion.identity);
+            ActiveEnemiesInScene.Add(enemy);
+        }
     }
 
     public void HideEnemies()
@@ -114,5 +139,10 @@ public class SpawnerManagerScript : MonoBehaviour
     }
 
     //public void SpawnEnemiesInHell(string roomTypeId, )
+
+    public void SpawnEnemyRed() { }
+    public void SpawnEnemyGreen() { }
+    public void SpawnEnemyBoss() { }
+    public void SpawnEnemyYellow() { }
 
 }
