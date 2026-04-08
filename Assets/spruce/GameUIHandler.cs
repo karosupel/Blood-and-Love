@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
 
 public class GameUIHandler : MonoBehaviour
@@ -21,9 +20,11 @@ public class GameUIHandler : MonoBehaviour
         if (PlayerHealth != null)
         {
             PlayerHealth.OnHealthChanged += HealthChanged;
+            PlayerHealth.OnAfterlifeStateChanged += AfterlifeStateChanged;
         }
 
         HealthChanged();
+        AfterlifeStateChanged(PlayerHealth != null && PlayerHealth.IsInAfterlife);
     }
 
     private void OnDisable()
@@ -31,6 +32,7 @@ public class GameUIHandler : MonoBehaviour
         if (PlayerHealth != null)
         {
             PlayerHealth.OnHealthChanged -= HealthChanged;
+            PlayerHealth.OnAfterlifeStateChanged -= AfterlifeStateChanged;
         }
     }
 
@@ -47,6 +49,14 @@ public class GameUIHandler : MonoBehaviour
         if (healthText != null)
         {
             healthText.text = hpText;
+        }
+    }
+
+    void AfterlifeStateChanged(bool isInAfterlife)
+    {
+        if (healthText != null)
+        {
+            healthText.enabled = !isInAfterlife;
         }
     }
 }

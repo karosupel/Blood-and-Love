@@ -6,6 +6,7 @@ public class HealthBar : MonoBehaviour
     [Header("References")]
     [SerializeField] private Image liquidFillImage;
     [SerializeField] private PlayerHealth playerHealth;
+    [SerializeField] private CanvasGroup healthBarCanvasGroup;
 
     [Header("Settings")]
     [SerializeField] private float smoothSpeed = 4f;     // lerp speed
@@ -33,6 +34,11 @@ public class HealthBar : MonoBehaviour
             playerHealth = FindObjectOfType<PlayerHealth>();
         }
 
+        if (healthBarCanvasGroup == null)
+        {
+            healthBarCanvasGroup = GetComponent<CanvasGroup>();
+        }
+
         if (liquidFillImage == null)
         {
             Debug.LogError("HealthBar: liquidFillImage is not assigned.", this);
@@ -58,7 +64,9 @@ public class HealthBar : MonoBehaviour
         if (playerHealth != null)
         {
             playerHealth.OnHealthChanged += SyncWithPlayerHealth;
+            playerHealth.OnAfterlifeStateChanged += HandleAfterlifeStateChanged;
             SyncWithPlayerHealth();
+            HandleAfterlifeStateChanged(playerHealth.IsInAfterlife);
         }
     }
 
@@ -67,6 +75,7 @@ public class HealthBar : MonoBehaviour
         if (playerHealth != null)
         {
             playerHealth.OnHealthChanged -= SyncWithPlayerHealth;
+            playerHealth.OnAfterlifeStateChanged -= HandleAfterlifeStateChanged;
         }
     }
 
@@ -124,6 +133,22 @@ public class HealthBar : MonoBehaviour
         }
 
         SetHealth(playerHealth.CurrentHealth, playerHealth.MaxHealth);
+    }
+
+    private void HandleAfterlifeStateChanged(bool isInAfterlife)
+    {
+        if (healthBarCanvasGroup != null)
+        {
+            healthBarCanvasGroup.alpha = isInAfterlife ? 0f : 1f;
+            healthBarCanvasGroup.interactable = !isInAfterlife;
+            healthBarCanvasGroup.blocksRaycasts = !isInAfterlife;
+            return;
+        }
+
+        if (liquidFillImage != null)
+        {
+            liquidFillImage.enabled = !isInAfterlife;
+        }
     }
 
     void OnDestroy()

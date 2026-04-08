@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerHealth : MonoBehaviour, IDamageable
 {
     public event Action OnHealthChanged;
+    public event Action<bool> OnAfterlifeStateChanged;
 
     [SerializeField] float maxHealth = 100f;
     [SerializeField] float panicMaxHealth = 0.25f;
@@ -18,6 +19,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public float MaxHealth => maxHealth;
 
     public float CurrentHealth => currentHealth;
+    public bool IsInAfterlife => isInAfterlife;
     private Vector3 deathPlace;
 
 
@@ -42,6 +44,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         }
         deathPlace = transform.position;
         isInAfterlife = true;
+        OnAfterlifeStateChanged?.Invoke(isInAfterlife);
         transform.position = transform.position + hellOffset;
         NotifyCinemachineTeleport(hellOffset);
         RoomManager.Instance?.SetConfinerForCurrentRoomVariant(true);
@@ -55,6 +58,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         }
         currentHealth = 0.3f * maxHealth;
         isInAfterlife = false;
+        OnAfterlifeStateChanged?.Invoke(isInAfterlife);
         Vector3 returnDelta = deathPlace - transform.position;
         transform.position = deathPlace;
         NotifyCinemachineTeleport(returnDelta);
