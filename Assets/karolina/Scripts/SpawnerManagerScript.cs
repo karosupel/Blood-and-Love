@@ -8,58 +8,76 @@ public class SpawnerManagerScript : MonoBehaviour
     [SerializeField] public GameObject succubusPrefab;
     [SerializeField] public GameObject maidPrefab;
 
-    public RoomManager roomManagerScript;
+    [SerializeField] public GameObject roomManager;
 
-    [SerializeField] public List<Enemy> ActiveEnemiesInScene = new List<Enemy>();
+    [SerializeField] public GameObject player;
+
+    [SerializeField] public PlayerHealth playerHealthScript;
+    private RoomManager roomManagerScript;
+
+    [SerializeField] public List<GameObject> ActiveEnemiesInScene = new List<GameObject>();
 
     //variables:
     public List<string> roomVisitStack = new List<string>();
-    public RoomInstance instanceId;
-    public RoomInstance roomTypeId;
+    public string instanceId;
+    public string roomTypeId;
 
-    private void Awake()
+    private void Start()
     {
-        roomManagerScript = GameObject.FindGameObjectWithTag("RoomManager").GetComponent<RoomManager>();
-        roomTypeId = roomManagerScript.RoomInstance.roomTypeId;
-        instanceId = roomManagerScript.RoomInstance.instanceId;
+        roomManagerScript = roomManager.GetComponent<RoomManager>();
+        roomVisitStack = new List<string>(roomManagerScript.roomVisitStack);
+        playerHealthScript = player.GetComponent<PlayerHealth>();
     }
 
     private void Update()
     {
         if (roomVisitStackChanges())
         {
-            roomTypeId = roomManagerScript.RoomInstance.roomTypeId;
-            instanceId = roomManagerScript.RoomInstance.instanceId;
+            switch(roomTypeId)
+            {
+                case ("Blue_"):
+                    Debug.Log("Blue Room");
+                    SpawnEnemyBlue(succubusPrefab, maidPrefab);
+                    break;
+                case ("Red_"):
+                    //twoja matka
+                    break;
+                case ("Green_"):
+                    //twoja matka
+                    break;
+                case ("Boss_"):
+                    //twoja matka
+                    break;
+                case ("Yellow_"):
+                    //twoja matka
+                    break;
+                default:
+                    //twoja matka
+                    break;
+            }
         }
 
-        switch(roomTypeId)
+        if(playerHealthScript.IsInAfterlife)
         {
-            case ("Blue"):
-                //twoja matka
-                break;
-            case ("Red"):
-                //twoja matka
-                break;
-            case ("Green"):
-                //twoja matka
-                break;
-            case ("Boss"):
-                //twoja matka
-                break;
-            case ("Yellow"):
-                //twoja matka
-                break;
+            HideEnemies();
         }
+        else if (!playerHealthScript.IsInAfterlife)
+        {
+            ShowEnemies();
+        }
+
     }
 
     public bool roomVisitStackChanges()
     {
         int currentStackSize = roomVisitStack.Count;
-        int newStackSize = roomManagerScript.RoomInstance.roomVisitStack.Count;
+        int newStackSize = roomManagerScript.roomVisitStack.Count;
 
         if (currentStackSize != newStackSize)
         {
-            roomVisitStack = new List<string>(roomManagerScript.RoomInstance.roomVisitStack);
+            roomVisitStack = new List<string>(roomManagerScript.roomVisitStack);
+            roomTypeId = roomVisitStack[roomVisitStack.Count - 1].Substring(0, roomVisitStack[roomVisitStack.Count - 1].Length - 1);
+            instanceId = roomVisitStack[roomVisitStack.Count - 1].Substring(roomVisitStack[roomVisitStack.Count - 1].Length - 1);
             return true;
         }
         return false;
@@ -67,7 +85,34 @@ public class SpawnerManagerScript : MonoBehaviour
 
     public void SpawnEnemyBlue(GameObject succubusPrefab, GameObject maidPrefab)
     {
-        //spawn logic for blue room
+        GameObject succubus1 = Instantiate(succubusPrefab, new Vector3(-5, -11, 0), Quaternion.identity);
+        ActiveEnemiesInScene.Add(succubus1);
     }
+
+    public void HideEnemies()
+    {
+        foreach (GameObject enemy in ActiveEnemiesInScene)
+        {
+            if (enemy == null)
+            {
+                continue;
+            }
+            enemy.SetActive(false);
+        }  
+    }
+
+    public void ShowEnemies()
+    {
+        foreach (GameObject enemy in ActiveEnemiesInScene)
+        {
+            if (enemy == null)
+            {
+                continue;
+            }
+            enemy.SetActive(true);
+        }
+    }
+
+    //public void SpawnEnemiesInHell(string roomTypeId, )
 
 }
