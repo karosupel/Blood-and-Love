@@ -63,6 +63,16 @@ public class PlayerController : MonoBehaviour
             health.GoToMaterialPlane();
         }
 
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            health.TakeDamage(10f);
+        }
+
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            health.Heal(10f);
+        }
+
 
 
 
