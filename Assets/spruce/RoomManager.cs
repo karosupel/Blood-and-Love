@@ -44,7 +44,7 @@ public class RoomManager : MonoBehaviour
     [SerializeField] float arrivalOffset = 0.75f;
     [SerializeField] List<RoomInstance> roomInstances = new List<RoomInstance>();
     [SerializeField] List<RoomConnection> connections = new List<RoomConnection>();
-    [SerializeField] List<string> roomVisitStack = new List<string>();
+    [SerializeField] public List<string> roomVisitStack = new List<string>();
 
     Canvas choiceCanvas;
     Text promptText;
