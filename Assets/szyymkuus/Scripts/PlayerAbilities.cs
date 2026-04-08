@@ -6,7 +6,7 @@ public class PlayerAbilities : MonoBehaviour
 {
 
     [SerializeField] LayerMask enemyLayers;
-    Camera cam;
+    [SerializeField] Camera cam;
 
     //TODO: dodać atak i promień podstawowego ataku
     [Header("Basic Attack")]
@@ -152,6 +152,15 @@ public class PlayerAbilities : MonoBehaviour
         //col.enabled = true;
         gameObject.layer = defaultLayer;
     }
+    /*void OnDrawGizmos()
+    {
+        Gizmos.color = new Color (0.75f, 0f, 0f, 0.75f);
+        Gizmos.DrawSphere(transform.position, ultimateRadius);
+        Gizmos.color = Color.blue;
+        Vector3 mousePos = GetMousePosition();
+        Vector2 direction = (mousePos - transform.position).normalized; //doesn't display well, but fuck it - attacks are working
+        Gizmos.DrawLine(transform.position, transform.position + (Vector3)direction*specialAttackRange);
+    }*/
 
 
 }

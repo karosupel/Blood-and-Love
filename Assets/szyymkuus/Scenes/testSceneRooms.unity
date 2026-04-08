@@ -43798,7 +43798,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerHealth: {fileID: 1272289915}
-  UIDoc: {fileID: 669356593}
+  healthText: {fileID: 0}
+  healthBarRoot: {fileID: 0}
+  afterlifeHeart: {fileID: 0}
 --- !u!1 &709264992
 GameObject:
   m_ObjectHideFlags: 0
@@ -58239,6 +58241,18 @@ PrefabInstance:
     - target: {fileID: 6992477741966025509, guid: 753723d2ef12c514b998c28753893eff, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7026575635639587637, guid: 753723d2ef12c514b998c28753893eff, type: 3}
+      propertyPath: cam
+      value: 
+      objectReference: {fileID: 1196204657}
+    - target: {fileID: 7026575635639587637, guid: 753723d2ef12c514b998c28753893eff, type: 3}
+      propertyPath: ultimateRadius
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7026575635639587637, guid: 753723d2ef12c514b998c28753893eff, type: 3}
+      propertyPath: specialAttackCooldown
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
