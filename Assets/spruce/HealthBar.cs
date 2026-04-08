@@ -13,7 +13,6 @@ public class HealthBar : MonoBehaviour
     [SerializeField] private Color healthyColor  = new Color(0.2f, 0.8f, 0.3f);
     [SerializeField] private Color damagedColor  = new Color(0.9f, 0.6f, 0.1f);
     [SerializeField] private Color criticalColor = new Color(0.9f, 0.2f, 0.1f);
-    [SerializeField] private float fullHpThreshold = 0.97f;
     [SerializeField] private float sparkleSpeed = 8f;
     [SerializeField] private float sparkleStrength = 0.35f;
 
