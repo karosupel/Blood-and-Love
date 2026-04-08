@@ -1,17 +1,23 @@
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
+using TMPro;
 
 public class GameUIHandler : MonoBehaviour
 {
     public PlayerHealth PlayerHealth;
-    public UIDocument UIDoc;
-    private Label m_HealthLabel;
-
-
-    private void Start()
+    [SerializeField] private TMP_Text healthText;
+    private void Awake()
     {
-        m_HealthLabel = UIDoc.rootVisualElement.Q<Label>("HealthLabel");
+        // Try auto-wiring text references from the same GameObject.
+        if (healthText == null)
+        {
+            healthText = GetComponent<TMP_Text>();
+        }
 
+    }
+
+    private void OnEnable()
+    {
         if (PlayerHealth != null)
         {
             PlayerHealth.OnHealthChanged += HealthChanged;
@@ -20,7 +26,7 @@ public class GameUIHandler : MonoBehaviour
         HealthChanged();
     }
 
-    private void OnDestroy()
+    private void OnDisable()
     {
         if (PlayerHealth != null)
         {
@@ -31,11 +37,16 @@ public class GameUIHandler : MonoBehaviour
 
     void HealthChanged()
     {
-        if (m_HealthLabel == null || PlayerHealth == null)
+        if (PlayerHealth == null)
         {
             return;
         }
 
-        m_HealthLabel.text = $"{PlayerHealth.CurrentHealth}/{PlayerHealth.MaxHealth}";
+        string hpText = $"{Mathf.CeilToInt(PlayerHealth.CurrentHealth)}/{Mathf.CeilToInt(PlayerHealth.MaxHealth)}";
+
+        if (healthText != null)
+        {
+            healthText.text = hpText;
+        }
     }
 }
