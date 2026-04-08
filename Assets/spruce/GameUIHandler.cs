@@ -5,12 +5,21 @@ public class GameUIHandler : MonoBehaviour
 {
     public PlayerHealth PlayerHealth;
     [SerializeField] private TMP_Text healthText;
+    [SerializeField] private GameObject healthBarRoot;
+    [SerializeField] private GameObject afterlifeHeart;
+
     private void Awake()
     {
         // Try auto-wiring text references from the same GameObject.
         if (healthText == null)
         {
             healthText = GetComponent<TMP_Text>();
+        }
+
+        // If not explicitly assigned, use the health text object as fallback root.
+        if (healthBarRoot == null && healthText != null)
+        {
+            healthBarRoot = healthText.gameObject;
         }
 
     }
@@ -54,9 +63,21 @@ public class GameUIHandler : MonoBehaviour
 
     void AfterlifeStateChanged(bool isInAfterlife)
     {
-        if (healthText != null)
+        SetUiVisible(healthBarRoot, !isInAfterlife);
+
+        if (healthBarRoot == null && healthText != null)
         {
-            healthText.enabled = !isInAfterlife;
+            SetUiVisible(healthText.gameObject, !isInAfterlife);
+        }
+
+        SetUiVisible(afterlifeHeart, isInAfterlife);
+    }
+
+    void SetUiVisible(GameObject target, bool isVisible)
+    {
+        if (target != null && target.activeSelf != isVisible)
+        {
+            target.SetActive(isVisible);
         }
     }
 }
