@@ -1,14 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PlayerHealth : MonoBehaviour, IDamageable
 {
 
-    [SerializeField] float maxHealth = 100f;
+    public event Action OnHealthChanged;
+
+    [SerializeField] public float maxHealth = 100f;
     [SerializeField] float panicMaxHealth = 0.25f;
     [SerializeField] int hearts = 0;
-    [SerializeField] float currentHealth;
+    [SerializeField] public float currentHealth;
     PlayerAbilities playerAbilities;
 
     public float MaxHealth => maxHealth;
@@ -20,6 +23,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     {
         playerAbilities = GetComponent<PlayerAbilities>();
         currentHealth = maxHealth;
+        OnHealthChanged?.Invoke();
     }
 
     public void Die()
@@ -35,11 +39,15 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         {
             currentHealth = maxHealth;
         }
+
+        OnHealthChanged?.Invoke();
     }
 
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
+        OnHealthChanged?.Invoke();
+
         if (currentHealth <= MaxHealth * panicMaxHealth)
         {
             playerAbilities.LesbianPanic();
