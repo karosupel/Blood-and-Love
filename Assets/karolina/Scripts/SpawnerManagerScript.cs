@@ -18,6 +18,10 @@ public class SpawnerManagerScript : MonoBehaviour
     //variables:
     [SerializeField] public List<GameObject> ActiveEnemiesInScene = new List<GameObject>();
 
+    [SerializeField] public List<string> VisitedRooms = new List<string>();
+
+    private HashSet<string> visitedRooms = new HashSet<string>();
+
     private Dictionary<string, RoomSpawnData> spawnDataDict;
 
     [SerializeField] private List<RoomSpawnData> spawnDataList;
@@ -27,6 +31,8 @@ public class SpawnerManagerScript : MonoBehaviour
     public List<string> roomVisitStack = new List<string>();
     public string instanceId;
     public string roomTypeId;
+
+    public bool areEnemiesDead = false;
 
     private void Start()
     {
@@ -53,25 +59,23 @@ public class SpawnerManagerScript : MonoBehaviour
 
     private void Update()
     {
+
         if (roomVisitStackChanges())
         {
-            if (spawnActions.TryGetValue(roomTypeId, out var spawnAction))
+            string roomKey = roomTypeId + instanceId;
+
+            if (!visitedRooms.Contains(roomKey))
             {
-                spawnAction.Invoke();
+                if (spawnActions.TryGetValue(roomTypeId, out var spawnAction))
+                {
+                    spawnAction.Invoke();
+                    visitedRooms.Add(roomKey);
+                }
             }
             else
             {
-                Debug.LogWarning("Unknown room type: " + roomTypeId);
+                Debug.Log("Room already visited: " + roomKey);
             }
-        }
-
-        if(playerHealthScript.IsInAfterlife)
-        {
-            HideEnemies();
-        }
-        else if (!playerHealthScript.IsInAfterlife)
-        {
-            ShowEnemies();
         }
 
     }
@@ -90,18 +94,6 @@ public class SpawnerManagerScript : MonoBehaviour
         }
         return false;
     }
-
-    /*public void SpawnEnemyBlue(GameObject succubusPrefab, GameObject maidPrefab)
-    {
-        if (!spawnPointsDict.TryGetValue("Blue_", out var points))
-            return;
-
-        foreach (var point in points)
-        {
-            GameObject enemy = Instantiate(succubusPrefab, point, Quaternion.identity);
-            ActiveEnemiesInScene.Add(enemy);
-        }
-    }*/
 
     public void SpawnEnemies()
     {
