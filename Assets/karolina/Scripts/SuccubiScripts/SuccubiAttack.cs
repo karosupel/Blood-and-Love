@@ -7,12 +7,15 @@ public class SuccubiAttack : EnemyBaseState
     private bool isAttacking = false;
     public EnemyStats stats;
     public GameObject player;
+    public Enemy enemyReference;
+    
     public override void EnterState(EnemyStateManager enemy)
     {
         Debug.Log("Entered Attack State");
         isAttacking = true;
         player = enemy.player;
         stats = enemy.stats;
+        enemyReference = enemy.enemy;
     }
 
     public override void UpdateState(EnemyStateManager enemy)
@@ -20,16 +23,18 @@ public class SuccubiAttack : EnemyBaseState
         if (isAttacking)
         {
             isAttacking = false; // Prevent multiple coroutines from starting
-            enemy.StartCoroutine(AttackCoroutine(enemy, stats.attackCooldown)); 
+            enemy.StartCoroutine(AttackCoroutine(enemy, stats.attackCooldown));
         }
     }
 
     public IEnumerator AttackCoroutine(EnemyStateManager enemy, float cooldown)
     {
         Debug.Log("Attacking player...");
+        enemyReference.DealDamage(player, stats.damage);
+        player.GetComponent<IConditionable>()?.Stun(1f); //hard fixed stun
 
         PlayerTestScript playerScript = player.GetComponent<PlayerTestScript>();
-        playerScript.StartCoroutine(playerScript.Stun(0.8f)); // Stun player for 0.5 seconds
+        //playerScript.StartCoroutine(playerScript.Stun(0.8f)); // Stun player for 0.5 seconds
 
         yield return new WaitForSeconds(cooldown); // Attack every cooldown seconds
 

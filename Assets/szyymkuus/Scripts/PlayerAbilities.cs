@@ -63,6 +63,7 @@ public class PlayerAbilities : MonoBehaviour
 
             foreach (var enemy in hits)
             {
+                Debug.Log("enemy detected: " + enemy);
                 enemy.GetComponent<IDamageable>()?.TakeDamage(ultimateDamage);
             }
             health.AddHeart();
@@ -94,7 +95,7 @@ public class PlayerAbilities : MonoBehaviour
         Vector3 mousePos = GetMousePosition();
         Vector2 direction = (mousePos - transform.position).normalized;
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, specialAttackRange, enemyLayers);
-        Debug.DrawLine(transform.position, transform.position + (Vector3)direction*specialAttackRange, Color.red, 10f);
+        Debug.DrawLine(transform.position, transform.position + (Vector3)direction*specialAttackRange, Color.red, 1f);
 
         hit.collider?.GetComponent<IDamageable>()?.TakeDamage(specialAttackDamage);
 
@@ -120,6 +121,7 @@ public class PlayerAbilities : MonoBehaviour
          Color originalSpriteColor = sprite.color;
          sprite.color = Color.yellow;
          col.enabled = false;
+         playerController.Cleanse();
          yield return new WaitForSeconds(panicDuration);
          playerController.NormalSpeed();
          sprite.color = originalSpriteColor;

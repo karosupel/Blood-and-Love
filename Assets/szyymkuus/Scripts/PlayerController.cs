@@ -14,6 +14,9 @@ public class PlayerController : MonoBehaviour
     Vector2 movement;
     PlayerHealth health;
     Collider2D col;
+    Coroutine stun;
+
+    bool isStunned;
 
     void Awake()
     {
@@ -32,6 +35,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isStunned)
+        {
+            return;
+        }
         if (Input.GetKeyDown(KeyCode.R))
         {
             abilities.UseUltimate();
@@ -46,12 +53,16 @@ public class PlayerController : MonoBehaviour
         }
 
 
-        health.Heal(regenRate * Time.deltaTime);
+
 
     }
 
     void FixedUpdate()
     {
+        if (isStunned)
+        {
+            return;
+        }
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
         Vector2 movementDirection = new Vector2 (horizontal, vertical).normalized;
@@ -70,4 +81,19 @@ public class PlayerController : MonoBehaviour
         speed = basicSpeed;
     }
 
+    public void ApplyStun(float duration)
+    {
+        stun = StartCoroutine(StunCoroutine(duration));
+    }
+    public void Cleanse() //Cleanse need fixing
+    {
+        StopCoroutine(stun);
+        isStunned = false;
+    }
+    IEnumerator StunCoroutine(float duration)
+    {
+        isStunned = true;
+        yield return new WaitForSeconds(duration);
+        isStunned = false;
+    }
 }

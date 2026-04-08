@@ -15,11 +15,12 @@ public class EnemyStateManager : MonoBehaviour
     public GameObject player;
 
     public EnemyStats stats;
+    public Enemy enemy;
 
     void Awake()
     {
         enemy_rb = GetComponent<Rigidbody2D>();
-        Enemy enemy = GetComponent<Enemy>();
+        enemy = GetComponent<Enemy>();
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
