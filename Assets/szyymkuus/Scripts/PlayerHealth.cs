@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour, IDamageable
 {
+    public event Action OnHealthChanged;
 
     [SerializeField] float maxHealth = 100f;
     [SerializeField] float panicMaxHealth = 0.25f;
@@ -24,6 +25,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     {
         playerAbilities = GetComponent<PlayerAbilities>();
         currentHealth = maxHealth;
+        OnHealthChanged?.Invoke();
     }
 
     public void Die()
@@ -37,14 +39,34 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         deathPlace = transform.position;
         isInAfterlife = true;
         transform.position = transform.position + hellOffset;
+        NotifyCinemachineTeleport(hellOffset);
+        RoomManager.Instance?.SetConfinerForCurrentRoomVariant(true);
 
     }
     public void GoToMaterialPlane()
     {
         currentHealth = 0.3f * maxHealth;
         isInAfterlife = false;
+        Vector3 returnDelta = deathPlace - transform.position;
         transform.position = deathPlace;
+        NotifyCinemachineTeleport(returnDelta);
+        RoomManager.Instance?.SetConfinerForCurrentRoomVariant(false);
         playerAbilities.UseUltimate(false);
+        OnHealthChanged?.Invoke();
+    }
+
+    void NotifyCinemachineTeleport(Vector3 delta)
+    {
+        Cinemachine.CinemachineVirtualCameraBase[] virtualCameras = FindObjectsOfType<Cinemachine.CinemachineVirtualCameraBase>();
+        for (int i = 0; i < virtualCameras.Length; i++)
+        {
+            if (virtualCameras[i] == null)
+            {
+                continue;
+            }
+
+            virtualCameras[i].OnTargetObjectWarped(transform, delta);
+        }
     }
 
 
@@ -55,13 +77,15 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         {
             currentHealth = maxHealth;
         }
+
+        OnHealthChanged?.Invoke();
     }
 
     public void TakeDamage(float damage)
     {
         if (!isInAfterlife)
         {
-                currentHealth -= damage;
+            currentHealth -= damage;
             if (currentHealth <= MaxHealth * panicMaxHealth)
             {
                 playerAbilities.LesbianPanic();
@@ -70,8 +94,13 @@ public class PlayerHealth : MonoBehaviour, IDamageable
             Debug.Log("Player took damage, current health: " + currentHealth);
             if (currentHealth <= 0)
             {
+                currentHealth = 0f;
+                OnHealthChanged?.Invoke();
                 Die();
+                return;
             }
+
+            OnHealthChanged?.Invoke();
         }
         else
         {

@@ -53,6 +53,16 @@ public class PlayerController : MonoBehaviour
             abilities.UseSpecialAttack();
         }
 
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            health.GoToHell();
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            health.GoToMaterialPlane();
+        }
+
 
 
 

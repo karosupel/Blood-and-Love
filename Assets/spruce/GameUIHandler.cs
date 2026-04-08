@@ -3,12 +3,12 @@ using UnityEngine.UIElements;
 
 public class GameUIHandler : MonoBehaviour
 {
-public PlayerHealth PlayerHealth;
-public UIDocument UIDoc;
-private Label m_HealthLabel;
+    public PlayerHealth PlayerHealth;
+    public UIDocument UIDoc;
+    private Label m_HealthLabel;
 
 
- private void Start()
+    private void Start()
     {
         m_HealthLabel = UIDoc.rootVisualElement.Q<Label>("HealthLabel");
 
@@ -36,6 +36,6 @@ private Label m_HealthLabel;
             return;
         }
 
-        m_HealthLabel.text = $"{PlayerHealth.currentHealth}/{PlayerHealth.maxHealth}";
+        m_HealthLabel.text = $"{PlayerHealth.CurrentHealth}/{PlayerHealth.MaxHealth}";
     }
 }

@@ -148,6 +148,62 @@ public class RoomManager : MonoBehaviour
         return connections;
     }
 
+    public void SetConfinerForCurrentRoomVariant(bool useHellVariant)
+    {
+        Cinemachine.CinemachineConfiner confiner = FindObjectOfType<Cinemachine.CinemachineConfiner>();
+        if (confiner == null)
+        {
+            Debug.LogWarning("Could not set confiner bounds because no CinemachineConfiner was found.");
+            return;
+        }
+
+        PolygonCollider2D currentBoundary = confiner.m_BoundingShape2D as PolygonCollider2D;
+        if (currentBoundary == null)
+        {
+            Debug.LogWarning("Could not set confiner bounds because current confiner boundary is not a PolygonCollider2D.");
+            return;
+        }
+
+        string currentName = currentBoundary.gameObject.name;
+        if (string.IsNullOrEmpty(currentName))
+        {
+            Debug.LogWarning("Could not set confiner bounds because current boundary has no name.");
+            return;
+        }
+
+        string targetName = GetRoomVariantId(currentName, useHellVariant);
+        PolygonCollider2D[] allBoundaries = FindObjectsOfType<PolygonCollider2D>(true);
+        PolygonCollider2D targetBoundary = null;
+        for (int i = 0; i < allBoundaries.Length; i++)
+        {
+            PolygonCollider2D candidate = allBoundaries[i];
+            if (candidate == null)
+            {
+                continue;
+            }
+
+            if (!candidate.gameObject.scene.IsValid())
+            {
+                continue;
+            }
+
+            if (string.Equals(candidate.gameObject.name, targetName, System.StringComparison.OrdinalIgnoreCase))
+            {
+                targetBoundary = candidate;
+                break;
+            }
+        }
+
+        if (targetBoundary == null)
+        {
+            Debug.LogWarning("Could not set confiner bounds. Missing boundary object: " + targetName);
+            return;
+        }
+
+        confiner.m_BoundingShape2D = targetBoundary;
+        confiner.InvalidatePathCache();
+    }
+
     RoomConnection FindConnection(string fromRoomInstanceId, RoomDirection direction)
     {
         for (int i = 0; i < connections.Count; i++)
@@ -159,6 +215,38 @@ public class RoomManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    string GetCurrentRoomTypeId()
+    {
+        if (string.IsNullOrEmpty(currentRoomInstanceId))
+        {
+            return null;
+        }
+
+        RoomInstance currentRoom = FindRoomInstance(currentRoomInstanceId);
+        if (currentRoom == null)
+        {
+            return null;
+        }
+
+        return currentRoom.roomTypeId;
+    }
+
+    string GetRoomVariantId(string roomTypeId, bool useHellVariant)
+    {
+        bool isHellId = roomTypeId.EndsWith("H");
+        if (useHellVariant)
+        {
+            return isHellId ? roomTypeId : roomTypeId + "H";
+        }
+
+        if (!isHellId)
+        {
+            return roomTypeId;
+        }
+
+        return roomTypeId.Substring(0, roomTypeId.Length - 1);
     }
 
     RoomChoiceOption FindAvailableRoomById(string roomId)
