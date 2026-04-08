@@ -175,6 +175,9 @@ MonoBehaviour:
   stats: {fileID: 11400000, guid: e8d85f9c8d6703d4ea74eb900ff882af, type: 2}
   currentHealth: 0
   rb: {fileID: 2783594300361953632}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &-8623020888915101707
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,3 +192,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 2042421123167681590, guid: 5840ebe076d0b584d831f396eaab45a9, type: 3}
   stats: {fileID: 11400000, guid: e8d85f9c8d6703d4ea74eb900ff882af, type: 2}
+  enemy: {fileID: 0}
