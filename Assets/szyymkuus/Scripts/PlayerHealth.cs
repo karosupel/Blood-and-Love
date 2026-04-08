@@ -7,6 +7,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 {
     public event Action OnHealthChanged;
     public event Action<bool> OnAfterlifeStateChanged;
+    public event Action<int> OnHeartsChanged;
 
     [SerializeField] float maxHealth = 100f;
     [SerializeField] float panicMaxHealth = 0.25f;
@@ -20,6 +21,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     public float CurrentHealth => currentHealth;
     public bool IsInAfterlife => isInAfterlife;
+    public int Hearts => hearts;
     private Vector3 deathPlace;
 
 
@@ -28,6 +30,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         playerAbilities = GetComponent<PlayerAbilities>();
         currentHealth = maxHealth;
         OnHealthChanged?.Invoke();
+        OnHeartsChanged?.Invoke(hearts);
     }
 
     public void Die()
@@ -125,6 +128,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public void TakeHeart()
     {
         hearts--;
+        OnHeartsChanged?.Invoke(hearts);
         Debug.Log("Gracz trafiony w zaświatach! pozostało " + hearts + " serc!");
         if (hearts < 0) //do zmiany, zależnie czy gracz kiedy ma 0 serc nadal może żyć
         {
@@ -135,6 +139,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public void AddHeart()
     {
         hearts++;
+        OnHeartsChanged?.Invoke(hearts);
         Debug.Log("Gracz zdobył serce! Aktualnie posiada " + hearts);
     }
 
