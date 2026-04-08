@@ -20,9 +20,10 @@ public class SpawnerManagerScript : MonoBehaviour
 
     private Dictionary<string, RoomSpawnData> spawnDataDict;
 
+    [SerializeField] private List<RoomSpawnData> spawnDataList;
+
     private Dictionary<string, System.Action> spawnActions;
 
-    private Dictionary<string, List<Vector3>> spawnPointsDict;
     public List<string> roomVisitStack = new List<string>();
     public string instanceId;
     public string roomTypeId;
@@ -42,12 +43,12 @@ public class SpawnerManagerScript : MonoBehaviour
             { "Yellow_", SpawnEnemyYellow }
         };
 
-        /*spawnDataDict = new Dictionary<string, RoomSpawnData>();
+        spawnDataDict = new Dictionary<string, RoomSpawnData>();
 
-        foreach (var data in spawnDataDict)
+        foreach (var data in spawnDataList)
         {
             spawnDataDict[data.roomTypeId] = data;
-        }*/
+        }
     }
 
     private void Update()

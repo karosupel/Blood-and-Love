@@ -44685,6 +44685,8 @@ MonoBehaviour:
   player: {fileID: 1272289906}
   playerHealthScript: {fileID: 0}
   ActiveEnemiesInScene: []
+  spawnDataList:
+  - {fileID: 11400000, guid: 7117b8fec8f088e4e8614b0ae55652a1, type: 2}
   roomVisitStack: []
   instanceId: 
   roomTypeId: 
