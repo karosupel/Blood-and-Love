@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,11 +10,14 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     [SerializeField] float panicMaxHealth = 0.25f;
     [SerializeField] int hearts = 0;
     [SerializeField] float currentHealth;
+    [SerializeField] Vector3 hellOffset = new Vector3(-30f, 0f, 0f);
     PlayerAbilities playerAbilities;
+    bool isInAfterlife = false;
 
     public float MaxHealth => maxHealth;
 
     public float CurrentHealth => currentHealth;
+    private Vector3 deathPlace;
 
 
     void Awake()
@@ -24,9 +28,25 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     public void Die()
     {
-        Debug.Log("Player has died!");
-        Destroy(gameObject);
+        Debug.Log("Player has died! Fight for your life!");
+        GoToHell();
     }
+
+    public void GoToHell()
+    {
+        deathPlace = transform.position;
+        isInAfterlife = true;
+        transform.position = transform.position + hellOffset;
+
+    }
+    public void GoToMaterialPlane()
+    {
+        currentHealth = 0.3f * maxHealth;
+        isInAfterlife = false;
+        transform.position = deathPlace;
+        playerAbilities.UseUltimate(false);
+    }
+
 
     public void Heal(float amount)
     {
@@ -39,17 +59,26 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     public void TakeDamage(float damage)
     {
-        currentHealth -= damage;
-        if (currentHealth <= MaxHealth * panicMaxHealth)
+        if (!isInAfterlife)
         {
-            playerAbilities.LesbianPanic();
+                currentHealth -= damage;
+            if (currentHealth <= MaxHealth * panicMaxHealth)
+            {
+                playerAbilities.LesbianPanic();
+            }
+
+            Debug.Log("Player took damage, current health: " + currentHealth);
+            if (currentHealth <= 0)
+            {
+                Die();
+            }
+        }
+        else
+        {
+            TakeHeart();
+            //implement temporary invulnerability
         }
 
-        Debug.Log("Player took damage, current health: " + currentHealth);
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
     }
 
     public void TakeHeart()

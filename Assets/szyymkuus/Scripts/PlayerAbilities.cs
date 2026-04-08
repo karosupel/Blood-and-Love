@@ -59,7 +59,7 @@ public class PlayerAbilities : MonoBehaviour
     }
 
 
-    public void UseUltimate()
+    public void UseUltimate(bool addHeart = true)
     {
         if (health.CurrentHealth >= health.MaxHealth)
         {
@@ -72,7 +72,11 @@ public class PlayerAbilities : MonoBehaviour
                 Debug.Log("enemy detected: " + enemy);
                 enemy.GetComponent<IDamageable>()?.TakeDamage(ultimateDamage);
             }
-            health.AddHeart();
+            if (addHeart)
+            {
+                health.AddHeart();
+            }
+
         }
         else
         {
