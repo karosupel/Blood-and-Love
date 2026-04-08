@@ -17,6 +17,19 @@ public class PlayerController : MonoBehaviour
     Coroutine stunCoroutine;
     Coroutine stunImmunityCoroutine;
 
+    float horizontal;
+    float vertical;
+    Vector2 movementDirection;
+    Vector2 dashDirection;
+
+    [Header("Dash settings")]
+    [SerializeField] float dashVelocity = 500f;
+    [SerializeField] float dashDuration = 0.15f;
+    [SerializeField] float dashCooldown = 4f;
+    float lastDashTime = float.MinValue;
+    float dashTimer;
+    bool isDashing;
+
     bool isStunned = false;
     int stunImmune = 0;
 
@@ -41,6 +54,9 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
+        horizontal = Input.GetAxisRaw("Horizontal");
+        vertical = Input.GetAxisRaw("Vertical");
+        movementDirection = new Vector2 (horizontal, vertical).normalized;
         if (Input.GetKeyDown(KeyCode.R))
         {
             abilities.UseUltimate();
@@ -73,7 +89,13 @@ public class PlayerController : MonoBehaviour
         {
             health.Heal(10f);
         }
-
+        if (Input.GetKeyDown(KeyCode.Space) && lastDashTime + dashCooldown <= Time.time && movementDirection != Vector2.zero)
+        {
+            dashDirection = movementDirection;
+            dashTimer = dashDuration;
+            isDashing = true;
+            lastDashTime = Time.time;
+        }
 
 
 
@@ -86,9 +108,16 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-        Vector2 movementDirection = new Vector2 (horizontal, vertical).normalized;
+        if (isDashing)
+        {
+            dashTimer -= Time.fixedDeltaTime;
+            rb.velocity = dashDirection*dashVelocity;
+            if (dashTimer <= 0)
+            {
+                isDashing = false;
+            }
+            return;
+        }
         movement = movementDirection * speed * Time.fixedDeltaTime;
         rb.MovePosition(rb.position + movement);
 

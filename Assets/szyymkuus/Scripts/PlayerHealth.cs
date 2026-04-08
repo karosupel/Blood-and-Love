@@ -15,6 +15,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     [SerializeField] float currentHealth;
     [SerializeField] Vector3 hellOffset = new Vector3(-30f, 0f, 0f);
     PlayerAbilities playerAbilities;
+
+    [SerializeField] float afterlifeInvincibilityDuration = 1f;
     bool isInAfterlife = false;
 
     public float MaxHealth => maxHealth;
@@ -23,6 +25,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public bool IsInAfterlife => isInAfterlife;
     public int Hearts => hearts;
     private Vector3 deathPlace;
+    bool isInvincible = false;
 
 
     void Awake()
@@ -98,6 +101,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     public void TakeDamage(float damage, float knockback = 1f)
     {
+        if (isInvincible)
+        {
+            return;
+        }
         if (!isInAfterlife)
         {
             currentHealth -= damage;
@@ -120,7 +127,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         else
         {
             TakeHeart();
-            //implement temporary invulnerability
+            StartCoroutine(InvincibilityCoroutine(afterlifeInvincibilityDuration));
         }
 
     }
@@ -147,6 +154,13 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     {
         Debug.Log("Player's soul got annihilated!");
         Destroy(gameObject);
+    }
+
+    IEnumerator InvincibilityCoroutine(float duration)
+    {
+        isInvincible = true;
+        yield return new WaitForSeconds(duration);
+        isInvincible = false;
     }
 
 
