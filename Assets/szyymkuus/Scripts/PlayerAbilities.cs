@@ -59,18 +59,21 @@ public class PlayerAbilities : MonoBehaviour
     }
 
 
-    public void UseUltimate(bool addHeart = true)
+    public void UseUltimate(bool addHeart = true, bool freeUse = false)
     {
-        if (health.CurrentHealth >= health.MaxHealth)
+        if (health.CurrentHealth >= health.MaxHealth || freeUse)
         {
             Debug.Log("Ultimate used!");
-            health.TakeDamage(health.MaxHealth * ultimateMaxHealthCost);
+            if (!freeUse)
+            {
+                health.TakeDamage(health.MaxHealth * ultimateMaxHealthCost);
+            }
             Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, ultimateRadius, enemyLayers);
 
             foreach (var enemy in hits)
             {
                 Debug.Log("enemy detected: " + enemy);
-                enemy.GetComponent<IDamageable>()?.TakeDamage(ultimateDamage);
+                enemy.GetComponent<IDamageable>()?.TakeDamage(ultimateDamage, 5f);
             }
             if (addHeart)
             {
@@ -142,13 +145,12 @@ public class PlayerAbilities : MonoBehaviour
         //col.enabled = false; // Zastąpione przez Layer
         gameObject.layer = immunityLayer;
         playerController.Cleanse();
-        playerController.StunImmunitySwitch(true);
+        playerController.ApplyStunImmunity(panicDuration);
         yield return new WaitForSeconds(panicDuration);
         playerController.NormalSpeed();
         sprite.color = originalSpriteColor;
         //col.enabled = true;
         gameObject.layer = defaultLayer;
-        playerController.StunImmunitySwitch(false);
     }
 
 

@@ -36,6 +36,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     public void GoToHell()
     {
+        if (isInAfterlife)
+        {
+            return;
+        }
         deathPlace = transform.position;
         isInAfterlife = true;
         transform.position = transform.position + hellOffset;
@@ -45,13 +49,17 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     }
     public void GoToMaterialPlane()
     {
+        if (!isInAfterlife)
+        {
+            return;
+        }
         currentHealth = 0.3f * maxHealth;
         isInAfterlife = false;
         Vector3 returnDelta = deathPlace - transform.position;
         transform.position = deathPlace;
         NotifyCinemachineTeleport(returnDelta);
         RoomManager.Instance?.SetConfinerForCurrentRoomVariant(false);
-        playerAbilities.UseUltimate(false);
+        playerAbilities.UseUltimate(addHeart: false, freeUse: true);
         OnHealthChanged?.Invoke();
     }
 
@@ -81,7 +89,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         OnHealthChanged?.Invoke();
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, float knockback = 1f)
     {
         if (!isInAfterlife)
         {

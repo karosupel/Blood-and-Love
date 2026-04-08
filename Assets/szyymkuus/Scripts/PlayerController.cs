@@ -14,10 +14,11 @@ public class PlayerController : MonoBehaviour
     Vector2 movement;
     PlayerHealth health;
     Collider2D col;
-    Coroutine stun;
+    Coroutine stunCoroutine;
+    Coroutine stunImmunityCoroutine;
 
     bool isStunned = false;
-    bool stunImmune = false;
+    int stunImmune = 0;
 
     void Awake()
     {
@@ -95,17 +96,21 @@ public class PlayerController : MonoBehaviour
 
     public void ApplyStun(float duration)
     {
-        if (stunImmune)
+        if (stunImmune > 0)
         {
             return;
         }
-        stun = StartCoroutine(StunCoroutine(duration));
-        Debug.Log("started coroutine " + stun);
+        stunCoroutine = StartCoroutine(StunCoroutine(duration));
+        Debug.Log("started coroutine " + stunCoroutine);
+    }
+    public void ApplyStunImmunity(float duration)
+    {
+        StartCoroutine(StunImmunityCoroutine(duration));
     }
     public void Cleanse() //Cleanse need fixing
     {
         Debug.Log("Cleanse!");
-        StopCoroutine(stun);
+        StopCoroutine(stunCoroutine);
         isStunned = false;
         Debug.Log("Is stunned: " + isStunned);
     }
@@ -114,10 +119,13 @@ public class PlayerController : MonoBehaviour
         isStunned = true;
         yield return new WaitForSeconds(duration);
         isStunned = false;
+        StartCoroutine(StunImmunityCoroutine());
     }
 
-    public void StunImmunitySwitch(bool immunityState = false)
+    IEnumerator StunImmunityCoroutine(float duration = 1f)
     {
-        stunImmune = immunityState;
+        stunImmune++;
+        yield return new WaitForSeconds(duration);
+        stunImmune--;
     }
 }

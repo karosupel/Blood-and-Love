@@ -31,7 +31,7 @@ public class SuccubiAttack : EnemyBaseState
     {
         Debug.Log("Attacking player...");
         enemyReference.DealDamage(player, stats.damage);
-        player.GetComponent<IConditionable>()?.Stun(3f); //hard fixed stun
+        player.GetComponent<IConditionable>()?.Stun(1f); //hard fixed stun
 
         PlayerTestScript playerScript = player.GetComponent<PlayerTestScript>();
         //playerScript.StartCoroutine(playerScript.Stun(0.8f)); // Stun player for 0.5 seconds
