@@ -1,36 +1,52 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public class PlayerHealth : MonoBehaviour, IDamageable
 {
 
-    public event Action OnHealthChanged;
-
-    [SerializeField] public float maxHealth = 100f;
+    [SerializeField] float maxHealth = 100f;
     [SerializeField] float panicMaxHealth = 0.25f;
     [SerializeField] int hearts = 0;
-    [SerializeField] public float currentHealth;
+    [SerializeField] float currentHealth;
+    [SerializeField] Vector3 hellOffset = new Vector3(-30f, 0f, 0f);
     PlayerAbilities playerAbilities;
+    bool isInAfterlife = false;
 
     public float MaxHealth => maxHealth;
 
     public float CurrentHealth => currentHealth;
+    private Vector3 deathPlace;
 
 
     void Awake()
     {
         playerAbilities = GetComponent<PlayerAbilities>();
         currentHealth = maxHealth;
-        OnHealthChanged?.Invoke();
     }
 
     public void Die()
     {
-        Debug.Log("Player has died!");
-        Destroy(gameObject);
+        Debug.Log("Player has died! Fight for your life!");
+        GoToHell();
     }
+
+    public void GoToHell()
+    {
+        deathPlace = transform.position;
+        isInAfterlife = true;
+        transform.position = transform.position + hellOffset;
+
+    }
+    public void GoToMaterialPlane()
+    {
+        currentHealth = 0.3f * maxHealth;
+        isInAfterlife = false;
+        transform.position = deathPlace;
+        playerAbilities.UseUltimate(false);
+    }
+
 
     public void Heal(float amount)
     {
@@ -39,25 +55,30 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         {
             currentHealth = maxHealth;
         }
-
-        OnHealthChanged?.Invoke();
     }
 
     public void TakeDamage(float damage)
     {
-        currentHealth -= damage;
-        OnHealthChanged?.Invoke();
-
-        if (currentHealth <= MaxHealth * panicMaxHealth)
+        if (!isInAfterlife)
         {
-            playerAbilities.LesbianPanic();
+                currentHealth -= damage;
+            if (currentHealth <= MaxHealth * panicMaxHealth)
+            {
+                playerAbilities.LesbianPanic();
+            }
+
+            Debug.Log("Player took damage, current health: " + currentHealth);
+            if (currentHealth <= 0)
+            {
+                Die();
+            }
+        }
+        else
+        {
+            TakeHeart();
+            //implement temporary invulnerability
         }
 
-        Debug.Log("Player took damage, current health: " + currentHealth);
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
     }
 
     public void TakeHeart()

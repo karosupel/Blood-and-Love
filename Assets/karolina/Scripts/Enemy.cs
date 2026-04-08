@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] public EnemyStats stats;
     [SerializeField] public float currentHealth;
     public Rigidbody2D rb;
+    [SerializeField] int playerLayerIndex = 6;
 
     private void Awake()
     {
@@ -46,6 +47,11 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void DealDamage(GameObject player, float damage)
     {
+        if (player.layer != playerLayerIndex)
+        {
+            Debug.Log("WrongLayer! player layer: " + player.layer + " , expected: " + playerLayerIndex);
+            return;
+        }
         Debug.Log("Enemy deals damage");
         player.GetComponent<IDamageable>()?.TakeDamage(damage);
     }

@@ -11,8 +11,8 @@ TagManager:
   - EnemyLayer
   - Water
   - UI
-  - 
-  - 
+  - PlayerLayer
+  - PlayerImmuneLayer
   - 
   - 
   - 

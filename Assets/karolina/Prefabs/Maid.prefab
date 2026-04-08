@@ -175,6 +175,9 @@ MonoBehaviour:
   stats: {fileID: 11400000, guid: d333178434ee922468cacc4541627645, type: 2}
   currentHealth: 0
   rb: {fileID: 7373377490526315924}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &250685769000684190
 MonoBehaviour:
   m_ObjectHideFlags: 0

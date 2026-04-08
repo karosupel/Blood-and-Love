@@ -2489,7 +2489,7 @@ GameObject:
   - component: {fileID: 1442478536}
   - component: {fileID: 1442478535}
   - component: {fileID: 1442478534}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -2526,14 +2526,18 @@ MonoBehaviour:
   basicAttackDamage: 10
   basicAttackRange: 1
   basicAttackRadius: 0.5
+  basicAttackCooldown: 1
   specialAttackDamage: 10
   specialAttackRange: 5
+  specialAttackCooldown: 3
   ultimateDamage: 100
   ultimateRadius: 10
   ultimateMaxHealthCost: 0.7
   panicDuration: 3
   panicCooldown: 60
   panicSpeedMultiplier: 1.5
+  defaultLayer: 6
+  immunityLayer: 7
 --- !u!114 &1442478536
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2546,8 +2550,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 33e36705781f0f740b7f4216bbc17514, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 40
-  panicMaxHealth: 0.25
+  maxHealth: 100
+  panicMaxHealth: 0.5
   hearts: 0
   currentHealth: 0
 --- !u!114 &1442478537
@@ -3819,7 +3823,7 @@ Transform:
   m_GameObject: {fileID: 1787247433}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.83982223, y: -0.7583761, z: -10}
+  m_LocalPosition: {x: -0.51730156, y: -0.7583759, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3867,6 +3871,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2783594300361953632, guid: 56b49cda01ba02a4cadf6d41666138c4, type: 3}
+      propertyPath: m_Constraints
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 4811195397392626896, guid: 56b49cda01ba02a4cadf6d41666138c4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 5.5174356
@@ -3916,8 +3924,16 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 7855807738772755725, guid: 56b49cda01ba02a4cadf6d41666138c4, type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7855807738772755725, guid: 56b49cda01ba02a4cadf6d41666138c4, type: 3}
       propertyPath: m_SortingLayerID
       value: 1789328477
+      objectReference: {fileID: 0}
+    - target: {fileID: 8015572126581151120, guid: 56b49cda01ba02a4cadf6d41666138c4, type: 3}
+      propertyPath: playerLayerIndex
+      value: 6
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3932,9 +3948,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 250685769000684190, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 272378486287725452, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
       propertyPath: m_Name
       value: Maid
+      objectReference: {fileID: 0}
+    - target: {fileID: 2139813787713820673, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2139813787713820673, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
+      propertyPath: playerLayerIndex
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 2572876619143484607, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3976,9 +4004,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7373377490526315924, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
+      propertyPath: m_Constraints
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 8717793868492890325, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
       propertyPath: m_SortingLayer
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8717793868492890325, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8717793868492890325, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
       propertyPath: m_SortingLayerID

@@ -16,7 +16,8 @@ public class PlayerController : MonoBehaviour
     Collider2D col;
     Coroutine stun;
 
-    bool isStunned;
+    bool isStunned = false;
+    bool stunImmune = false;
 
     void Awake()
     {
@@ -55,6 +56,7 @@ public class PlayerController : MonoBehaviour
 
 
 
+
     }
 
     void FixedUpdate()
@@ -83,17 +85,29 @@ public class PlayerController : MonoBehaviour
 
     public void ApplyStun(float duration)
     {
+        if (stunImmune)
+        {
+            return;
+        }
         stun = StartCoroutine(StunCoroutine(duration));
+        Debug.Log("started coroutine " + stun);
     }
     public void Cleanse() //Cleanse need fixing
     {
+        Debug.Log("Cleanse!");
         StopCoroutine(stun);
         isStunned = false;
+        Debug.Log("Is stunned: " + isStunned);
     }
     IEnumerator StunCoroutine(float duration)
     {
         isStunned = true;
         yield return new WaitForSeconds(duration);
         isStunned = false;
+    }
+
+    public void StunImmunitySwitch(bool immunityState = false)
+    {
+        stunImmune = immunityState;
     }
 }

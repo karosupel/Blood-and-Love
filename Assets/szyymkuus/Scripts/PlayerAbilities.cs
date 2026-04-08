@@ -13,11 +13,13 @@ public class PlayerAbilities : MonoBehaviour
     [SerializeField] float basicAttackDamage = 10f;
     [SerializeField] float basicAttackRange = 1f;
     [SerializeField] float basicAttackRadius = 0.5f;
+    [SerializeField] float basicAttackCooldown = 1f;
 
 
     [Header("Special Attack")]
     [SerializeField] float specialAttackDamage = 10f;
     [SerializeField] float specialAttackRange = 5f;
+    [SerializeField] float specialAttackCooldown = 3f;
 
     [Header("Ultimate")]
     [SerializeField] float ultimateDamage = 100f;
@@ -27,12 +29,16 @@ public class PlayerAbilities : MonoBehaviour
     [SerializeField] public float panicDuration = 3f;
     [SerializeField] public float panicCooldown = 60f;
     [SerializeField] public float panicSpeedMultiplier = 1.5f;
+    float lastBasicAttackTime = float.MinValue;
+    float lastSpecialAttackTime = float.MinValue;
     float lastPanicTime = float.MinValue;
     PlayerController playerController;
     BoxCollider2D col;
     PlayerHealth health;
     SpriteRenderer sprite;
-
+    [Header("Layers")]
+    [SerializeField] int defaultLayer = 6;
+    [SerializeField] int immunityLayer = 7;
     void Awake()
     {
         health = GetComponent<PlayerHealth>();
@@ -53,7 +59,7 @@ public class PlayerAbilities : MonoBehaviour
     }
 
 
-    public void UseUltimate()
+    public void UseUltimate(bool addHeart = true)
     {
         if (health.CurrentHealth >= health.MaxHealth)
         {
@@ -66,7 +72,11 @@ public class PlayerAbilities : MonoBehaviour
                 Debug.Log("enemy detected: " + enemy);
                 enemy.GetComponent<IDamageable>()?.TakeDamage(ultimateDamage);
             }
-            health.AddHeart();
+            if (addHeart)
+            {
+                health.AddHeart();
+            }
+
         }
         else
         {
@@ -77,6 +87,10 @@ public class PlayerAbilities : MonoBehaviour
 
     public void UseBasicAttack()
     {
+        if (lastBasicAttackTime + basicAttackCooldown > Time.time)
+        {
+            return;
+        }
         Debug.Log("Basic attack used!");
         Vector3 mousePos = GetMousePosition();
         Vector2 direction = (mousePos - transform.position).normalized;
@@ -87,18 +101,23 @@ public class PlayerAbilities : MonoBehaviour
         {
             enemy.GetComponent<IDamageable>()?.TakeDamage(basicAttackDamage);
         }
+        lastBasicAttackTime = Time.time;
     }
 
     public void UseSpecialAttack()
     {
+        if (lastSpecialAttackTime + specialAttackCooldown > Time.time)
+        {
+            return;
+        }
         Debug.Log("Special attack used!");
         Vector3 mousePos = GetMousePosition();
         Vector2 direction = (mousePos - transform.position).normalized;
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, specialAttackRange, enemyLayers);
         Debug.DrawLine(transform.position, transform.position + (Vector3)direction*specialAttackRange, Color.red, 1f);
-
+    
         hit.collider?.GetComponent<IDamageable>()?.TakeDamage(specialAttackDamage);
-
+        lastSpecialAttackTime = Time.time;
     }
 
     public void LesbianPanic()
@@ -117,15 +136,19 @@ public class PlayerAbilities : MonoBehaviour
 
     IEnumerator LesbianPanicCoroutine()
     {
-         playerController.IncreaseSpeed(panicSpeedMultiplier);
-         Color originalSpriteColor = sprite.color;
-         sprite.color = Color.yellow;
-         col.enabled = false;
-         playerController.Cleanse();
-         yield return new WaitForSeconds(panicDuration);
-         playerController.NormalSpeed();
-         sprite.color = originalSpriteColor;
-         col.enabled = true;
+        playerController.IncreaseSpeed(panicSpeedMultiplier);
+        Color originalSpriteColor = sprite.color;
+        sprite.color = Color.yellow;
+        //col.enabled = false; // Zastąpione przez Layer
+        gameObject.layer = immunityLayer;
+        playerController.Cleanse();
+        playerController.StunImmunitySwitch(true);
+        yield return new WaitForSeconds(panicDuration);
+        playerController.NormalSpeed();
+        sprite.color = originalSpriteColor;
+        //col.enabled = true;
+        gameObject.layer = defaultLayer;
+        playerController.StunImmunitySwitch(false);
     }
 
 
