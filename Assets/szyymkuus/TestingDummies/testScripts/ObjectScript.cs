@@ -12,7 +12,7 @@ public class ObjectScript : MonoBehaviour, IDamageable
     {
         currentHealth = maxHealth;
     }
-    void TakeDamage(float damage)
+    public void TakeDamage(float damage)
     {
         currentHealth -= damage;
         Debug.Log("Object took damage, current health: " + currentHealth);

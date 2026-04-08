@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2783594300361953632}
   - component: {fileID: 8015572126581151120}
   - component: {fileID: -8623020888915101707}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Succubus
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,8 +74,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1789328477
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
@@ -159,7 +159,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &8015572126581151120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175,6 +175,7 @@ MonoBehaviour:
   stats: {fileID: 11400000, guid: e8d85f9c8d6703d4ea74eb900ff882af, type: 2}
   currentHealth: 0
   rb: {fileID: 2783594300361953632}
+  playerLayerIndex: 6
 --- !u!114 &-8623020888915101707
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -189,3 +190,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 2042421123167681590, guid: 5840ebe076d0b584d831f396eaab45a9, type: 3}
   stats: {fileID: 11400000, guid: e8d85f9c8d6703d4ea74eb900ff882af, type: 2}
+  enemy: {fileID: 0}

@@ -9,16 +9,19 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] public EnemyStats stats;
     [SerializeField] public float currentHealth;
     public Rigidbody2D rb;
+    [SerializeField] int playerLayerIndex = 6;
+    [SerializeField] GameObject playerObject;
 
     private void Awake()
     {
+        playerObject = GameObject.FindGameObjectWithTag("Player");
         currentHealth = stats.health;
     }
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, float knockback = 1f)
     {
         currentHealth -= damage;
         Debug.Log("Enemy took " + damage);
-        Knockback(Vector2.up, stats.knockbackForce);
+        Knockback((Vector2)(gameObject.transform.position - playerObject.transform.position).normalized, stats.knockbackForce*knockback);
         if (currentHealth <= 0)
         {
             Die();
@@ -38,9 +41,21 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Mouse0))
+        // if (Input.GetKeyDown(KeyCode.Mouse0))
+        // {
+        //     TakeDamage(10f);
+        // }
+    }
+
+    public void DealDamage(GameObject player, float damage)
+    {
+        if (player.layer != playerLayerIndex)
         {
-            TakeDamage(10f);
+            Debug.Log("WrongLayer! player layer: " + player.layer + " , expected: " + playerLayerIndex);
+            return;
         }
+        Debug.Log("Enemy deals damage");
+        player.GetComponent<IDamageable>()?.TakeDamage(damage);
     }
 }
+

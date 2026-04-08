@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7373377490526315924}
   - component: {fileID: 2139813787713820673}
   - component: {fileID: 250685769000684190}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Maid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,8 +74,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1789328477
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0.94594824, g: 0.8537736, b: 1, a: 1}
@@ -159,7 +159,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &2139813787713820673
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175,6 +175,7 @@ MonoBehaviour:
   stats: {fileID: 11400000, guid: d333178434ee922468cacc4541627645, type: 2}
   currentHealth: 0
   rb: {fileID: 7373377490526315924}
+  playerLayerIndex: 6
 --- !u!114 &250685769000684190
 MonoBehaviour:
   m_ObjectHideFlags: 0

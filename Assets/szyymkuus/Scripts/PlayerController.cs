@@ -14,6 +14,11 @@ public class PlayerController : MonoBehaviour
     Vector2 movement;
     PlayerHealth health;
     Collider2D col;
+    Coroutine stunCoroutine;
+    Coroutine stunImmunityCoroutine;
+
+    bool isStunned = false;
+    int stunImmune = 0;
 
     void Awake()
     {
@@ -32,6 +37,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isStunned)
+        {
+            return;
+        }
         if (Input.GetKeyDown(KeyCode.R))
         {
             abilities.UseUltimate();
@@ -45,13 +54,38 @@ public class PlayerController : MonoBehaviour
             abilities.UseSpecialAttack();
         }
 
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            health.GoToHell();
+        }
 
-        health.Heal(regenRate * Time.deltaTime);
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            health.GoToMaterialPlane();
+        }
+
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            health.TakeDamage(10f);
+        }
+
+        if (Input.GetKeyDown(KeyCode.H))
+        {
+            health.Heal(10f);
+        }
+
+
+
+
 
     }
 
     void FixedUpdate()
     {
+        if (isStunned)
+        {
+            return;
+        }
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
         Vector2 movementDirection = new Vector2 (horizontal, vertical).normalized;
@@ -70,4 +104,38 @@ public class PlayerController : MonoBehaviour
         speed = basicSpeed;
     }
 
+    public void ApplyStun(float duration)
+    {
+        if (stunImmune > 0)
+        {
+            return;
+        }
+        stunCoroutine = StartCoroutine(StunCoroutine(duration));
+        Debug.Log("started coroutine " + stunCoroutine);
+    }
+    public void ApplyStunImmunity(float duration)
+    {
+        StartCoroutine(StunImmunityCoroutine(duration));
+    }
+    public void Cleanse() //Cleanse need fixing
+    {
+        Debug.Log("Cleanse!");
+        StopCoroutine(stunCoroutine);
+        isStunned = false;
+        Debug.Log("Is stunned: " + isStunned);
+    }
+    IEnumerator StunCoroutine(float duration)
+    {
+        isStunned = true;
+        yield return new WaitForSeconds(duration);
+        isStunned = false;
+        StartCoroutine(StunImmunityCoroutine());
+    }
+
+    IEnumerator StunImmunityCoroutine(float duration = 1f)
+    {
+        stunImmune++;
+        yield return new WaitForSeconds(duration);
+        stunImmune--;
+    }
 }

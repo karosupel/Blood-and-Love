@@ -1,32 +1,86 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour, IDamageable
 {
+    public event Action OnHealthChanged;
+    public event Action<bool> OnAfterlifeStateChanged;
 
     [SerializeField] float maxHealth = 100f;
     [SerializeField] float panicMaxHealth = 0.25f;
     [SerializeField] int hearts = 0;
     [SerializeField] float currentHealth;
+    [SerializeField] Vector3 hellOffset = new Vector3(-30f, 0f, 0f);
     PlayerAbilities playerAbilities;
+    bool isInAfterlife = false;
 
     public float MaxHealth => maxHealth;
 
     public float CurrentHealth => currentHealth;
+    public bool IsInAfterlife => isInAfterlife;
+    private Vector3 deathPlace;
 
 
     void Awake()
     {
         playerAbilities = GetComponent<PlayerAbilities>();
         currentHealth = maxHealth;
+        OnHealthChanged?.Invoke();
     }
 
     public void Die()
     {
-        Debug.Log("Player has died!");
-        Destroy(gameObject);
+        Debug.Log("Player has died! Fight for your life!");
+        GoToHell();
     }
+
+    public void GoToHell()
+    {
+        if (isInAfterlife)
+        {
+            return;
+        }
+        deathPlace = transform.position;
+        isInAfterlife = true;
+        OnAfterlifeStateChanged?.Invoke(isInAfterlife);
+        transform.position = transform.position + hellOffset;
+        NotifyCinemachineTeleport(hellOffset);
+        RoomManager.Instance?.SetConfinerForCurrentRoomVariant(true);
+
+    }
+    public void GoToMaterialPlane()
+    {
+        if (!isInAfterlife)
+        {
+            return;
+        }
+        currentHealth = 0.3f * maxHealth;
+        isInAfterlife = false;
+        OnAfterlifeStateChanged?.Invoke(isInAfterlife);
+        Vector3 returnDelta = deathPlace - transform.position;
+        transform.position = deathPlace;
+        NotifyCinemachineTeleport(returnDelta);
+        RoomManager.Instance?.SetConfinerForCurrentRoomVariant(false);
+        playerAbilities.UseUltimate(addHeart: false, freeUse: true);
+        OnHealthChanged?.Invoke();
+    }
+
+    void NotifyCinemachineTeleport(Vector3 delta)
+    {
+        Cinemachine.CinemachineVirtualCameraBase[] virtualCameras = FindObjectsOfType<Cinemachine.CinemachineVirtualCameraBase>();
+        for (int i = 0; i < virtualCameras.Length; i++)
+        {
+            if (virtualCameras[i] == null)
+            {
+                continue;
+            }
+
+            virtualCameras[i].OnTargetObjectWarped(transform, delta);
+        }
+    }
+
 
     public void Heal(float amount)
     {
@@ -35,21 +89,37 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         {
             currentHealth = maxHealth;
         }
+
+        OnHealthChanged?.Invoke();
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, float knockback = 1f)
     {
-        currentHealth -= damage;
-        if (currentHealth <= MaxHealth * panicMaxHealth)
+        if (!isInAfterlife)
         {
-            playerAbilities.LesbianPanic();
+            currentHealth -= damage;
+            if (currentHealth <= MaxHealth * panicMaxHealth)
+            {
+                playerAbilities.LesbianPanic();
+            }
+
+            Debug.Log("Player took damage, current health: " + currentHealth);
+            if (currentHealth <= 0)
+            {
+                currentHealth = 0f;
+                OnHealthChanged?.Invoke();
+                Die();
+                return;
+            }
+
+            OnHealthChanged?.Invoke();
+        }
+        else
+        {
+            TakeHeart();
+            //implement temporary invulnerability
         }
 
-        Debug.Log("Player took damage, current health: " + currentHealth);
-        if (currentHealth <= 0)
-        {
-            Die();
-        }
     }
 
     public void TakeHeart()
