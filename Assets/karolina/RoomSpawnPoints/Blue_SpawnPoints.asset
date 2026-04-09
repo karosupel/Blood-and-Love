@@ -16,5 +16,3 @@ MonoBehaviour:
   spawnPoints:
   - enemyPrefab: {fileID: 6860560017868925659, guid: 56b49cda01ba02a4cadf6d41666138c4, type: 3}
     position: {x: -5, y: -11, z: 0}
-  - enemyPrefab: {fileID: 6860560017868925659, guid: 56b49cda01ba02a4cadf6d41666138c4, type: 3}
-    position: {x: -5, y: -13, z: 0}

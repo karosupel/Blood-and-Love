@@ -42,7 +42,12 @@ public class EnemyStateManager : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawLine(this.transform.position, this.transform.position + (player.transform.position - this.transform.position).normalized * 3f);
+        if (currentState != null)
+        {
+            if (currentState is SuccubiAttack attack)
+            {
+                attack.DrawAttackRange(this, attack.attackAngle);
+            }
+        }
     }
 }

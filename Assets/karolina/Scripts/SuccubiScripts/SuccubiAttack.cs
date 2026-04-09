@@ -8,6 +8,8 @@ public class SuccubiAttack : EnemyBaseState
     public EnemyStats stats;
     public GameObject player;
     public Enemy enemyReference;
+
+    public float attackAngle = 45f;
     
     public override void EnterState(EnemyStateManager enemy)
     {
@@ -43,7 +45,7 @@ public class SuccubiAttack : EnemyBaseState
         yield return new WaitForSeconds(cooldown); // Attack every cooldown seconds
 
         //checks if player is still in range after cooldown, if not, switch back to chase state
-        if (Vector2.Distance(enemy.transform.position, player.transform.position) >= stats.attackRange)
+        if (!CalculateAttackRange(enemy, attackAngle))
         {
             enemy.currentState = enemy.chaseState;
             enemy.currentState.EnterState(enemy);
@@ -55,6 +57,62 @@ public class SuccubiAttack : EnemyBaseState
         }
 
         isAttacking = true; // Allow attacking again after cooldown if player is still in range
+    }
+
+    bool CalculateAttackRange(EnemyStateManager enemy, float attackAngle)
+    {
+        if (player == null)
+        {
+            return false;
+        }
+
+        Vector2 directionToPlayer = (player.transform.position - enemy.transform.position).normalized;
+
+        Vector2 forward = enemy.transform.up;
+
+        float angle = Vector2.Angle(forward, directionToPlayer);
+        float distance = Vector2.Distance(enemy.transform.position, player.transform.position);
+
+        bool inAngle = angle <= attackAngle / 2f;
+        bool inRange = distance <= stats.attackRange;
+
+        Debug.Log($"Angle: {angle}");
+
+        return inAngle && inRange;
+    }
+
+    private Vector2 lastDirection = Vector2.right;
+
+    public void DrawAttackRange(EnemyStateManager enemy, float attackAngle)
+    {
+        if (enemyReference == null) return;
+
+        Transform t = enemyReference.transform;
+
+        Gizmos.color = Color.red;
+
+        Vector2 forward = t.up;
+
+        float halfAngle = attackAngle / 2f;
+
+        Vector2 leftDir = Quaternion.Euler(0, 0, -halfAngle) * forward;
+        Vector2 rightDir = Quaternion.Euler(0, 0, halfAngle) * forward;
+
+        Gizmos.DrawLine(t.position, t.position + (Vector3)(leftDir * stats.attackRange));
+        Gizmos.DrawLine(t.position, t.position + (Vector3)(rightDir * stats.attackRange));
+
+        int segments = 20;
+        Vector3 prevPoint = t.position + (Vector3)(leftDir * stats.attackRange);
+
+        for (int i = 1; i <= segments; i++)
+        {
+            float angle = -halfAngle + (attackAngle / segments) * i;
+            Vector2 dir = Quaternion.Euler(0, 0, angle) * forward;
+            Vector3 newPoint = t.position + (Vector3)(dir * stats.attackRange);
+
+            Gizmos.DrawLine(prevPoint, newPoint);
+            prevPoint = newPoint;
+        }
     }
 
 }
