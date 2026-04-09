@@ -177,7 +177,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   basicSpeed: 5
   regenRate: 1
-  dashVelocity: 500
+  dashVelocity: 20
   dashDuration: 0.15
   dashCooldown: 4
 --- !u!114 &176212138154439505
@@ -198,6 +198,7 @@ MonoBehaviour:
   currentHealth: 0
   hellOffset: {x: -30, y: 0, z: 0}
   afterlifeInvincibilityDuration: 1
+  materialInvincibilityDuration: 0.2
 --- !u!114 &1893873750689975605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -216,14 +217,17 @@ MonoBehaviour:
   cam: {fileID: 0}
   basicAttackDamage: 10
   basicAttackRange: 1
-  basicAttackRadius: 0.5
+  basicAttackRadius: 0.7
   basicAttackCooldown: 1
+  basicAttackLifesteal: 0.1
   specialAttackDamage: 10
   specialAttackRange: 5
   specialAttackCooldown: 3
+  specialAttackLifesteal: 0.1
   ultimateDamage: 100
   ultimateRadius: 10
   ultimateMaxHealthCost: 0.7
+  ultimateLifesteal: 0.05
   panicDuration: 3
   panicCooldown: 60
   panicSpeedMultiplier: 1.5
