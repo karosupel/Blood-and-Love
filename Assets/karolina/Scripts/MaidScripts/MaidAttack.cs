@@ -18,8 +18,16 @@ public class MaidAttack : MaidBaseState
 
     public override void UpdateState(MaidStateManager enemy)
     {
-        Vector2 direction = (enemy.transform.position - player.transform.position).normalized;
-        enemy.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
+        //Vector2 direction = (enemy.transform.position - player.transform.position).normalized;
+        if(enemy.transform.position.x < player.transform.position.x)
+        {
+            enemy.transform.rotation = Quaternion.Euler(0, 0, 0);
+        }
+        else
+        {
+            enemy.transform.rotation = Quaternion.Euler(0, 180, 0);
+        }
+        //enemy.transform.rotation = Quaternion.LookRotation(Vector3.forward, Quaternion.identity.eulerAngles);
 
         if (Vector2.Distance(enemy.transform.position, player.transform.position) > enemy.stats.attackRange)
         {
