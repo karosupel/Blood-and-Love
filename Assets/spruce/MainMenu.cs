@@ -16,6 +16,13 @@ public class MainMenu : MonoBehaviour
     [Header("Buttons")]
     [SerializeField] private Button startButton;
     [SerializeField] private string startButtonName = "PlayButton";
+    [SerializeField] private Button exitButton;
+    [SerializeField] private string exitButtonName = "QuitButton";
+    [SerializeField] private Button creditsButton;
+    [SerializeField] private string creditsButtonName = "CreditsButton";
+    [SerializeField] private GameObject creditsCanvasRoot;
+    [SerializeField] private Button creditsBackButton;
+    [SerializeField] private string creditsBackButtonName = "CreditsBackButton";
 
     [Header("Scenes")]
     [SerializeField] private bool menuInSeparateScene = true;
@@ -52,12 +59,20 @@ public class MainMenu : MonoBehaviour
         }
 
         HookStartButton();
+        HookExitButton();
+        HookCreditsButton();
+        HookCreditsBackButton();
 
         ShowMenu();
     }
 
     public void ShowMenu()
     {
+        if (creditsCanvasRoot != null)
+        {
+            creditsCanvasRoot.SetActive(false);
+        }
+
         if (!menuInSeparateScene)
         {
             SetGameUiVisible(false);
@@ -164,6 +179,134 @@ public class MainMenu : MonoBehaviour
     {
         Debug.Log("MainMenu: Start button pressed.");
         StartGame();
+    }
+
+    private void HookExitButton()
+    {
+        if (exitButton == null)
+        {
+            exitButton = FindButtonOnMenu(exitButtonName);
+        }
+
+        if (exitButton == null)
+        {
+            Debug.LogWarning("MainMenu: Exit button was not found. Assign Exit Button in Inspector or rename the button to '" + exitButtonName + "'.");
+            return;
+        }
+
+        exitButton.onClick.RemoveListener(OnExitButtonPressed);
+        exitButton.onClick.AddListener(OnExitButtonPressed);
+    }
+
+    private void OnExitButtonPressed()
+    {
+        Debug.Log("MainMenu: Exit button pressed.");
+        QuitGame();
+    }
+
+    private void HookCreditsButton()
+    {
+        if (creditsButton == null)
+        {
+            creditsButton = FindButtonOnMenu(creditsButtonName);
+        }
+
+        if (creditsButton == null)
+        {
+            Debug.LogWarning("MainMenu: Credits button was not found. Assign Credits Button in Inspector or rename the button to '" + creditsButtonName + "'.");
+            return;
+        }
+
+        creditsButton.onClick.RemoveListener(OnCreditsButtonPressed);
+        creditsButton.onClick.AddListener(OnCreditsButtonPressed);
+    }
+
+    private void OnCreditsButtonPressed()
+    {
+        Debug.Log("MainMenu: Credits button pressed.");
+        ShowCreditsCanvas();
+    }
+
+    public void ShowCreditsCanvas()
+    {
+        if (menuRoot != null)
+        {
+            menuRoot.SetActive(false);
+        }
+
+        if (creditsCanvasRoot == null)
+        {
+            Canvas creditsCanvas = FindCanvasByName("CreditsCanvas");
+            if (creditsCanvas != null)
+            {
+                creditsCanvasRoot = creditsCanvas.gameObject;
+            }
+        }
+
+        if (creditsCanvasRoot == null)
+        {
+            Debug.LogWarning("MainMenu: CreditsCanvas was not found. Assign Credits Canvas Root in Inspector or name the canvas 'CreditsCanvas'.");
+            return;
+        }
+
+        EnsureParentsActive(creditsCanvasRoot.transform);
+        creditsCanvasRoot.SetActive(true);
+    }
+
+    public void ReturnToMainMenuFromCredits()
+    {
+        if (creditsCanvasRoot != null)
+        {
+            creditsCanvasRoot.SetActive(false);
+        }
+
+        ShowMenu();
+    }
+
+    private void HookCreditsBackButton()
+    {
+        if (creditsCanvasRoot == null)
+        {
+            Canvas creditsCanvas = FindCanvasByName("CreditsCanvas");
+            if (creditsCanvas != null)
+            {
+                creditsCanvasRoot = creditsCanvas.gameObject;
+            }
+        }
+
+        if (creditsCanvasRoot == null)
+        {
+            Debug.LogWarning("MainMenu: CreditsCanvas was not found for back-button hookup.");
+            return;
+        }
+
+        if (creditsBackButton == null)
+        {
+            Button[] creditButtons = creditsCanvasRoot.GetComponentsInChildren<Button>(true);
+            for (int i = 0; i < creditButtons.Length; i++)
+            {
+                if (string.Equals(creditButtons[i].name, creditsBackButtonName, System.StringComparison.OrdinalIgnoreCase))
+                {
+                    creditsBackButton = creditButtons[i];
+                    break;
+                }
+            }
+        }
+
+        if (creditsBackButton == null)
+        {
+            Debug.LogWarning("MainMenu: Credits back button was not found. Assign Credits Back Button in Inspector or rename it to '" + creditsBackButtonName + "'.");
+            return;
+        }
+
+        creditsBackButton.onClick.RemoveListener(OnCreditsBackButtonPressed);
+        creditsBackButton.onClick.AddListener(OnCreditsBackButtonPressed);
+    }
+
+    private void OnCreditsBackButtonPressed()
+    {
+        Debug.Log("MainMenu: Credits back button pressed.");
+        ReturnToMainMenuFromCredits();
     }
 
     private Button FindButtonOnMenu(string buttonName)
