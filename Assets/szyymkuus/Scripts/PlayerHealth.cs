@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour, IDamageable
 {
@@ -19,13 +20,15 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     [SerializeField] float afterlifeInvincibilityDuration = 1f;
     [SerializeField] float materialInvincibilityDuration = 0.2f;
+    [SerializeField] bool startInHellInTutorialScene = true;
+    [SerializeField] string tutorialSceneName = "Tutorial";
     bool isInAfterlife = false;
 
     public float MaxHealth => maxHealth;
 
     public float CurrentHealth => currentHealth;
     public bool IsInAfterlife => isInAfterlife;
-    public int Hearts => hearts;
+    public int Hearts => hearts = 1;
     private Vector3 deathPlace;
     bool isInvincible = false;
 
@@ -44,6 +47,19 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
+    void Start()
+    {
+        if (!startInHellInTutorialScene)
+        {
+            return;
+        }
+
+        if (SceneManager.GetActiveScene().name == tutorialSceneName)
+        {
+            GoToHell();
+        }
+    }
+
     public void Die()
     {
         Debug.Log("Player has died! Fight for your life!");
@@ -54,8 +70,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     {
         if (isInAfterlife)
         {
+            Debug.Log("Player is already in afterlife!");
             return;
         }
+        Debug.Log("Player's soul goes to afterlife!");
         deathPlace = transform.position;
         isInAfterlife = true;
         OnAfterlifeStateChanged?.Invoke(isInAfterlife);

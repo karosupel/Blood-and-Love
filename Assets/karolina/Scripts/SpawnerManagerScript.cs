@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class SpawnerManagerScript : MonoBehaviour
 {
@@ -31,12 +32,16 @@ public class SpawnerManagerScript : MonoBehaviour
 
     private Dictionary<string, System.Action> spawnActions;
 
+    
+
     public List<string> roomVisitStack = new List<string>();
     public string instanceId;
     public string roomTypeId;
 
     public bool areEnemiesDead = false;
     private bool wasInAfterlife = false;
+
+    [SerializeField] private string tutorialSceneName = "Tutorial";
 
     private void Start()
     {
@@ -116,7 +121,7 @@ public class SpawnerManagerScript : MonoBehaviour
             }
         }
 
-        if(playerHealthScript.IsInAfterlife && !EnemiesInAfterlife.Any())
+        if(playerHealthScript.IsInAfterlife && !EnemiesInAfterlife.Any() && !IsInTutorialScene())
         {
             playerHealthScript.GoToMaterialPlane();
         }
@@ -197,6 +202,11 @@ public class SpawnerManagerScript : MonoBehaviour
     public List<GameObject> GetActiveEnemiesInScene()
     {
         return ActiveEnemiesInScene;
+    }
+
+    private bool IsInTutorialScene()
+    {
+        return SceneManager.GetActiveScene().name == tutorialSceneName;
     }
 
 }

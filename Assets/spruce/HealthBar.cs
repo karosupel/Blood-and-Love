@@ -80,6 +80,11 @@ public class HealthBar : MonoBehaviour
 
     void Update()
     {
+        if (playerHealth != null)
+        {
+            HandleAfterlifeStateChanged(playerHealth.IsInAfterlife);
+        }
+
         // Smooth the liquid level toward the target
         _currentFill = Mathf.Lerp(_currentFill, _targetFill,
                                    Time.deltaTime * smoothSpeed);

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 public class RoomTransition : MonoBehaviour
 {
@@ -46,12 +47,40 @@ public class RoomTransition : MonoBehaviour
             return;
         }
 
+        string resolvedFromRoomTypeId = fromRoomTypeId;
+        PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+        if (playerHealth != null)
+        {
+            resolvedFromRoomTypeId = GetRoomVariantId(fromRoomTypeId, playerHealth.IsInAfterlife);
+        }
+
         RoomManager.Instance.RequestTransition(
             other.gameObject,
-            fromRoomTypeId,
+            resolvedFromRoomTypeId,
             direction,
             fallbackTeleportDistance
         );
+    }
+
+    string GetRoomVariantId(string roomTypeId, bool useHellVariant)
+    {
+        if (string.IsNullOrEmpty(roomTypeId))
+        {
+            return roomTypeId;
+        }
+
+        bool isHellId = roomTypeId.EndsWith("H", StringComparison.OrdinalIgnoreCase);
+        if (useHellVariant)
+        {
+            return isHellId ? roomTypeId : roomTypeId + "H";
+        }
+
+        if (!isHellId)
+        {
+            return roomTypeId;
+        }
+
+        return roomTypeId.Substring(0, roomTypeId.Length - 1);
     }
 
 }

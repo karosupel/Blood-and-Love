@@ -50,10 +50,6 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isStunned)
-        {
-            return;
-        }
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
         movementDirection = new Vector2 (horizontal, vertical).normalized;
@@ -95,6 +91,10 @@ public class PlayerController : MonoBehaviour
             dashTimer = dashDuration;
             isDashing = true;
             lastDashTime = Time.time;
+        }
+        if (isStunned)
+        {
+            return;
         }
 
 
