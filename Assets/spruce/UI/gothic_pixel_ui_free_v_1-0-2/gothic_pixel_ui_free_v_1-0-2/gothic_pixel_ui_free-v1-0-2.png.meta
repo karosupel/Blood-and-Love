@@ -285,6 +285,69 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: gothic_pixel_ui_free-v1-0-2_9
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 765
+        width: 44
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1a3ff5dbc95e68e4190ff2dc83d14788
+      internalID: -1356014012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gothic_pixel_ui_free-v1-0-2_10
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 739
+        width: 44
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 526390e9ac98dc14196a96d1e63f3bb6
+      internalID: -1442371384
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gothic_pixel_ui_free-v1-0-2_11
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 756
+        width: 32
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f3376dcac0a0f7c4ab2c00ec7802952d
+      internalID: 1637098738
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -298,6 +361,8 @@ TextureImporter:
     nameFileIdTable:
       gothic_pixel_ui_free-v1-0-2_0: -1481719803
       gothic_pixel_ui_free-v1-0-2_1: 506357402
+      gothic_pixel_ui_free-v1-0-2_10: -1442371384
+      gothic_pixel_ui_free-v1-0-2_11: 1637098738
       gothic_pixel_ui_free-v1-0-2_2: -1266465781
       gothic_pixel_ui_free-v1-0-2_3: 150675218
       gothic_pixel_ui_free-v1-0-2_4: -336420722
@@ -305,6 +370,7 @@ TextureImporter:
       gothic_pixel_ui_free-v1-0-2_6: -1284853809
       gothic_pixel_ui_free-v1-0-2_7: 1055656386
       gothic_pixel_ui_free-v1-0-2_8: 1476723967
+      gothic_pixel_ui_free-v1-0-2_9: -1356014012
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

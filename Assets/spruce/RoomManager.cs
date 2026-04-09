@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public enum RoomDirection { Up, Down, Left, Right }
 
@@ -46,9 +44,7 @@ public class RoomManager : MonoBehaviour
     [SerializeField] List<RoomConnection> connections = new List<RoomConnection>();
     [SerializeField] public List<string> roomVisitStack = new List<string>();
 
-    Canvas choiceCanvas;
-    Text promptText;
-    readonly List<Button> optionButtons = new List<Button>();
+    GameUIHandler gameUIHandler;
 
     PendingTransition pendingTransition;
     bool isChoosing;
@@ -74,13 +70,21 @@ public class RoomManager : MonoBehaviour
         }
 
         Instance = this;
-        CreateChoiceUI();
-        EnsureEventSystem();
+        gameUIHandler = FindObjectOfType<GameUIHandler>();
+        if (gameUIHandler == null)
+        {
+            Debug.LogWarning("RoomManager could not find GameUIHandler. Room choice UI will not be shown.");
+        }
     }
 
     public void RequestTransition(GameObject player, string fromRoomTypeId, RoomDirection direction, float fallbackDistance)
     {
-        if (isChoosing || player == null)
+        if (player == null)
+        {
+            return;
+        }
+
+        if (isChoosing || (gameUIHandler != null && gameUIHandler.IsChoosingRoom))
         {
             return;
         }
@@ -447,68 +451,16 @@ public class RoomManager : MonoBehaviour
 
     void ShowChoices()
     {
-        isChoosing = true;
-        TogglePlayerControls(pendingTransition.player, false);
-
-        promptText.text = "Choose next room";
-        int optionCount = pendingTransition.options.Length;
-        LayoutOptionButtons(optionCount);
-        for (int i = 0; i < optionButtons.Count; i++)
+        if (gameUIHandler == null)
         {
-            bool active = i < optionCount && pendingTransition.options[i] != null;
-            optionButtons[i].gameObject.SetActive(active);
-            if (!active)
-            {
-                continue;
-            }
-
-            int index = i;
-            Button button = optionButtons[i];
-            Image image = button.GetComponent<Image>();
-            Text buttonText = button.GetComponentInChildren<Text>();
-
-            image.color = pendingTransition.options[i].color;
-            buttonText.text = pendingTransition.options[i].optionId;
-            button.onClick.RemoveAllListeners();
-            button.onClick.AddListener(() => SelectOption(index));
-        }
-
-        choiceCanvas.gameObject.SetActive(true);
-    }
-
-    void LayoutOptionButtons(int optionCount)
-    {
-        if (optionCount <= 0)
-        {
+            Debug.LogWarning("Cannot show room choices because GameUIHandler is missing.");
             return;
         }
 
-        float width = 0.22f;
-        float spacing = 0.08f;
-        float bottom = 0.08f;
-        float top = 0.53f;
+        isChoosing = true;
+        TogglePlayerControls(pendingTransition.player, false);
 
-        float totalWidth = optionCount * width + (optionCount - 1) * spacing;
-        float startX = Mathf.Clamp01((1f - totalWidth) * 0.5f);
-
-        for (int i = 0; i < optionButtons.Count; i++)
-        {
-            RectTransform rect = optionButtons[i].GetComponent<RectTransform>();
-            if (rect == null)
-            {
-                continue;
-            }
-
-            if (i < optionCount)
-            {
-                float x = startX + i * (width + spacing);
-                rect.anchorMin = new Vector2(x, bottom);
-                rect.anchorMax = new Vector2(x + width, top);
-            }
-
-            rect.offsetMin = Vector2.zero;
-            rect.offsetMax = Vector2.zero;
-        }
+        gameUIHandler.ShowRoomChoices(pendingTransition.options, SelectOption);
     }
 
     void SelectOption(int optionIndex)
@@ -724,7 +676,11 @@ public class RoomManager : MonoBehaviour
     void CloseChoices()
     {
         isChoosing = false;
-        choiceCanvas.gameObject.SetActive(false);
+        if (gameUIHandler != null)
+        {
+            gameUIHandler.HideRoomChoices();
+        }
+
         TogglePlayerControls(pendingTransition.player, true);
     }
 
@@ -750,95 +706,4 @@ public class RoomManager : MonoBehaviour
         }
     }
 
-    void CreateChoiceUI()
-    {
-        GameObject canvasObject = new GameObject("RoomChoiceCanvas");
-        choiceCanvas = canvasObject.AddComponent<Canvas>();
-        choiceCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-        canvasObject.AddComponent<CanvasScaler>().uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        canvasObject.AddComponent<GraphicRaycaster>();
-
-        GameObject choicePanel = new GameObject("Panel");
-        choicePanel.transform.SetParent(canvasObject.transform, false);
-        Image panelImage = choicePanel.AddComponent<Image>();
-        panelImage.color = new Color(0f, 0f, 0f, 0.6f);
-
-        RectTransform panelRect = choicePanel.GetComponent<RectTransform>();
-        panelRect.anchorMin = new Vector2(0.2f, 0.35f);
-        panelRect.anchorMax = new Vector2(0.8f, 0.65f);
-        panelRect.offsetMin = Vector2.zero;
-        panelRect.offsetMax = Vector2.zero;
-
-        GameObject promptObject = CreateTextObject("Prompt", choicePanel.transform, 30, TextAnchor.UpperCenter);
-        promptText = promptObject.GetComponent<Text>();
-        RectTransform promptRect = promptObject.GetComponent<RectTransform>();
-        promptRect.anchorMin = new Vector2(0.1f, 0.6f);
-        promptRect.anchorMax = new Vector2(0.9f, 0.95f);
-        promptRect.offsetMin = Vector2.zero;
-        promptRect.offsetMax = Vector2.zero;
-
-        for (int i = 0; i < 3; i++)
-        {
-            Button button = CreateOptionButton(choicePanel.transform, i);
-            optionButtons.Add(button);
-        }
-
-        choiceCanvas.gameObject.SetActive(false);
-    }
-
-    Button CreateOptionButton(Transform parent, int index)
-    {
-        GameObject buttonObject = new GameObject("Option" + (index + 1));
-        buttonObject.transform.SetParent(parent, false);
-
-        Image image = buttonObject.AddComponent<Image>();
-        image.color = Color.white;
-
-        Button button = buttonObject.AddComponent<Button>();
-        RectTransform rect = buttonObject.GetComponent<RectTransform>();
-
-        float width = 0.22f;
-        float xPadding = 0.08f;
-        float startX = xPadding + index * (width + xPadding);
-
-        rect.anchorMin = new Vector2(startX, 0.08f);
-        rect.anchorMax = new Vector2(startX + width, 0.53f);
-        rect.offsetMin = Vector2.zero;
-        rect.offsetMax = Vector2.zero;
-
-        GameObject textObject = CreateTextObject("Label", buttonObject.transform, 20, TextAnchor.MiddleCenter);
-        RectTransform textRect = textObject.GetComponent<RectTransform>();
-        textRect.anchorMin = Vector2.zero;
-        textRect.anchorMax = Vector2.one;
-        textRect.offsetMin = Vector2.zero;
-        textRect.offsetMax = Vector2.zero;
-
-        return button;
-    }
-
-    GameObject CreateTextObject(string name, Transform parent, int fontSize, TextAnchor alignment)
-    {
-        GameObject textObject = new GameObject(name);
-        textObject.transform.SetParent(parent, false);
-
-        Text text = textObject.AddComponent<Text>();
-        text.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-        text.fontSize = fontSize;
-        text.alignment = alignment;
-        text.color = Color.white;
-
-        return textObject;
-    }
-
-    void EnsureEventSystem()
-    {
-        if (FindObjectOfType<EventSystem>() != null)
-        {
-            return;
-        }
-
-        GameObject eventSystemObject = new GameObject("EventSystem");
-        eventSystemObject.AddComponent<EventSystem>();
-        eventSystemObject.AddComponent<StandaloneInputModule>();
-    }
 }

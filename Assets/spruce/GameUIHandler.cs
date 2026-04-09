@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
@@ -12,6 +14,14 @@ public class GameUIHandler : MonoBehaviour
     [SerializeField] private GameObject borders;
     [SerializeField] private Color materialPlaneBorderColor = new Color32(14, 25, 17, 255);
     [SerializeField] private Color afterlifeBorderColor = Color.red;
+
+    [Header("Room Choice UI")]
+    [SerializeField] private GameObject roomChoiceRoot;
+    [SerializeField] private TMP_Text roomChoicePromptText;
+    [SerializeField] private List<Button> roomChoiceButtons = new List<Button>();
+    private Action<int> onRoomChoiceSelected;
+
+    public bool IsChoosingRoom { get; private set; }
 
     private void Awake()
     {
@@ -32,6 +42,105 @@ public class GameUIHandler : MonoBehaviour
             heartText = afterlifeHeart.GetComponentInChildren<TMP_Text>(true);
         }
 
+        if (roomChoiceRoot != null)
+        {
+            roomChoiceRoot.SetActive(false);
+        }
+
+    }
+
+    public void ShowRoomChoices(RoomChoiceOption[] options, Action<int> onSelected)
+    {
+        if (options == null || options.Length == 0)
+        {
+            return;
+        }
+
+        if (roomChoiceRoot == null)
+        {
+            Debug.LogWarning("Room choice UI root is not assigned on GameUIHandler.");
+            return;
+        }
+
+        if (roomChoiceButtons == null || roomChoiceButtons.Count == 0)
+        {
+            Debug.LogWarning("Room choice buttons are not assigned on GameUIHandler.");
+            return;
+        }
+
+        IsChoosingRoom = true;
+        onRoomChoiceSelected = onSelected;
+
+        if (roomChoicePromptText != null)
+        {
+            roomChoicePromptText.text = "Choose next room";
+        }
+
+        int shownOptionCount = Mathf.Min(options.Length, roomChoiceButtons.Count);
+        if (options.Length > roomChoiceButtons.Count)
+        {
+            Debug.LogWarning("Not enough room choice buttons assigned for all options. Extra options will be hidden.");
+        }
+
+        for (int i = 0; i < roomChoiceButtons.Count; i++)
+        {
+            Button button = roomChoiceButtons[i];
+            if (button == null)
+            {
+                continue;
+            }
+
+            bool active = i < shownOptionCount && options[i] != null;
+            button.gameObject.SetActive(active);
+            if (!active)
+            {
+                continue;
+            }
+
+            int index = i;
+            Image image = button.GetComponent<Image>();
+            TMP_Text buttonTmpText = button.GetComponentInChildren<TMP_Text>(true);
+            Text buttonLegacyText = buttonTmpText == null ? button.GetComponentInChildren<Text>(true) : null;
+
+            if (image != null)
+            {
+                image.color = options[i].color;
+            }
+
+            if (buttonTmpText != null)
+            {
+                buttonTmpText.text = options[i].optionId;
+            }
+            else if (buttonLegacyText != null)
+            {
+                buttonLegacyText.text = options[i].optionId;
+            }
+
+            button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(() => HandleRoomChoiceSelected(index));
+        }
+
+        roomChoiceRoot.SetActive(true);
+    }
+
+    public void HideRoomChoices()
+    {
+        IsChoosingRoom = false;
+        onRoomChoiceSelected = null;
+
+        if (roomChoiceRoot != null)
+        {
+            roomChoiceRoot.SetActive(false);
+        }
+    }
+
+    private void HandleRoomChoiceSelected(int optionIndex)
+    {
+        Action<int> callback = onRoomChoiceSelected;
+        if (callback != null)
+        {
+            callback(optionIndex);
+        }
     }
 
     private void OnEnable()
@@ -59,7 +168,7 @@ public class GameUIHandler : MonoBehaviour
     }
 
 
-    void HealthChanged()
+    private void HealthChanged()
     {
         if (PlayerHealth == null)
         {
@@ -74,7 +183,7 @@ public class GameUIHandler : MonoBehaviour
         }
     }
 
-    void AfterlifeStateChanged(bool isInAfterlife)
+    private void AfterlifeStateChanged(bool isInAfterlife)
     {
         SetUiVisible(healthBarRoot, !isInAfterlife);
 
@@ -93,7 +202,7 @@ public class GameUIHandler : MonoBehaviour
         }
     }
 
-    void HeartsChanged(int hearts)
+    private void HeartsChanged(int hearts)
     {
         if (heartText != null)
         {
@@ -101,7 +210,7 @@ public class GameUIHandler : MonoBehaviour
         }
     }
 
-    void SetBorderChildrenColor(Color targetColor)
+    private void SetBorderChildrenColor(Color targetColor)
     {
         if (borders == null)
         {
@@ -126,7 +235,7 @@ public class GameUIHandler : MonoBehaviour
         }
     }
 
-    void SetUiVisible(GameObject target, bool isVisible)
+    private void SetUiVisible(GameObject target, bool isVisible)
     {
         if (target != null && target.activeSelf != isVisible)
         {
