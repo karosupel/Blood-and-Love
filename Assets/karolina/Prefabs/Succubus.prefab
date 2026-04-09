@@ -176,6 +176,10 @@ MonoBehaviour:
   currentHealth: 0
   rb: {fileID: 2783594300361953632}
   playerLayerIndex: 6
+  playerObject: {fileID: 0}
+  isInAfterlife: 0
+  materialPlaneColor: {r: 1, g: 0, b: 0, a: 1}
+  afterlifeColor: {r: 0.5660378, g: 0, b: 0, a: 1}
 --- !u!114 &-8623020888915101707
 MonoBehaviour:
   m_ObjectHideFlags: 0

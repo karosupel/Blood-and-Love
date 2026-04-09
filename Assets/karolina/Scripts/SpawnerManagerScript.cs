@@ -146,6 +146,7 @@ public class SpawnerManagerScript : MonoBehaviour
         foreach (var spawn in data.spawnPoints)
         {
             var enemy = Instantiate(spawn.enemyPrefab, spawn.position, Quaternion.identity);
+            enemy.GetComponent<SpriteRenderer>().color = enemy.GetComponent<Enemy>().materialPlaneColor;
             ActiveEnemiesInScene.Add(enemy);
         }
     }
@@ -183,6 +184,7 @@ public class SpawnerManagerScript : MonoBehaviour
         foreach (var spawn in data.spawnPoints)
         {
             var enemy = Instantiate(spawn.enemyPrefab, spawn.position + offset, Quaternion.identity);
+            enemy.GetComponent<SpriteRenderer>().color = enemy.GetComponent<Enemy>().afterlifeColor;
             EnemiesInAfterlife.Add(enemy);
         }
     }
