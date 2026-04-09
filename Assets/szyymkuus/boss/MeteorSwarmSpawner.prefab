@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2779448093812679011
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 945852895317891609}
+  - component: {fileID: 6465122026816308247}
+  - component: {fileID: 4764443725403462747}
+  - component: {fileID: 2411141774982508718}
+  m_Layer: 3
+  m_Name: MeteorSwarmSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &945852895317891609
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2779448093812679011}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.37, y: 13.45, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6465122026816308247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2779448093812679011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d2141eea6927ab3449e5ad4fba2eb796, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  farMeteors: 10
+  meteorStormFarInnerRadius: 2
+  meteorStormFarOuterRadius: 5
+  closeMeteors: 10
+  meteorStormCloseInnerRadius: 0
+  meteorStormCloseOuterRadius: 2
+  meteorStormDuration: 5
+  meteorPrefab: {fileID: 3506804384546487156, guid: 9616d141fdef7284b835e8d1684578b7, type: 3}
+  projectileStormDuration: 5
+  projectileStormRateOfFire: 10
+  projectileStormProjectileSpeed: 6
+  projectileStormOrigins: 6
+  rotationSpeed: -30
+  projectilePrefab: {fileID: 1555893908944981107, guid: 4125bc34ad8dc28439d152ba89498767, type: 3}
+  minimumCrystalDistance: 2
+  maximumCrystalDistance: 5
+  minimumCrystals: 3
+  maximumCrystals: 6
+  barrierCrysalPrefab: {fileID: 6492046923172771251, guid: 0ddcdddaf9ae95c4393dff42779cd67b, type: 3}
+  barrierPrefab: {fileID: 1082306054906996894, guid: a79eec3718b7a0847aa2b6809ffe16d8, type: 3}
+  player: {fileID: 0}
+--- !u!114 &4764443725403462747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2779448093812679011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06cb6873704c5bd4abd01567925ee671, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!58 &2411141774982508718
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2779448093812679011}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.1

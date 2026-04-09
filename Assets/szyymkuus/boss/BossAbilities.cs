@@ -4,6 +4,43 @@ using UnityEngine;
 
 public class BossAbilities : MonoBehaviour
 {
+
+    [Header("Meteor Storm")]
+    [SerializeField] int farMeteors = 10;
+    [SerializeField] float meteorStormFarInnerRadius = 2;
+    [SerializeField] float meteorStormFarOuterRadius = 5;
+    [SerializeField] int closeMeteors = 5;
+    [SerializeField] float meteorStormCloseInnerRadius = 0;
+    [SerializeField] float meteorStormCloseOuterRadius = 2;
+    [SerializeField] float meteorStormDuration = 5f;
+    [SerializeField] GameObject meteorPrefab;
+    [Header("Projectile Storm")]
+    [SerializeField] float projectileStormDuration = 5f;
+    [SerializeField] float projectileStormRateOfFire = 0.5f;
+    [SerializeField] float projectileStormProjectileSpeed = 5f;
+    [SerializeField] int projectileStormOrigins = 4;
+    [SerializeField] float rotationSpeed = 30f;
+    [SerializeField] GameObject projectilePrefab;
+    [Header("Barrier")]
+    [SerializeField] float minimumCrystalDistance = 2f;
+    [SerializeField] float maximumCrystalDistance = 5f;
+    [SerializeField] int minimumCrystals = 3;
+    [SerializeField] int maximumCrystals = 6;
+    [SerializeField] GameObject barrierCrysalPrefab;
+    [SerializeField] GameObject barrierPrefab;
+    [Header("Other")]
+    [SerializeField] GameObject player;
+
+    int activeCrystalCount;
+    GameObject activeBarrierInstance;
+    Collider2D bossCollider;
+
+
+    void Awake()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
+        bossCollider = GetComponent<Collider2D>();
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -14,5 +51,172 @@ public class BossAbilities : MonoBehaviour
     void Update()
     {
         
+    }
+    
+    #region Meteor Storm
+    public void MeteorStorm()
+    {
+        StartCoroutine(MeteorStormCoroutine(farMeteors, meteorStormDuration, meteorStormFarInnerRadius, meteorStormFarOuterRadius));
+        StartCoroutine(MeteorStormCoroutine(closeMeteors, meteorStormDuration, meteorStormCloseInnerRadius, meteorStormCloseOuterRadius));
+    }
+
+
+    IEnumerator MeteorStormCoroutine(int meteors, float time, float innerRadius, float outerRadius)
+    {
+        float interval = time / meteors;
+        for (int i = 0; i < meteors; i++)
+        {
+            Vector2 randomOffset = Random.insideUnitCircle.normalized * Random.Range(innerRadius, outerRadius);
+            Vector3 randomPos = new Vector3(player.transform.position.x + randomOffset.x, player.transform.position.y + randomOffset.y, 0);
+            Instantiate(meteorPrefab, randomPos, Quaternion.identity);
+            yield return new WaitForSeconds(interval);
+        }
+    }
+    #endregion
+
+    #region Projectile Storm
+    public void ProjectileStorm()
+    {
+        StartCoroutine(ProjectileStormCoroutine());
+    }
+    IEnumerator ProjectileStormCoroutine()
+    {
+        float elapsed = 0f;
+        float fireInterval = 1f / projectileStormRateOfFire; // Convert projectiles/second to interval
+        float nextFireTime = 0f;
+        float radius = 1f;
+        float currentRotation = 0f;
+
+        while (elapsed < projectileStormDuration)
+        {
+            elapsed += Time.deltaTime;
+
+            // Rotate the origins around the boss
+            currentRotation += rotationSpeed * Time.deltaTime;
+
+            // Fire projectiles at intervals
+            if (elapsed >= nextFireTime)
+            {
+                for (int i = 0; i < projectileStormOrigins; i++)
+                {
+                    float angle = currentRotation + (i * 360f / projectileStormOrigins);
+                    Vector3 originPos = transform.position + Quaternion.Euler(0, 0, angle) * Vector3.up * radius;
+
+                    // Calculate direction outward from center
+                    Vector3 direction = (originPos - transform.position).normalized;
+
+                    GameObject projectile = Instantiate(projectilePrefab, originPos, Quaternion.identity);
+                    Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+                    if (rb != null)
+                    {
+                        rb.velocity = direction * projectileStormProjectileSpeed;
+                    }
+                }
+                nextFireTime += fireInterval;
+            }
+            yield return null;
+        }
+    }
+    #endregion
+
+    #region Barrier
+    public void Barrier()
+    {
+        activeCrystalCount = 0;
+
+        if (activeBarrierInstance != null)
+        {
+            Destroy(activeBarrierInstance);
+            activeBarrierInstance = null;
+        }
+
+        int crystalsToSpawn = Random.Range(minimumCrystals, maximumCrystals + 1);
+        for (int i = 0; i < crystalsToSpawn; i++)
+        {
+            Vector3 spawnPos;
+            int maxAttempts = 10;
+            int attempts = 0;
+            bool validPosition = false;
+
+            while (!validPosition && attempts < maxAttempts)
+            {
+                Vector2 randomDirection = Random.insideUnitCircle.normalized;
+                float randomDistance = Random.Range(minimumCrystalDistance, maximumCrystalDistance);
+                spawnPos = transform.position + new Vector3(randomDirection.x, randomDirection.y, 0) * randomDistance;
+
+                // Raycast to check if position is inside room (only check for walls)
+                // Only detect walls/boundaries, ignore all other colliders
+                int layerMask = LayerMask.GetMask("Default"); // Change to "Wall" or "Boundary" layer name if available
+                RaycastHit2D[] hits = Physics2D.LinecastAll(transform.position, spawnPos, layerMask);
+                bool wallHit = false;
+                foreach (var hit in hits){
+                    if (hit.collider.name == "Walls" || hit.collider.name == "WallsH")
+                    {
+                        wallHit = true;
+                        Debug.DrawLine(transform.position, spawnPos, Color.red, 2f);
+                        Debug.Log($"Invalid crystal position at {spawnPos}, hit {hit.collider.name}");
+                        break;
+                    }
+                }
+                if(!wallHit)
+                {
+                    validPosition = true;
+                    GameObject crystalObject = Instantiate(barrierCrysalPrefab, spawnPos, Quaternion.identity);
+                    BarrierCrystal crystal = crystalObject.GetComponent<BarrierCrystal>();
+                    if (crystal != null)
+                    {
+                        crystal.Initialize(this);
+                        activeCrystalCount++;
+                    }
+                    Debug.DrawLine(transform.position, spawnPos, Color.green, 2f);
+                    Debug.Log($"Spawned barrier crystal at {spawnPos}");
+                }
+
+                attempts++;
+            }
+        }
+
+        if (activeCrystalCount > 0)
+        {
+            Debug.Log("Instantiated barrier at position: " + transform.position);
+            // Disable boss collider when barrier is made
+            if (bossCollider != null)
+            {
+                bossCollider.enabled = false;
+            }
+
+            activeBarrierInstance = Instantiate(barrierPrefab, transform.position, Quaternion.identity);
+        }
+    }
+
+    public void OnCrystalDestroyed()
+    {
+        activeCrystalCount--;
+        if (activeCrystalCount <= 0)
+        {
+            if (activeBarrierInstance != null)
+            {
+                Destroy(activeBarrierInstance);
+                activeBarrierInstance = null;
+            }
+
+            if (bossCollider != null)
+            {
+                bossCollider.enabled = true;
+            }
+
+            activeCrystalCount = 0;
+        }
+    }
+    #endregion
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(player.transform.position, meteorStormFarInnerRadius);
+        Gizmos.DrawWireSphere(player.transform.position, meteorStormFarOuterRadius);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(player.transform.position, meteorStormCloseInnerRadius);
+        Gizmos.DrawWireSphere(player.transform.position, meteorStormCloseOuterRadius);
     }
 }
