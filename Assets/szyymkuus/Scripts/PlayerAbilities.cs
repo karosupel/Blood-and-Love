@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerAbilities : MonoBehaviour
@@ -39,12 +41,17 @@ public class PlayerAbilities : MonoBehaviour
     [Header("Layers")]
     [SerializeField] int defaultLayer = 6;
     [SerializeField] int immunityLayer = 7;
+
+
+
+    CinemachineImpulseSource impulseSource;
     void Awake()
     {
         health = GetComponent<PlayerHealth>();
         playerController = GetComponent<PlayerController>();
         sprite = GetComponent<SpriteRenderer>();
         col = GetComponent<BoxCollider2D>();
+        impulseSource = GetComponent<CinemachineImpulseSource>();
     }
     void Start()
     {
@@ -69,6 +76,7 @@ public class PlayerAbilities : MonoBehaviour
                 health.TakeDamage(health.MaxHealth * ultimateMaxHealthCost);
             }
             Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, ultimateRadius, enemyLayers);
+            impulseSource.GenerateImpulse(force: 1f);
 
             foreach (var enemy in hits)
             {
@@ -99,6 +107,11 @@ public class PlayerAbilities : MonoBehaviour
         Vector2 direction = (mousePos - transform.position).normalized;
         Vector2 attackPoint = (Vector2)transform.position + direction * basicAttackRange;
         Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint, basicAttackRadius, enemyLayers);
+        Debug.Log(hits);
+        if (hits.Length > 0)
+        {
+            impulseSource.GenerateImpulse(force: 0.1f);
+        }
 
         foreach (var enemy in hits)
         {
@@ -120,6 +133,10 @@ public class PlayerAbilities : MonoBehaviour
         Debug.DrawLine(transform.position, transform.position + (Vector3)direction*specialAttackRange, Color.red, 1f);
     
         hit.collider?.GetComponent<IDamageable>()?.TakeDamage(specialAttackDamage);
+        if (hit.collider != null)
+        {
+            impulseSource.GenerateImpulse(0.3f);
+        }
         lastSpecialAttackTime = Time.time;
     }
 

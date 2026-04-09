@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cinemachine;
 using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour, IDamageable
@@ -28,12 +29,18 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     bool isInvincible = false;
 
 
+    // CAMERA
+
+    CinemachineImpulseSource impulseSource;
+
+
     void Awake()
     {
         playerAbilities = GetComponent<PlayerAbilities>();
         currentHealth = maxHealth;
         OnHealthChanged?.Invoke();
         OnHeartsChanged?.Invoke(hearts);
+        impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     public void Die()
@@ -54,6 +61,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         transform.position = transform.position + hellOffset;
         NotifyCinemachineTeleport(hellOffset);
         RoomManager.Instance?.SetConfinerForCurrentRoomVariant(true);
+        StartCoroutine(InvincibilityCoroutine(afterlifeInvincibilityDuration));
 
     }
     public void GoToMaterialPlane()
@@ -105,6 +113,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         {
             return;
         }
+        impulseSource.GenerateImpulse();
         if (!isInAfterlife)
         {
             currentHealth -= damage;
