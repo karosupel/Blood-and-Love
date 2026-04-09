@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class SpawnerManagerScript : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class SpawnerManagerScript : MonoBehaviour
     //variables:
     [SerializeField] public List<GameObject> ActiveEnemiesInScene = new List<GameObject>();
 
+    [SerializeField] public List<GameObject> EnemiesInAfterlife = new List<GameObject>();
+
     [SerializeField] public List<string> VisitedRooms = new List<string>();
 
     private HashSet<string> visitedRooms = new HashSet<string>();
@@ -33,6 +36,7 @@ public class SpawnerManagerScript : MonoBehaviour
     public string roomTypeId;
 
     public bool areEnemiesDead = false;
+    private bool wasInAfterlife = false;
 
     private void Start()
     {
@@ -43,7 +47,7 @@ public class SpawnerManagerScript : MonoBehaviour
         spawnActions = new Dictionary<string, System.Action>()
         {
             { "Blue_", () => SpawnEnemies() },
-            { "Red_", SpawnEnemyRed },
+            { "Red_", () => SpawnEnemies() },
             { "Green_", SpawnEnemyGreen },
             { "Boss_", SpawnEnemyBoss },
             { "Yellow_", SpawnEnemyYellow }
@@ -87,6 +91,36 @@ public class SpawnerManagerScript : MonoBehaviour
             }
         }
 
+        foreach (GameObject enemy in EnemiesInAfterlife)
+        {
+            if (enemy == null)
+            {
+                EnemiesInAfterlife.Remove(enemy);
+                break;
+            }
+        }
+
+        // Sprawdzenie czy IsInAfterlife się zmieniła
+        if(playerHealthScript.IsInAfterlife != wasInAfterlife)
+        {
+            wasInAfterlife = playerHealthScript.IsInAfterlife;
+            
+            if(playerHealthScript.IsInAfterlife)
+            {
+                HideEnemies();
+                SpawnEnemiesInHell();
+            }
+            else
+            {
+                ShowEnemies();
+            }
+        }
+
+        if(playerHealthScript.IsInAfterlife && !EnemiesInAfterlife.Any())
+        {
+            playerHealthScript.GoToMaterialPlane();
+        }
+
     }
 
     public bool roomVisitStackChanges()
@@ -112,6 +146,7 @@ public class SpawnerManagerScript : MonoBehaviour
         foreach (var spawn in data.spawnPoints)
         {
             var enemy = Instantiate(spawn.enemyPrefab, spawn.position, Quaternion.identity);
+            enemy.GetComponent<SpriteRenderer>().color = enemy.GetComponent<Enemy>().materialPlaneColor;
             ActiveEnemiesInScene.Add(enemy);
         }
     }
@@ -140,7 +175,19 @@ public class SpawnerManagerScript : MonoBehaviour
         }
     }
 
-    //public void SpawnEnemiesInHell(string roomTypeId, )
+    public void SpawnEnemiesInHell()
+    {
+        Vector3 offset = new Vector3(-30f, 0, 0);
+        if (!spawnDataDict.TryGetValue(roomTypeId, out var data))
+            return;
+
+        foreach (var spawn in data.spawnPoints)
+        {
+            var enemy = Instantiate(spawn.enemyPrefab, spawn.position + offset, Quaternion.identity);
+            enemy.GetComponent<SpriteRenderer>().color = enemy.GetComponent<Enemy>().afterlifeColor;
+            EnemiesInAfterlife.Add(enemy);
+        }
+    }
 
     public void SpawnEnemyRed() { }
     public void SpawnEnemyGreen() { }
