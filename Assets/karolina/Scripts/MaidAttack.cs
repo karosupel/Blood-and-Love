@@ -7,6 +7,8 @@ public class MaidAttack : MaidBaseState
     public GameObject player;
     public EnemyStats stats;
 
+    public bool isAttacking = false;
+
     public override void EnterState(MaidStateManager enemy)
     {
         Debug.Log("Entered Attack State");
@@ -24,5 +26,18 @@ public class MaidAttack : MaidBaseState
             enemy.currentState = enemy.chaseState;
             enemy.currentState.EnterState(enemy);
         }
+
+        if (Vector2.Distance(enemy.transform.position, player.transform.position) < enemy.stats.attackRange && !isAttacking)
+        {
+            isAttacking = true;
+            enemy.StartCoroutine(AttackPlayer());
+        }
+    }
+
+    public IEnumerator AttackPlayer()
+    {
+        player.GetComponent<PlayerHealth>().TakeDamage(stats.damage);
+        yield return new WaitForSeconds(stats.attackCooldown);
+        isAttacking = false;
     }
 }

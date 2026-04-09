@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]  public float basicSpeed = 5f;
     float speed;
-    [SerializeField] float regenRate = 1;
+    //[SerializeField] float regenRate = 1;
     Rigidbody2D rb;
     PlayerAbilities abilities;
     Vector2 movement;

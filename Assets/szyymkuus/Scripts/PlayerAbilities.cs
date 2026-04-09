@@ -16,17 +16,21 @@ public class PlayerAbilities : MonoBehaviour
     [SerializeField] float basicAttackRange = 1f;
     [SerializeField] float basicAttackRadius = 0.5f;
     [SerializeField] float basicAttackCooldown = 1f;
+    [SerializeField] float basicAttackLifesteal = 0.1f;
 
 
     [Header("Special Attack")]
     [SerializeField] float specialAttackDamage = 10f;
     [SerializeField] float specialAttackRange = 5f;
     [SerializeField] float specialAttackCooldown = 3f;
+    [SerializeField] float specialAttackLifesteal = 0.1f;
 
     [Header("Ultimate")]
     [SerializeField] float ultimateDamage = 100f;
     [SerializeField] float ultimateRadius = 10f;
     [SerializeField] float ultimateMaxHealthCost = 0.7f;
+    [SerializeField] float ultimateLifesteal = 0.1f;
+
     [Header("Lesbian Panic")]
     [SerializeField] public float panicDuration = 3f;
     [SerializeField] public float panicCooldown = 60f;
@@ -80,8 +84,9 @@ public class PlayerAbilities : MonoBehaviour
 
             foreach (var enemy in hits)
             {
-                Debug.Log("enemy detected: " + enemy);
+                //Debug.Log("enemy detected: " + enemy);
                 enemy.GetComponent<IDamageable>()?.TakeDamage(ultimateDamage, 5f);
+                health.Heal(ultimateDamage*ultimateLifesteal);
             }
             if (addHeart)
             {
@@ -114,6 +119,7 @@ public class PlayerAbilities : MonoBehaviour
         foreach (var enemy in hits)
         {
             enemy.GetComponent<IDamageable>()?.TakeDamage(basicAttackDamage);
+            health.Heal(basicAttackDamage*basicAttackLifesteal);
         }
         lastBasicAttackTime = Time.time;
     }
@@ -129,10 +135,11 @@ public class PlayerAbilities : MonoBehaviour
         Vector2 direction = (mousePos - transform.position).normalized;
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, specialAttackRange, enemyLayers);
         Debug.DrawLine(transform.position, transform.position + (Vector3)direction*specialAttackRange, Color.red, 1f);
-    
-        hit.collider?.GetComponent<IDamageable>()?.TakeDamage(specialAttackDamage);
-        if (hit.collider != null)
+        IDamageable damageable = hit.collider?.GetComponent<IDamageable>();
+        if (damageable != null)
         {
+            damageable.TakeDamage(specialAttackDamage);
+            health.Heal(specialAttackDamage*specialAttackLifesteal);
             impulseSource.GenerateImpulse(0.3f);
         }
         lastSpecialAttackTime = Time.time;

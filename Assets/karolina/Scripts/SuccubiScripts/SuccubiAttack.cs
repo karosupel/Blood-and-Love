@@ -35,12 +35,9 @@ public class SuccubiAttack : EnemyBaseState
         {
             yield break; // Exit if player reference is lost
         }
-        Debug.Log("Attacking player...");
+        
         enemyReference.DealDamage(player, stats.damage);
         player.GetComponent<IConditionable>()?.Stun(1f); //hard fixed stun
-
-        PlayerTestScript playerScript = player.GetComponent<PlayerTestScript>();
-        //playerScript.StartCoroutine(playerScript.Stun(0.8f)); // Stun player for 0.5 seconds
 
         yield return new WaitForSeconds(cooldown); // Attack every cooldown seconds
 
