@@ -4,15 +4,12 @@ using UnityEngine;
 
 public class BossController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    [SerializeField] float meteorStormCooldownMinimum;
+    [SerializeField] float meteorStormCooldownMaximum;
+    [SerializeField] float projectileStormCooldownMinimum;
+    [SerializeField] float projectileStormCooldownMaximum;
+    [SerializeField] float barrierCooldownMinimum;
+    [SerializeField] float barrierCooldownMaximum;
+
 }

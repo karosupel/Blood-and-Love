@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossHealth : MonoBehaviour
+public class BossHealth : MonoBehaviour, IDamageable
 {
 
     [SerializeField] public float maxHealth = 200f;
@@ -14,16 +14,22 @@ public class BossHealth : MonoBehaviour
     void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+        currentHealth = maxHealth;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void TakeDamage(float damage, float knockback)
     {
-        
+        currentHealth -= damage;
+        Debug.Log("Boss HP: " + currentHealth + "/" + maxHealth);
+        if (currentHealth <= damage)
+        {
+            Die();
+        }
+    }
+
+    public void Die()
+    {
+        Debug.Log("Boss died! Remember to add second phase");
+        Destroy(gameObject);
     }
 }
