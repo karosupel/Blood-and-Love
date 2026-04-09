@@ -13278,6 +13278,7 @@ MonoBehaviour:
   player: {fileID: 1272289906}
   playerHealthScript: {fileID: 1272289915}
   ActiveEnemiesInScene: []
+  EnemiesInAfterlife: []
   VisitedRooms: []
   spawnDataList:
   - {fileID: 11400000, guid: 7117b8fec8f088e4e8614b0ae55652a1, type: 2}
@@ -60492,6 +60493,18 @@ PrefabInstance:
       propertyPath: cam
       value: 
       objectReference: {fileID: 1196204657}
+    - target: {fileID: 1893873750689975605, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
+      propertyPath: basicAttackRadius
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1893873750689975605, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
+      propertyPath: specialAttackDamage
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 1893873750689975605, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
+      propertyPath: specialAttackCooldown
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7136555675231522108, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.05
@@ -60535,6 +60548,10 @@ PrefabInstance:
     - target: {fileID: 7360516727195389011, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
       propertyPath: m_Name
       value: playerph
+      objectReference: {fileID: 0}
+    - target: {fileID: 8961522646229606399, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
+      propertyPath: dashVelocity
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
