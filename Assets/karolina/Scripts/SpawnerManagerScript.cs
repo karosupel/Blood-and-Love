@@ -78,6 +78,15 @@ public class SpawnerManagerScript : MonoBehaviour
             }
         }
 
+        foreach (GameObject enemy in ActiveEnemiesInScene)
+        {
+            if (enemy == null)
+            {
+                ActiveEnemiesInScene.Remove(enemy);
+                break;
+            }
+        }
+
     }
 
     public bool roomVisitStackChanges()
@@ -137,5 +146,10 @@ public class SpawnerManagerScript : MonoBehaviour
     public void SpawnEnemyGreen() { }
     public void SpawnEnemyBoss() { }
     public void SpawnEnemyYellow() { }
+
+    public List<GameObject> GetActiveEnemiesInScene()
+    {
+        return ActiveEnemiesInScene;
+    }
 
 }
