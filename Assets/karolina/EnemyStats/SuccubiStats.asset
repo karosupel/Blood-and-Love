@@ -15,7 +15,7 @@ MonoBehaviour:
   health: 100
   damage: 10
   moveSpeed: 2
-  knockbackForce: 6
+  knockbackForce: 15
   attackRange: 3
   attackCooldown: 2
   retreatRange: 2
