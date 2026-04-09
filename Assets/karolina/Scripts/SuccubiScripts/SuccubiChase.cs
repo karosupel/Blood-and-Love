@@ -15,6 +15,10 @@ public class SuccubiChase : EnemyBaseState
 
     public override void UpdateState(EnemyStateManager enemy)
     {
+        if(player == null)
+        {
+            return;
+        }
         Vector2 direction = (player.transform.position - enemy.transform.position).normalized;
         enemy.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
         enemy.transform.position += (Vector3)direction * Time.deltaTime * stats.moveSpeed;

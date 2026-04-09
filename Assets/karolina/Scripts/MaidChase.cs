@@ -16,6 +16,10 @@ public class MaidChase : MaidBaseState
 
     public override void UpdateState(MaidStateManager enemy)
     {
+        if(player == null)
+        {
+            return;
+        }
         Vector2 direction = (player.transform.position - enemy.transform.position).normalized;
         enemy.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
         enemy.transform.position += (Vector3)direction * Time.deltaTime * enemy.stats.moveSpeed;
