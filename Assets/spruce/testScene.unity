@@ -13281,6 +13281,7 @@ MonoBehaviour:
   VisitedRooms: []
   spawnDataList:
   - {fileID: 11400000, guid: 7117b8fec8f088e4e8614b0ae55652a1, type: 2}
+  - {fileID: 11400000, guid: d569d70bd7581614283d7bafab0d06ed, type: 2}
   roomVisitStack: []
   instanceId: 
   roomTypeId: 
@@ -13294,7 +13295,7 @@ Transform:
   m_GameObject: {fileID: 1214330362}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.99, y: -10.54, z: -9.936876}
+  m_LocalPosition: {x: -4.99, y: -9.73, z: -9.936876}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

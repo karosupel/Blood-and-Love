@@ -18,6 +18,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     PlayerAbilities playerAbilities;
 
     [SerializeField] float afterlifeInvincibilityDuration = 1f;
+    [SerializeField] float materialInvincibilityDuration = 0.2f;
     bool isInAfterlife = false;
 
     public float MaxHealth => maxHealth;
@@ -74,6 +75,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         isInAfterlife = false;
         OnAfterlifeStateChanged?.Invoke(isInAfterlife);
         Vector3 returnDelta = deathPlace - transform.position;
+        StartCoroutine(InvincibilityCoroutine(materialInvincibilityDuration));
         transform.position = deathPlace;
         NotifyCinemachineTeleport(returnDelta);
         RoomManager.Instance?.SetConfinerForCurrentRoomVariant(false);
@@ -113,7 +115,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         {
             return;
         }
-        impulseSource.GenerateImpulse();
+        impulseSource.GenerateImpulse(force: 1f);
         if (!isInAfterlife)
         {
             currentHealth -= damage;

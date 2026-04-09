@@ -12,6 +12,11 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] int playerLayerIndex = 6;
     [SerializeField] GameObject playerObject;
 
+    [SerializeField] public bool isInAfterlife = false;
+
+    [SerializeField] public Color materialPlaneColor;
+    [SerializeField] public Color afterlifeColor;
+
     private void Awake()
     {
         playerObject = GameObject.FindGameObjectWithTag("Player");
@@ -56,6 +61,19 @@ public class Enemy : MonoBehaviour, IDamageable
         }
         Debug.Log("Enemy deals damage");
         player.GetComponent<IDamageable>()?.TakeDamage(damage);
+    }
+
+    public bool ChangeColor(bool isInAfterlife)
+    {
+        if (isInAfterlife)
+        {
+            GetComponent<SpriteRenderer>().color = Color.black;
+        }
+        else
+        {
+            GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        return isInAfterlife;
     }
 }
 
