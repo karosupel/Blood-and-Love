@@ -6,6 +6,13 @@ using UnityEngine.UI;
 
 public class GameUIHandler : MonoBehaviour
 {
+    [Serializable]
+    private class RoomTypeButtonBinding
+    {
+        public string roomTypeId;
+        public Button button;
+    }
+
     public PlayerHealth PlayerHealth;
     [SerializeField] private TMP_Text healthText;
     [SerializeField] private GameObject healthBarRoot;
@@ -18,7 +25,11 @@ public class GameUIHandler : MonoBehaviour
     [Header("Room Choice UI")]
     [SerializeField] private GameObject roomChoiceRoot;
     [SerializeField] private TMP_Text roomChoicePromptText;
-    [SerializeField] private List<Button> roomChoiceButtons = new List<Button>();
+    [SerializeField] private List<RoomTypeButtonBinding> roomTypeButtons = new List<RoomTypeButtonBinding>();
+    [SerializeField] private string bossRoomTypeId = "Boss";
+    [SerializeField] private Vector3 leftButtonPosition = new Vector3(-500f, -40f, 0f);
+    [SerializeField] private Vector3 middleButtonPosition = new Vector3(0f, -40f, 0f);
+    [SerializeField] private Vector3 rightButtonPosition = new Vector3(500f, -40f, 0f);
     private Action<int> onRoomChoiceSelected;
 
     public bool IsChoosingRoom { get; private set; }
@@ -62,9 +73,9 @@ public class GameUIHandler : MonoBehaviour
             return;
         }
 
-        if (roomChoiceButtons == null || roomChoiceButtons.Count == 0)
+        if (roomTypeButtons == null || roomTypeButtons.Count == 0)
         {
-            Debug.LogWarning("Room choice buttons are not assigned on GameUIHandler.");
+            Debug.LogWarning("Room type button bindings are not assigned on GameUIHandler.");
             return;
         }
 
@@ -73,31 +84,47 @@ public class GameUIHandler : MonoBehaviour
 
         if (roomChoicePromptText != null)
         {
-            roomChoicePromptText.text = "Choose next room";
+            roomChoicePromptText.text = "Choose your next room";
         }
 
-        int shownOptionCount = Mathf.Min(options.Length, roomChoiceButtons.Count);
-        if (options.Length > roomChoiceButtons.Count)
+        const int maxVisibleChoices = 3;
+        int shownOptionCount = Mathf.Min(options.Length, maxVisibleChoices);
+        if (options.Length > maxVisibleChoices)
         {
-            Debug.LogWarning("Not enough room choice buttons assigned for all options. Extra options will be hidden.");
+            Debug.LogWarning("Room choice UI supports up to 3 visible choices. Extra options will be hidden.");
         }
 
-        for (int i = 0; i < roomChoiceButtons.Count; i++)
+        HideAllRoomTypeButtons();
+
+        for (int i = 0; i < shownOptionCount; i++)
         {
-            Button button = roomChoiceButtons[i];
-            if (button == null)
+            RoomChoiceOption option = options[i];
+            if (option == null)
             {
                 continue;
             }
 
-            bool active = i < shownOptionCount && options[i] != null;
-            button.gameObject.SetActive(active);
-            if (!active)
+            Button button = FindButtonForRoomType(option.optionId);
+            if (button == null)
             {
+                Debug.LogWarning("No UI button mapped for room type: " + option.optionId);
                 continue;
             }
 
             int index = i;
+            button.gameObject.SetActive(true);
+
+            // Force boss choice to center when it is the only visible choice.
+            int slotIndex = i;
+            if (shownOptionCount == 1 &&
+                !string.IsNullOrEmpty(option.optionId) &&
+                string.Equals(option.optionId, bossRoomTypeId, StringComparison.OrdinalIgnoreCase))
+            {
+                slotIndex = 1;
+            }
+
+            SetButtonSlotPosition(button, slotIndex);
+
             Image image = button.GetComponent<Image>();
             TMP_Text buttonTmpText = button.GetComponentInChildren<TMP_Text>(true);
             Text buttonLegacyText = buttonTmpText == null ? button.GetComponentInChildren<Text>(true) : null;
@@ -121,6 +148,65 @@ public class GameUIHandler : MonoBehaviour
         }
 
         roomChoiceRoot.SetActive(true);
+    }
+
+    private void HideAllRoomTypeButtons()
+    {
+        for (int i = 0; i < roomTypeButtons.Count; i++)
+        {
+            RoomTypeButtonBinding binding = roomTypeButtons[i];
+            if (binding == null || binding.button == null)
+            {
+                continue;
+            }
+
+            binding.button.gameObject.SetActive(false);
+        }
+    }
+
+    private Button FindButtonForRoomType(string roomTypeId)
+    {
+        for (int i = 0; i < roomTypeButtons.Count; i++)
+        {
+            RoomTypeButtonBinding binding = roomTypeButtons[i];
+            if (binding == null || binding.button == null || string.IsNullOrEmpty(binding.roomTypeId))
+            {
+                continue;
+            }
+
+            if (string.Equals(binding.roomTypeId, roomTypeId, StringComparison.OrdinalIgnoreCase))
+            {
+                return binding.button;
+            }
+        }
+
+        return null;
+    }
+
+    private void SetButtonSlotPosition(Button button, int slotIndex)
+    {
+        if (button == null)
+        {
+            return;
+        }
+
+        RectTransform rect = button.GetComponent<RectTransform>();
+        if (rect == null)
+        {
+            return;
+        }
+
+        Vector3 targetPosition = middleButtonPosition;
+        if (slotIndex == 0)
+        {
+            targetPosition = leftButtonPosition;
+        }
+        else if (slotIndex == 2)
+        {
+            targetPosition = rightButtonPosition;
+        }
+
+        rect.anchoredPosition3D = targetPosition;
     }
 
     public void HideRoomChoices()
