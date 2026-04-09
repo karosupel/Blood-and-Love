@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class RoomTransition : MonoBehaviour
 {
@@ -20,15 +21,16 @@ public class RoomTransition : MonoBehaviour
 
     private void Update()
     {
-        /*ActiveEnemiesInScene = spawnerManagerScript.ActiveEnemiesInScene;
-        if(ActiveEnemiesInScene.Count==0)
+        ActiveEnemiesInScene = spawnerManagerScript.GetActiveEnemiesInScene();
+
+        if (!ActiveEnemiesInScene.Any())
         {
-            gameObject.SetActive(true);
+            gameObject.GetComponent<BoxCollider2D>().enabled = true;
         }
-        else
+        else if (ActiveEnemiesInScene.Any())
         {
-            gameObject.SetActive(false);
-        }*/
+            gameObject.GetComponent<BoxCollider2D>().enabled = false;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -51,4 +53,5 @@ public class RoomTransition : MonoBehaviour
             fallbackTeleportDistance
         );
     }
+
 }
