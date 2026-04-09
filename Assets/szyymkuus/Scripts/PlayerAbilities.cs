@@ -103,9 +103,7 @@ public class PlayerAbilities : MonoBehaviour
             return;
         }
         Debug.Log("Basic attack used!");
-        Vector3 mousePos = GetMousePosition();
-        Vector2 direction = (mousePos - transform.position).normalized;
-        Vector2 attackPoint = (Vector2)transform.position + direction * basicAttackRange;
+        Vector2 attackPoint = GetAttackPoint();
         Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint, basicAttackRadius, enemyLayers);
         Debug.Log(hits);
         if (hits.Length > 0)
@@ -178,6 +176,27 @@ public class PlayerAbilities : MonoBehaviour
         Vector2 direction = (mousePos - transform.position).normalized; //doesn't display well, but fuck it - attacks are working
         Gizmos.DrawLine(transform.position, transform.position + (Vector3)direction*specialAttackRange);
     }*/
+
+    void OnDrawGizmos()
+    {
+        // basic attack
+        Gizmos.color = Color.red;
+        Vector2 attackPoint = GetAttackPoint();
+        Gizmos.DrawWireSphere(attackPoint, basicAttackRadius);
+        //special attack
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, ultimateRadius);
+        Gizmos.color = Color.blue;
+        Vector3 mousePos = GetMousePosition();
+        Vector2 direction = (mousePos - transform.position).normalized; //doesn't display well, but fuck it - attacks are working
+        Gizmos.DrawLine(transform.position, transform.position + (Vector3)direction*specialAttackRange);
+    }
+    Vector2 GetAttackPoint()
+    {
+        Vector3 mousePos = GetMousePosition();
+        Vector2 direction = (mousePos - transform.position).normalized;
+        return (Vector2)transform.position + direction * basicAttackRange;
+    }
 
 
 }
