@@ -9053,6 +9053,8 @@ MonoBehaviour:
   fromRoomTypeId: Enter
   direction: 0
   fallbackTeleportDistance: 3
+  spawnerManager: {fileID: 0}
+  ActiveEnemiesInScene: []
 --- !u!61 &407466385
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -40291,6 +40293,8 @@ MonoBehaviour:
   fromRoomTypeId: Enter
   direction: 1
   fallbackTeleportDistance: 3
+  spawnerManager: {fileID: 0}
+  ActiveEnemiesInScene: []
 --- !u!61 &549633906
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -43827,6 +43831,8 @@ MonoBehaviour:
   fromRoomTypeId: Enter
   direction: 1
   fallbackTeleportDistance: 3
+  spawnerManager: {fileID: 0}
+  ActiveEnemiesInScene: []
 --- !u!61 &709264995
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -44191,6 +44197,8 @@ MonoBehaviour:
   fromRoomTypeId: Enter
   direction: 1
   fallbackTeleportDistance: 3
+  spawnerManager: {fileID: 0}
+  ActiveEnemiesInScene: []
 --- !u!61 &981846113
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -44284,6 +44292,8 @@ MonoBehaviour:
   fromRoomTypeId: Enter
   direction: 0
   fallbackTeleportDistance: 3
+  spawnerManager: {fileID: 0}
+  ActiveEnemiesInScene: []
 --- !u!61 &1043708882
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -44427,6 +44437,7 @@ GameObject:
   - component: {fileID: 1196204657}
   - component: {fileID: 1196204656}
   - component: {fileID: 1196204659}
+  - component: {fileID: 1196204660}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -44542,6 +44553,28 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1196204660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1196204655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c11265b855408d42af33d62691f5194, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ChannelMask: 1
+  m_Gain: 1
+  m_Use2DDistance: 0
+  m_UseLocalSpace: 1
+  m_ReactionSettings:
+    m_SecondaryNoise: {fileID: 0}
+    m_AmplitudeGain: 1
+    m_FrequencyGain: 1
+    m_Duration: 1
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &1219552625
 GameObject:
   m_ObjectHideFlags: 0
@@ -44590,6 +44623,8 @@ MonoBehaviour:
   fromRoomTypeId: Enter
   direction: 0
   fallbackTeleportDistance: 3
+  spawnerManager: {fileID: 0}
+  ActiveEnemiesInScene: []
 --- !u!61 &1219552628
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -44683,6 +44718,8 @@ MonoBehaviour:
   fromRoomTypeId: Enter
   direction: 0
   fallbackTeleportDistance: 3
+  spawnerManager: {fileID: 0}
+  ActiveEnemiesInScene: []
 --- !u!61 &1259271808
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -44904,6 +44941,7 @@ MonoBehaviour:
   enemyLayers:
     serializedVersion: 2
     m_Bits: 0
+  cam: {fileID: 0}
   basicAttackDamage: 10
   basicAttackRange: 1
   basicAttackRadius: 0.5
@@ -44936,6 +44974,7 @@ MonoBehaviour:
   hearts: 0
   currentHealth: 0
   hellOffset: {x: -30, y: 0, z: 0}
+  afterlifeInvincibilityDuration: 1
 --- !u!114 &1272289916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -44950,6 +44989,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   basicSpeed: 5
   regenRate: 1
+  dashVelocity: 500
+  dashDuration: 0.15
+  dashCooldown: 4
 --- !u!1 &1417365697
 GameObject:
   m_ObjectHideFlags: 0
@@ -53480,6 +53522,8 @@ MonoBehaviour:
   fromRoomTypeId: Enter
   direction: 1
   fallbackTeleportDistance: 3
+  spawnerManager: {fileID: 0}
+  ActiveEnemiesInScene: []
 --- !u!61 &1542101511
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -53887,6 +53931,8 @@ MonoBehaviour:
   fromRoomTypeId: Boss
   direction: 1
   fallbackTeleportDistance: 3
+  spawnerManager: {fileID: 0}
+  ActiveEnemiesInScene: []
 --- !u!61 &1892699248
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -57586,6 +57632,8 @@ MonoBehaviour:
   fromRoomTypeId: Enter
   direction: 0
   fallbackTeleportDistance: 3
+  spawnerManager: {fileID: 0}
+  ActiveEnemiesInScene: []
 --- !u!61 &2020093352
 BoxCollider2D:
   m_ObjectHideFlags: 0
