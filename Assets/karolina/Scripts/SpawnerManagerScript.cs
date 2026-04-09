@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class SpawnerManagerScript : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class SpawnerManagerScript : MonoBehaviour
 
     //variables:
     [SerializeField] public List<GameObject> ActiveEnemiesInScene = new List<GameObject>();
+
+    [SerializeField] public List<GameObject> EnemiesInAfterlife = new List<GameObject>();
 
     [SerializeField] public List<string> VisitedRooms = new List<string>();
 
@@ -88,6 +91,15 @@ public class SpawnerManagerScript : MonoBehaviour
             }
         }
 
+        foreach (GameObject enemy in EnemiesInAfterlife)
+        {
+            if (enemy == null)
+            {
+                EnemiesInAfterlife.Remove(enemy);
+                break;
+            }
+        }
+
         // Sprawdzenie czy IsInAfterlife się zmieniła
         if(playerHealthScript.IsInAfterlife != wasInAfterlife)
         {
@@ -102,6 +114,11 @@ public class SpawnerManagerScript : MonoBehaviour
             {
                 ShowEnemies();
             }
+        }
+
+        if(playerHealthScript.IsInAfterlife && !EnemiesInAfterlife.Any())
+        {
+            playerHealthScript.GoToMaterialPlane();
         }
 
     }
@@ -166,7 +183,7 @@ public class SpawnerManagerScript : MonoBehaviour
         foreach (var spawn in data.spawnPoints)
         {
             var enemy = Instantiate(spawn.enemyPrefab, spawn.position + offset, Quaternion.identity);
-            ActiveEnemiesInScene.Add(enemy);
+            EnemiesInAfterlife.Add(enemy);
         }
     }
 
