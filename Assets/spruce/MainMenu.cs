@@ -10,8 +10,17 @@ public class MainMenu : MonoBehaviour
     [Header("Menu Setup")]
     [SerializeField] private bool createMenuAtRuntime = false;
     [SerializeField] private GameObject menuRoot;
+    [SerializeField] private GameObject gameUiRoot;
     [SerializeField] private string targetCanvasName = "MainMenuCanvas";
-    [SerializeField] private string firstLevelSceneName = "";
+
+    [Header("Buttons")]
+    [SerializeField] private Button startButton;
+    [SerializeField] private string startButtonName = "PlayButton";
+
+    [Header("Scenes")]
+    [SerializeField] private bool menuInSeparateScene = true;
+    [SerializeField] private string firstStageSceneName = "";
+    [SerializeField] private int firstStageBuildIndex = 1;
     [SerializeField] private bool pauseGameWhileOpen = true;
 
     private float _originalTimeScale = 1f;
@@ -20,6 +29,8 @@ public class MainMenu : MonoBehaviour
 
     void Start()
     {
+        EnsureEventSystemExists();
+
         if (menuRoot == null)
         {
             Canvas existingCanvas = FindCanvasByName(targetCanvasName);
@@ -40,11 +51,18 @@ public class MainMenu : MonoBehaviour
             return;
         }
 
+        HookStartButton();
+
         ShowMenu();
     }
 
     public void ShowMenu()
     {
+        if (!menuInSeparateScene)
+        {
+            SetGameUiVisible(false);
+        }
+
         if (menuRoot != null)
         {
             EnsureParentsActive(menuRoot.transform);
@@ -54,6 +72,12 @@ public class MainMenu : MonoBehaviour
             if (canvas != null)
             {
                 canvas.enabled = true;
+
+                GraphicRaycaster raycaster = canvas.GetComponent<GraphicRaycaster>();
+                if (raycaster != null)
+                {
+                    raycaster.enabled = true;
+                }
             }
 
             CanvasGroup canvasGroup = menuRoot.GetComponent<CanvasGroup>();
@@ -77,19 +101,101 @@ public class MainMenu : MonoBehaviour
 
     public void StartGame()
     {
+        if (!menuInSeparateScene)
+        {
+            HideMenu();
+            SetGameUiVisible(true);
+        }
+
         if (pauseGameWhileOpen)
         {
             Time.timeScale = _originalTimeScale <= 0f ? 1f : _originalTimeScale;
         }
 
         string sceneToLoad = ResolveSceneToLoad();
-        if (string.IsNullOrWhiteSpace(sceneToLoad))
+        if (!string.IsNullOrWhiteSpace(sceneToLoad))
         {
-            Debug.LogWarning("MainMenu: No scene configured to load. Set First Level Scene Name or add scenes to Build Settings.");
+            SceneManager.LoadScene(sceneToLoad);
             return;
         }
 
-        SceneManager.LoadScene(sceneToLoad);
+        int fallbackBuildIndex = ResolveSceneBuildIndexToLoad();
+        if (fallbackBuildIndex >= 0)
+        {
+            SceneManager.LoadScene(fallbackBuildIndex);
+            return;
+        }
+
+        if (SceneManager.sceneCountInBuildSettings == 0)
+        {
+            Debug.LogWarning("MainMenu: No scenes in Build Settings. Add your menu and first stage scenes to Build Settings.");
+            return;
+        }
+
+        Debug.LogWarning("MainMenu: Could not resolve first stage. Set First Stage Scene Name or First Stage Build Index.");
+    }
+
+    public void HideMenu()
+    {
+        if (menuRoot != null)
+        {
+            menuRoot.SetActive(false);
+        }
+    }
+
+    private void HookStartButton()
+    {
+        if (startButton == null)
+        {
+            startButton = FindButtonOnMenu(startButtonName);
+        }
+
+        if (startButton == null)
+        {
+            Debug.LogWarning("MainMenu: Start button was not found. Assign Start Button in Inspector or rename the button to '" + startButtonName + "'.");
+            return;
+        }
+
+        startButton.onClick.RemoveListener(OnStartButtonPressed);
+        startButton.onClick.AddListener(OnStartButtonPressed);
+    }
+
+    private void OnStartButtonPressed()
+    {
+        Debug.Log("MainMenu: Start button pressed.");
+        StartGame();
+    }
+
+    private Button FindButtonOnMenu(string buttonName)
+    {
+        if (menuRoot == null)
+        {
+            return null;
+        }
+
+        Button[] buttons = menuRoot.GetComponentsInChildren<Button>(true);
+        if (buttons == null || buttons.Length == 0)
+        {
+            return null;
+        }
+
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            if (string.Equals(buttons[i].name, buttonName, System.StringComparison.OrdinalIgnoreCase))
+            {
+                return buttons[i];
+            }
+        }
+
+        return buttons[0];
+    }
+
+    private void SetGameUiVisible(bool isVisible)
+    {
+        if (gameUiRoot != null)
+        {
+            gameUiRoot.SetActive(isVisible);
+        }
     }
 
     public void QuitGame()
@@ -103,9 +209,14 @@ public class MainMenu : MonoBehaviour
 
     private string ResolveSceneToLoad()
     {
-        if (!string.IsNullOrWhiteSpace(firstLevelSceneName))
+        if (!string.IsNullOrWhiteSpace(firstStageSceneName))
         {
-            return firstLevelSceneName;
+            if (Application.CanStreamedLevelBeLoaded(firstStageSceneName))
+            {
+                return firstStageSceneName;
+            }
+
+            Debug.LogWarning("MainMenu: First Stage Scene Name '" + firstStageSceneName + "' is not loadable from Build Settings.");
         }
 
         int sceneCount = SceneManager.sceneCountInBuildSettings;
@@ -127,6 +238,33 @@ public class MainMenu : MonoBehaviour
         }
 
         return string.Empty;
+    }
+
+    private int ResolveSceneBuildIndexToLoad()
+    {
+        int sceneCount = SceneManager.sceneCountInBuildSettings;
+        if (sceneCount == 0)
+        {
+            return -1;
+        }
+
+        if (firstStageBuildIndex >= 0 && firstStageBuildIndex < sceneCount)
+        {
+            return firstStageBuildIndex;
+        }
+
+        int currentIndex = SceneManager.GetActiveScene().buildIndex;
+        if (sceneCount > 1)
+        {
+            if (currentIndex == 0)
+            {
+                return 1;
+            }
+
+            return 0;
+        }
+
+        return -1;
     }
 
     private Canvas FindCanvasByName(string canvasName)

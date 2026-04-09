@@ -20,7 +20,7 @@ public class SuccubiAttack : EnemyBaseState
 
     public override void UpdateState(EnemyStateManager enemy)
     {
-        if (isAttacking)
+        if (isAttacking && player != null)
         {
             isAttacking = false; // Prevent multiple coroutines from starting
             enemy.StartCoroutine(AttackCoroutine(enemy, stats.attackCooldown));
@@ -29,6 +29,10 @@ public class SuccubiAttack : EnemyBaseState
 
     public IEnumerator AttackCoroutine(EnemyStateManager enemy, float cooldown)
     {
+        if (player == null)
+        {
+            yield break; // Exit if player reference is lost
+        }
         Debug.Log("Attacking player...");
         enemyReference.DealDamage(player, stats.damage);
         player.GetComponent<IConditionable>()?.Stun(1f); //hard fixed stun

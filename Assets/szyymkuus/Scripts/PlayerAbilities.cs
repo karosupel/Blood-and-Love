@@ -44,14 +44,14 @@ public class PlayerAbilities : MonoBehaviour
 
 
 
-    CinemachineImpulseSource impulseSource;
+    //CinemachineImpulseSource impulseSource;
     void Awake()
     {
         health = GetComponent<PlayerHealth>();
         playerController = GetComponent<PlayerController>();
         sprite = GetComponent<SpriteRenderer>();
         col = GetComponent<BoxCollider2D>();
-        impulseSource = GetComponent<CinemachineImpulseSource>();
+        //impulseSource = GetComponent<CinemachineImpulseSource>();
     }
     void Start()
     {
@@ -76,7 +76,7 @@ public class PlayerAbilities : MonoBehaviour
                 health.TakeDamage(health.MaxHealth * ultimateMaxHealthCost);
             }
             Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, ultimateRadius, enemyLayers);
-            impulseSource.GenerateImpulse(force: 1f);
+            //impulseSource.GenerateImpulse(force: 1f);
 
             foreach (var enemy in hits)
             {
@@ -110,7 +110,7 @@ public class PlayerAbilities : MonoBehaviour
         Debug.Log(hits);
         if (hits.Length > 0)
         {
-            impulseSource.GenerateImpulse(force: 0.1f);
+            //impulseSource.GenerateImpulse(force: 0.1f);
         }
 
         foreach (var enemy in hits)
@@ -135,7 +135,7 @@ public class PlayerAbilities : MonoBehaviour
         hit.collider?.GetComponent<IDamageable>()?.TakeDamage(specialAttackDamage);
         if (hit.collider != null)
         {
-            impulseSource.GenerateImpulse(0.3f);
+            //impulseSource.GenerateImpulse(0.3f);
         }
         lastSpecialAttackTime = Time.time;
     }
