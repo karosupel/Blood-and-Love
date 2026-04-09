@@ -47466,7 +47466,7 @@ GameObject:
   - component: {fileID: 1272289916}
   - component: {fileID: 1272289915}
   - component: {fileID: 1272289914}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: playerph
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -47715,7 +47715,7 @@ MonoBehaviour:
   ActiveEnemiesInScene: []
   VisitedRooms: []
   spawnDataList:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 7117b8fec8f088e4e8614b0ae55652a1, type: 2}
   roomVisitStack: []
   instanceId: 
   roomTypeId: 

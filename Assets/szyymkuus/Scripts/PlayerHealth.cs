@@ -31,7 +31,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     // CAMERA
 
-    CinemachineImpulseSource impulseSource;
+    //CinemachineImpulseSource impulseSource;
 
 
     void Awake()
@@ -40,7 +40,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         currentHealth = maxHealth;
         OnHealthChanged?.Invoke();
         OnHeartsChanged?.Invoke(hearts);
-        impulseSource = GetComponent<CinemachineImpulseSource>();
+        //impulseSource = GetComponent<CinemachineImpulseSource>();
     }
 
     public void Die()
@@ -113,7 +113,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         {
             return;
         }
-        impulseSource.GenerateImpulse();
+//        impulseSource.GenerateImpulse();
         if (!isInAfterlife)
         {
             currentHealth -= damage;

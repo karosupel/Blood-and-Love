@@ -146,13 +146,19 @@ public class PlayerController : MonoBehaviour
     {
         StartCoroutine(StunImmunityCoroutine(duration));
     }
-    public void Cleanse() //Cleanse need fixing
+public void Cleanse() //swierk tu był naprawiać sry za grzebanie u ciebie uwu
+{
+    Debug.Log("Cleanse!");
+
+    if (stunCoroutine != null)
     {
-        Debug.Log("Cleanse!");
         StopCoroutine(stunCoroutine);
-        isStunned = false;
-        Debug.Log("Is stunned: " + isStunned);
+        stunCoroutine = null;
     }
+
+    isStunned = false;
+    Debug.Log("Is stunned: " + isStunned);
+}
     IEnumerator StunCoroutine(float duration)
     {
         isStunned = true;
