@@ -33,12 +33,14 @@ public class BossAbilities : MonoBehaviour
 
     int activeCrystalCount;
     GameObject activeBarrierInstance;
+    BossController bossController;
     Collider2D bossCollider;
 
 
     void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+        bossController = GetComponent<BossController>();
         bossCollider = GetComponent<Collider2D>();
     }
     // Start is called before the first frame update
@@ -54,10 +56,11 @@ public class BossAbilities : MonoBehaviour
     }
     
     #region Meteor Storm
-    public void MeteorStorm()
+    public float MeteorStorm()
     {
         StartCoroutine(MeteorStormCoroutine(farMeteors, meteorStormDuration, meteorStormFarInnerRadius, meteorStormFarOuterRadius));
         StartCoroutine(MeteorStormCoroutine(closeMeteors, meteorStormDuration, meteorStormCloseInnerRadius, meteorStormCloseOuterRadius));
+        return meteorStormDuration;
     }
 
 
@@ -70,14 +73,16 @@ public class BossAbilities : MonoBehaviour
             Vector3 randomPos = new Vector3(player.transform.position.x + randomOffset.x, player.transform.position.y + randomOffset.y, 0);
             Instantiate(meteorPrefab, randomPos, Quaternion.identity);
             yield return new WaitForSeconds(interval);
+            bossController.SetMeteorStormTimer(Time.time);
         }
     }
     #endregion
 
     #region Projectile Storm
-    public void ProjectileStorm()
+    public float ProjectileStorm()
     {
         StartCoroutine(ProjectileStormCoroutine());
+        return projectileStormDuration;
     }
     IEnumerator ProjectileStormCoroutine()
     {
@@ -116,6 +121,8 @@ public class BossAbilities : MonoBehaviour
             }
             yield return null;
         }
+        Debug.Log($"Projectile Storm Elapsed Time: {elapsed}");
+        bossController.SetProjectileStormTimer(Time.time);
     }
     #endregion
 
@@ -206,6 +213,7 @@ public class BossAbilities : MonoBehaviour
             }
 
             activeCrystalCount = 0;
+            bossController.SetBarrierTimer(Time.time);
         }
     }
     #endregion
