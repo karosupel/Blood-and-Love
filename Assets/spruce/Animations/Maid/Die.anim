@@ -39,7 +39,7 @@ AnimationClip:
     - time: 0.73333335
       value: {fileID: 1979174593, guid: e671da9af5d11b14dab8bb7ebdff599f, type: 3}
     - time: 0.81666666
-      value: {fileID: 327866044, guid: e671da9af5d11b14dab8bb7ebdff599f, type: 3}
+      value: {fileID: 730996787, guid: e671da9af5d11b14dab8bb7ebdff599f, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -71,7 +71,7 @@ AnimationClip:
     - {fileID: -403201091, guid: e671da9af5d11b14dab8bb7ebdff599f, type: 3}
     - {fileID: -474585601, guid: e671da9af5d11b14dab8bb7ebdff599f, type: 3}
     - {fileID: 1979174593, guid: e671da9af5d11b14dab8bb7ebdff599f, type: 3}
-    - {fileID: 327866044, guid: e671da9af5d11b14dab8bb7ebdff599f, type: 3}
+    - {fileID: 730996787, guid: e671da9af5d11b14dab8bb7ebdff599f, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
@@ -96,4 +96,11 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-  m_Events: []
+  m_Events:
+  - time: 0.81666666
+    functionName: DestroyEnemy
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0

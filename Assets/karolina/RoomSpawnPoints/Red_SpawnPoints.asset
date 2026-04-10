@@ -15,10 +15,14 @@ MonoBehaviour:
   roomTypeId: Red_
   spawnPoints:
   - enemyPrefab: {fileID: 272378486287725452, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
+    enemyHellPrefab: {fileID: 272378486287725452, guid: 20d9f6396634d554a83de064194783e6, type: 3}
     position: {x: -5, y: 2, z: 0}
   - enemyPrefab: {fileID: 272378486287725452, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
+    enemyHellPrefab: {fileID: 272378486287725452, guid: 20d9f6396634d554a83de064194783e6, type: 3}
     position: {x: -3, y: 2, z: 0}
   - enemyPrefab: {fileID: 272378486287725452, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
+    enemyHellPrefab: {fileID: 272378486287725452, guid: 20d9f6396634d554a83de064194783e6, type: 3}
     position: {x: -5, y: 2, z: 0}
   - enemyPrefab: {fileID: 272378486287725452, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
+    enemyHellPrefab: {fileID: 272378486287725452, guid: 20d9f6396634d554a83de064194783e6, type: 3}
     position: {x: -7, y: 2, z: 0}

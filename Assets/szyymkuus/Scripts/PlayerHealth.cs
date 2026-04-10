@@ -41,6 +41,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     bool isDashing = false;
     [SerializeField] float cameraShakeCooldown = 0.5f;
     float lastImpulse = 0;
+    bool isPanicked = false;
 
     // CAMERA
 
@@ -138,7 +139,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     public void TakeDamage(float damage, float knockback = 1f)
     {
-        if (isInvincible)
+        if (isInvincible || isPanicked)
         {
             return;
         }
@@ -159,7 +160,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         if (!isInAfterlife)
         {
             currentHealth -= damage;
-            if (currentHealth <= MaxHealth * panicMaxHealth)
+            if (currentHealth <= MaxHealth * panicMaxHealth && currentHealth > 0)
             {
                 playerAbilities.LesbianPanic();
             }
@@ -218,5 +219,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public void SetDashing(bool dashing)
     {
         isDashing = dashing;
+    }
+
+    public void SetPanicked(bool panicked)
+    {
+        isPanicked = panicked;
     }
 }

@@ -12,10 +12,11 @@ public class MaidStateManager : MonoBehaviour
 
     public GameObject player;
     public EnemyStats stats;
+    Enemy enemy;
 
      void Awake()
     {
-        Enemy enemy = GetComponent<Enemy>();
+        enemy = GetComponent<Enemy>();
         player = GameObject.FindGameObjectWithTag("Player");
         animator = GetComponent<Animator>();
     }
@@ -28,6 +29,10 @@ public class MaidStateManager : MonoBehaviour
 
     public void Update()
     {
+        if (enemy.IsDead())
+        {
+            return;
+        }
         currentState.UpdateState(this);
     }
 

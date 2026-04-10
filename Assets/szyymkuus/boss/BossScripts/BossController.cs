@@ -47,9 +47,9 @@ public class BossController : MonoBehaviour
 
     void Update()
     {
-        RandomizeBarrier();
-        RandomizeMeteorStorm();
-        RandomizeProjectileStorm();
+        //RandomizeBarrier();
+        //RandomizeMeteorStorm();
+        //RandomizeProjectileStorm();
         
     }
 
