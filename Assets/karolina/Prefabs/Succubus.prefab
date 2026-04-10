@@ -195,3 +195,4 @@ MonoBehaviour:
   player: {fileID: 2042421123167681590, guid: 5840ebe076d0b584d831f396eaab45a9, type: 3}
   stats: {fileID: 11400000, guid: e8d85f9c8d6703d4ea74eb900ff882af, type: 2}
   enemy: {fileID: 0}
+  offsetTime: 0.8

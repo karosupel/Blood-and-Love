@@ -10,6 +10,13 @@ public class SuccubiAttack : EnemyBaseState
     public Enemy enemyReference;
 
     public float attackAngle = 45f;
+
+    public Collider2D[] overlaping_whip_results = new Collider2D[100];
+
+    private ContactFilter2D interactFilter;
+    
+    private bool showAttackRange = false;
+    private float attackRangeTimer;
     
     public override void EnterState(EnemyStateManager enemy)
     {
@@ -18,10 +25,23 @@ public class SuccubiAttack : EnemyBaseState
         player = enemy.player;
         stats = enemy.stats;
         enemyReference = enemy.enemy;
+        LayerMask mask = LayerMask.GetMask("WhipLayer");
+		interactFilter.SetLayerMask(mask);
+        interactFilter.useTriggers = true;
     }
 
     public override void UpdateState(EnemyStateManager enemy)
     {
+        // Zmniejszaj timer dla range preview
+        if (showAttackRange)
+        {
+            attackRangeTimer -= Time.deltaTime;
+            if (attackRangeTimer <= 0)
+            {
+                showAttackRange = false;
+            }
+        }
+        
         if (isAttacking && player != null)
         {
             isAttacking = false; // Prevent multiple coroutines from starting
@@ -33,16 +53,30 @@ public class SuccubiAttack : EnemyBaseState
     {
         if (player == null)
         {
-            yield break; // Exit if player reference is lost
+            yield break; 
         }
-        
-        enemyReference.DealDamage(player, stats.damage);
-        player.GetComponent<IConditionable>()?.Stun(1f); //hard fixed stun
 
-        yield return new WaitForSeconds(cooldown); // Attack every cooldown seconds
+        if(CalculateAttackRange(enemy, attackAngle))
+        {
+            // Pokaż range przez 0.5 sekund
+            showAttackRange = true;
+            attackRangeTimer = enemy.offsetTime;
 
-        //checks if player is still in range after cooldown, if not, switch back to chase state
-        if (!CalculateAttackRange(enemy, attackAngle))
+            yield return new WaitForSeconds(enemy.offsetTime);
+
+            if(CalculateAttackRange(enemy, attackAngle))
+            {
+                enemyReference.DealDamage(player, stats.damage);
+                player.GetComponent<IConditionable>()?.Stun(1f);
+                yield return new WaitForSeconds(cooldown);
+            }
+            else if (!CalculateAttackRange(enemy, attackAngle))
+            {
+                enemy.currentState = enemy.chaseState;
+                enemy.currentState.EnterState(enemy);
+            }
+        }
+        else if (!CalculateAttackRange(enemy, attackAngle))
         {
             enemy.currentState = enemy.chaseState;
             enemy.currentState.EnterState(enemy);
@@ -112,4 +146,7 @@ public class SuccubiAttack : EnemyBaseState
         }
     }
 
-}
+    public bool ShouldShowAttackRange()
+    {
+        return showAttackRange;
+    }}

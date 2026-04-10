@@ -17,6 +17,8 @@ public class EnemyStateManager : MonoBehaviour
     public EnemyStats stats;
     public Enemy enemy;
 
+    [SerializeField] public float offsetTime;
+
     void Awake()
     {
         enemy_rb = GetComponent<Rigidbody2D>();
@@ -42,11 +44,16 @@ public class EnemyStateManager : MonoBehaviour
 
     void OnDrawGizmos()
     {
+        Gizmos.color = Color.yellow;
         if (currentState != null)
         {
             if (currentState is SuccubiAttack attack)
             {
-                attack.DrawAttackRange(this, attack.attackAngle);
+                //attack.DrawAttack(this);
+                if (attack.ShouldShowAttackRange())
+                {
+                    attack.DrawAttackRange(this, attack.attackAngle);
+                }
             }
         }
     }

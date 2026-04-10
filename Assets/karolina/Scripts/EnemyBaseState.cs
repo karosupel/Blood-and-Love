@@ -10,4 +10,9 @@ public abstract class EnemyBaseState
     {
         // Default implementation - can be overridden by derived classes
     }
+
+    public virtual void OnTriggerEnter2D(EnemyStateManager enemy, Collider2D collider)
+    {
+        // Default implementation - can be overridden by derived classes
+    }
 }
