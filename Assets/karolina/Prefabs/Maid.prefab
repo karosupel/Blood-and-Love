@@ -181,7 +181,7 @@ MonoBehaviour:
   isInAfterlife: 0
   materialPlaneColor: {r: 1, g: 1, b: 1, a: 1}
   afterlifeColor: {r: 1, g: 1, b: 1, a: 1}
-  animator: {fileID: 0}
+  animator: {fileID: 2106496568447744903}
 --- !u!114 &250685769000684190
 MonoBehaviour:
   m_ObjectHideFlags: 0
