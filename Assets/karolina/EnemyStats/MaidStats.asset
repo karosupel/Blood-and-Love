@@ -17,6 +17,6 @@ MonoBehaviour:
   moveSpeed: 3.5
   knockbackForce: 30
   attackRange: 2
-  attackCooldown: 0.55
+  attackCooldown: 0.52
   retreatRange: 0
   retreatDistance: 0

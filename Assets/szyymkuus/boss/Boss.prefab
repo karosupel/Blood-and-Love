@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 7085965799371856217}
   - component: {fileID: 7093814002770204106}
   - component: {fileID: 792780677661824108}
+  - component: {fileID: 5899202107057728852}
   m_Layer: 3
   m_Name: Boss
   m_TagString: Untagged
@@ -80,8 +81,8 @@ SpriteRenderer:
   m_SortingLayerID: 1789328477
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.35536385, g: 0, b: 1, a: 1}
+  m_Sprite: {fileID: -1016063983, guid: d1e87fb0f1d375e4f999133c3d0f01a8, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -123,18 +124,18 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0.15380695, y: -0.09811854}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
+    oldSize: {x: 2, y: 2}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.96550983, y: 1.641746}
   m_EdgeRadius: 0
 --- !u!50 &1313336138904775904
 Rigidbody2D:
@@ -263,3 +264,24 @@ MonoBehaviour:
   barrierCrysalPrefab: {fileID: 6492046923172771251, guid: 0ddcdddaf9ae95c4393dff42779cd67b, type: 3}
   barrierPrefab: {fileID: 1082306054906996894, guid: a79eec3718b7a0847aa2b6809ffe16d8, type: 3}
   player: {fileID: 0}
+--- !u!95 &5899202107057728852
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7746964319996168286}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 62e844bfb9780cc41a3d8ee0b22adb61, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

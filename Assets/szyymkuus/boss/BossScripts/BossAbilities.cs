@@ -32,6 +32,7 @@ public class BossAbilities : MonoBehaviour
     [SerializeField] GameObject barrierPrefab;
     [Header("Other")]
     [SerializeField] GameObject player;
+    Animator animator;
 
     int activeCrystalCount;
     GameObject activeBarrierInstance;
@@ -45,6 +46,7 @@ public class BossAbilities : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         bossController = GetComponent<BossController>();
         bossCollider = GetComponent<Collider2D>();
+        animator = GetComponent<Animator>();
     }
     // Start is called before the first frame update
     void Start()
@@ -61,6 +63,7 @@ public class BossAbilities : MonoBehaviour
     #region Meteor Storm
     public float MeteorStorm()
     {
+        animator.SetBool("isCastingMeteorStorm", true);
         StartCoroutine(MeteorStormCoroutine(farMeteors, meteorStormDuration, meteorStormFarInnerRadius, meteorStormFarOuterRadius));
         StartCoroutine(MeteorStormCoroutine(closeMeteors, meteorStormDuration, meteorStormCloseInnerRadius, meteorStormCloseOuterRadius));
         return meteorStormDuration;
@@ -69,6 +72,7 @@ public class BossAbilities : MonoBehaviour
 
     IEnumerator MeteorStormCoroutine(int meteors, float time, float innerRadius, float outerRadius)
     {
+        yield return new WaitForSeconds(1f); // Short delay before meteors start falling, can be adjusted or removed as needed
         float interval = time / meteors;
         for (int i = 0; i < meteors; i++)
         {
@@ -83,17 +87,20 @@ public class BossAbilities : MonoBehaviour
             yield return new WaitForSeconds(interval);
             bossController.SetMeteorStormTimer(Time.time);
         }
+        animator.SetBool("isCastingMeteorStorm", false);
     }
     #endregion
 
     #region Projectile Storm
     public float ProjectileStorm()
     {
+        animator.SetBool("isCastingProjectileStorm", true);
         StartCoroutine(ProjectileStormCoroutine());
         return projectileStormDuration;
     }
     IEnumerator ProjectileStormCoroutine()
     {
+        yield return new WaitForSeconds(1f); // Short delay before starting to fire projectiles, can be adjusted or removed as needed
         float elapsed = 0f;
         float fireInterval = 1f / projectileStormRateOfFire; // Convert projectiles/second to interval
         float nextFireTime = 0f;
@@ -136,6 +143,7 @@ public class BossAbilities : MonoBehaviour
         }
         Debug.Log($"Projectile Storm Elapsed Time: {elapsed}");
         bossController.SetProjectileStormTimer(Time.time);
+        animator.SetBool("isCastingProjectileStorm", false);
     }
     #endregion
 
