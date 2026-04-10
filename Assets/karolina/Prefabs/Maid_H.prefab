@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 250685769000684190}
   - component: {fileID: 2106496568447744903}
   m_Layer: 3
-  m_Name: Maid
+  m_Name: Maid_H
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: 1789328477
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1386440606, guid: 1241cec5a73fea041811ad391c3eb959, type: 3}
+  m_Sprite: {fileID: -970898941, guid: 2af85f69998f1ba419e7d2c509e15c97, type: 3}
   m_Color: {r: 0.94594824, g: 0.8537736, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -194,7 +194,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9874eb5d00dd566438007da3a2b7ae58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 0}
+  animator: {fileID: 2106496568447744903}
   player: {fileID: 2042421123167681590, guid: 5840ebe076d0b584d831f396eaab45a9, type: 3}
   stats: {fileID: 11400000, guid: d333178434ee922468cacc4541627645, type: 2}
 --- !u!95 &2106496568447744903
@@ -207,7 +207,7 @@ Animator:
   m_GameObject: {fileID: 272378486287725452}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 74e57a7a900a4954ba7ccbf5a8817633, type: 2}
+  m_Controller: {fileID: 9100000, guid: ff9a5254c02c05944addaf736d0d7ff9, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

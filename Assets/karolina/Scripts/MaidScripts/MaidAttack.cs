@@ -47,9 +47,21 @@ public class MaidAttack : MaidBaseState
     {
         enemy.animator.SetBool("isAttacking", true);
         yield return new WaitForSeconds(stats.attackCooldown);
-        player.GetComponent<PlayerHealth>().TakeDamage(stats.damage);
+        if(IsInAttackRange(enemy))
+        {
+            player.GetComponent<PlayerHealth>().TakeDamage(stats.damage);
+        }
         yield return new WaitForSeconds(stats.attackCooldown);
         isAttacking = false;
         enemy.animator.SetBool("isAttacking", false);
+    }
+
+    public bool IsInAttackRange(MaidStateManager enemy)
+    {
+        if(Vector2.Distance(enemy.transform.position, player.transform.position) < enemy.stats.attackRange)
+        {
+            return true;
+        }
+        return false;
     }
 }

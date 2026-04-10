@@ -17,6 +17,8 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] public Color materialPlaneColor;
     [SerializeField] public Color afterlifeColor;
 
+    public Animator animator;
+
     private void Awake()
     {
         playerObject = GameObject.FindGameObjectWithTag("Player");
@@ -63,17 +65,5 @@ public class Enemy : MonoBehaviour, IDamageable
         player.GetComponent<IDamageable>()?.TakeDamage(damage);
     }
 
-    public bool ChangeColor(bool isInAfterlife)
-    {
-        if (isInAfterlife)
-        {
-            GetComponent<SpriteRenderer>().color = Color.black;
-        }
-        else
-        {
-            GetComponent<SpriteRenderer>().color = Color.white;
-        }
-        return isInAfterlife;
-    }
 }
 

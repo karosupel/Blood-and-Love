@@ -6,5 +6,6 @@ using UnityEngine;
 public class EnemySpawnPoint
 {
     public GameObject enemyPrefab;
+    public GameObject enemyHellPrefab;
     public Vector3 position;
 }

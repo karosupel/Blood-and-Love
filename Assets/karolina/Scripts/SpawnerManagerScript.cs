@@ -32,6 +32,8 @@ public class SpawnerManagerScript : MonoBehaviour
 
     private Dictionary<string, System.Action> spawnActions;
 
+    private Dictionary<string,RoomSpawnData> spawnDataDict_H;
+
     
 
     public List<string> roomVisitStack = new List<string>();
@@ -63,6 +65,13 @@ public class SpawnerManagerScript : MonoBehaviour
         foreach (var data in spawnDataList)
         {
             spawnDataDict[data.roomTypeId] = data;
+        }
+
+        spawnDataDict_H = new Dictionary<string, RoomSpawnData>();
+
+        foreach (var data in spawnDataList)
+        {
+            spawnDataDict_H[data.roomTypeId] = data;
         }
     }
 
@@ -183,12 +192,12 @@ public class SpawnerManagerScript : MonoBehaviour
     public void SpawnEnemiesInHell()
     {
         Vector3 offset = new Vector3(-30f, 0, 0);
-        if (!spawnDataDict.TryGetValue(roomTypeId, out var data))
+        if (!spawnDataDict_H.TryGetValue(roomTypeId, out var data))
             return;
 
         foreach (var spawn in data.spawnPoints)
         {
-            var enemy = Instantiate(spawn.enemyPrefab, spawn.position + offset, Quaternion.identity);
+            var enemy = Instantiate(spawn.enemyHellPrefab, spawn.position + offset, Quaternion.identity);
             enemy.GetComponent<SpriteRenderer>().color = enemy.GetComponent<Enemy>().afterlifeColor;
             EnemiesInAfterlife.Add(enemy);
         }
