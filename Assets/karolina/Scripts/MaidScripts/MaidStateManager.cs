@@ -28,7 +28,10 @@ public class MaidStateManager : MonoBehaviour
 
     public void Update()
     {
-        currentState.UpdateState(this);
+        if(animator.GetBool("isDead") != true)
+        {
+            currentState.UpdateState(this);
+        }
     }
 
     private void OnDrawGizmos()

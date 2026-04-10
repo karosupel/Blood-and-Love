@@ -31,27 +31,21 @@ public class Enemy : MonoBehaviour, IDamageable
         Knockback((Vector2)(gameObject.transform.position - playerObject.transform.position).normalized, stats.knockbackForce*knockback);
         if (currentHealth <= 0)
         {
-            Die();
+            StartCoroutine(Die());
         }
     }
 
-    public void Die()
+    public IEnumerator Die()
     {
         Debug.Log("Enemy died");
+        animator.SetBool("isDead",true);
+        yield return new WaitForSeconds(1.15f);
         Destroy(gameObject);
     }
 
     public void Knockback(Vector2 direction, float force)
     {
         rb.AddForce(direction * force, ForceMode2D.Impulse);
-    }
-
-    public void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            TakeDamage(10f);
-        }
     }
 
     public void DealDamage(GameObject player, float damage)
