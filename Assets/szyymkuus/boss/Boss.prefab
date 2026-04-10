@@ -177,6 +177,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 200
   currentHealth: 0
+  maxHearts: 5
+  afterlifeInvincibilityDuration: 1
 --- !u!114 &9055043999144588531
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,6 +203,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 410d476d2be85cb478ff0b43bcf4fa41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  meteorStormCooldownMinimum: 4
+  meteorStormCooldownMaximum: 8
+  projectileStormCooldownMinimum: 6
+  projectileStormCooldownMaximum: 15
+  barrierCooldownMinimum: 5
+  barrierCooldownMaximum: 10
+  sp_MeteorSizeMultiplier: 2
+  sp_AdditionalProjectileOrigins: 2
+  sp_ProjectileSpeedMultiplier: 1.3
 --- !u!114 &7093814002770204106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -215,6 +226,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 200
   currentHealth: 0
+  maxHearts: 5
+  afterlifeInvincibilityDuration: 1
 --- !u!114 &792780677661824108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,12 +247,14 @@ MonoBehaviour:
   meteorStormCloseInnerRadius: 0
   meteorStormCloseOuterRadius: 2
   meteorStormDuration: 10
+  meteorSizeMultiplier: 1
   meteorPrefab: {fileID: 3506804384546487156, guid: 9616d141fdef7284b835e8d1684578b7, type: 3}
-  projectileStormDuration: 8
-  projectileStormRateOfFire: 8
-  projectileStormProjectileSpeed: 5
-  projectileStormOrigins: 6
-  rotationSpeed: 30
+  projectileStormDuration: 6
+  projectileStormRateOfFire: 4
+  projectileStormProjectileSpeed: 4
+  projectileStormOrigins: 4
+  minimumProjectileStormRotationSpeed: 50
+  maximumProjectileStormRotationSpeed: 80
   projectilePrefab: {fileID: 1555893908944981107, guid: 4125bc34ad8dc28439d152ba89498767, type: 3}
   minimumCrystalDistance: 2
   maximumCrystalDistance: 5

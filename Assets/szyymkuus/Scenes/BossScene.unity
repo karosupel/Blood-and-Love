@@ -60519,58 +60519,6 @@ PrefabInstance:
       propertyPath: sizeMultiplier
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: projectileStormOrigins
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: projectileStormDuration
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: projectileStormRateOfFire
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: projectileStormProjectileSpeed
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: maximumProjectileStormRotationSpeed
-      value: 80
-      objectReference: {fileID: 0}
-    - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: minimumProjectileStormRotationSpeed
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 4818951867835841841, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: maxHealth
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 7085965799371856217, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: barrierCooldownMaximum
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 7085965799371856217, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: barrierCooldownMinimum
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 7085965799371856217, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: meteorStormCooldownMaximum
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 7085965799371856217, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: meteorStormCooldownMinimum
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 7085965799371856217, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: projectileStormCooldownMaximum
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 7085965799371856217, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: projectileStormCooldownMinimum
-      value: 6
-      objectReference: {fileID: 0}
     - target: {fileID: 7746964319996168286, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
       propertyPath: m_Name
       value: Boss
