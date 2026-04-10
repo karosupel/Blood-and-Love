@@ -33,6 +33,10 @@ public class PlayerController : MonoBehaviour
     bool isStunned = false;
     int stunImmune = 0;
 
+    [Header("Skill icons")]
+    [SerializeField] private AbilityCooldownUI dashIcon;
+
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -92,6 +96,7 @@ public class PlayerController : MonoBehaviour
             isDashing = true;
             health.SetDashing(true);
             lastDashTime = Time.time;
+            dashIcon.StartCooldown(dashCooldown);
         }
         if (isStunned)
         {

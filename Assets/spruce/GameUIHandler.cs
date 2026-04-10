@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class GameUIHandler : MonoBehaviour
 {
@@ -30,7 +32,18 @@ public class GameUIHandler : MonoBehaviour
     [SerializeField] private Vector3 leftButtonPosition = new Vector3(-500f, -40f, 0f);
     [SerializeField] private Vector3 middleButtonPosition = new Vector3(0f, -40f, 0f);
     [SerializeField] private Vector3 rightButtonPosition = new Vector3(500f, -40f, 0f);
+
+    [Header("Help UI")]
+    [SerializeField] private Button HelpButton;
+    [SerializeField] private GameObject HelpCanvas;
+    [SerializeField] private Button HelpCanvasButton;
+    [SerializeField] private Vector4 helpButtonRaycastPadding = new Vector4(24f, 24f, 24f, 24f);
+    [SerializeField] private float helpHideDelaySeconds = 0.08f;
+
+
     private Action<int> onRoomChoiceSelected;
+    private int helpHoverCounter;
+    private Coroutine helpHideCoroutine;
 
     public bool IsChoosingRoom { get; private set; }
 
@@ -58,6 +71,150 @@ public class GameUIHandler : MonoBehaviour
             roomChoiceRoot.SetActive(false);
         }
 
+        if (HelpCanvas != null)
+        {
+            HelpCanvas.SetActive(false);
+        }
+
+        ConfigureHelpButtonHitZone();
+        ConfigureHelpButtonHover();
+        ConfigureHelpCanvasButtonHover();
+
+    }
+
+    private void ConfigureHelpButtonHover()
+    {
+        if (HelpButton == null)
+        {
+            return;
+        }
+
+        EventTrigger trigger = HelpButton.GetComponent<EventTrigger>();
+        if (trigger == null)
+        {
+            trigger = HelpButton.gameObject.AddComponent<EventTrigger>();
+        }
+
+        if (trigger.triggers == null)
+        {
+            trigger.triggers = new List<EventTrigger.Entry>();
+        }
+
+        RemoveHelpHoverEntries(trigger, EventTriggerType.PointerEnter);
+        RemoveHelpHoverEntries(trigger, EventTriggerType.PointerExit);
+
+        EventTrigger.Entry onEnter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+        onEnter.callback.AddListener(_ => HandleHelpPointerEnter());
+        trigger.triggers.Add(onEnter);
+
+        EventTrigger.Entry onExit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+        onExit.callback.AddListener(_ => HandleHelpPointerExit());
+        trigger.triggers.Add(onExit);
+    }
+
+    private void ConfigureHelpCanvasButtonHover()
+    {
+        if (HelpCanvasButton == null)
+        {
+            return;
+        }
+
+        EventTrigger trigger = HelpCanvasButton.GetComponent<EventTrigger>();
+        if (trigger == null)
+        {
+            trigger = HelpCanvasButton.gameObject.AddComponent<EventTrigger>();
+        }
+
+        if (trigger.triggers == null)
+        {
+            trigger.triggers = new List<EventTrigger.Entry>();
+        }
+
+        RemoveHelpHoverEntries(trigger, EventTriggerType.PointerEnter);
+        RemoveHelpHoverEntries(trigger, EventTriggerType.PointerExit);
+
+        EventTrigger.Entry onEnter = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+        onEnter.callback.AddListener(_ => HandleHelpPointerEnter());
+        trigger.triggers.Add(onEnter);
+
+        EventTrigger.Entry onExit = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+        onExit.callback.AddListener(_ => HandleHelpPointerExit());
+        trigger.triggers.Add(onExit);
+    }
+
+    private void HandleHelpPointerEnter()
+    {
+        helpHoverCounter++;
+
+        if (helpHideCoroutine != null)
+        {
+            StopCoroutine(helpHideCoroutine);
+            helpHideCoroutine = null;
+        }
+
+        SetUiVisible(HelpCanvas, true);
+    }
+
+    private void HandleHelpPointerExit()
+    {
+        helpHoverCounter = Mathf.Max(0, helpHoverCounter - 1);
+        if (helpHoverCounter > 0)
+        {
+            return;
+        }
+
+        if (helpHideCoroutine != null)
+        {
+            StopCoroutine(helpHideCoroutine);
+        }
+
+        helpHideCoroutine = StartCoroutine(HideHelpCanvasAfterDelay());
+    }
+
+    private IEnumerator HideHelpCanvasAfterDelay()
+    {
+        if (helpHideDelaySeconds > 0f)
+        {
+            yield return new WaitForSeconds(helpHideDelaySeconds);
+        }
+
+        if (helpHoverCounter == 0)
+        {
+            SetUiVisible(HelpCanvas, false);
+        }
+
+        helpHideCoroutine = null;
+    }
+
+    private void ConfigureHelpButtonHitZone()
+    {
+        if (HelpButton == null)
+        {
+            return;
+        }
+
+        Graphic targetGraphic = HelpButton.targetGraphic;
+        if (targetGraphic == null)
+        {
+            targetGraphic = HelpButton.GetComponent<Graphic>();
+        }
+
+        if (targetGraphic != null)
+        {
+            targetGraphic.raycastPadding = helpButtonRaycastPadding;
+        }
+    }
+
+    private static void RemoveHelpHoverEntries(EventTrigger trigger, EventTriggerType eventType)
+    {
+        for (int i = trigger.triggers.Count - 1; i >= 0; i--)
+        {
+            EventTrigger.Entry entry = trigger.triggers[i];
+            if (entry != null && entry.eventID == eventType)
+            {
+                trigger.triggers.RemoveAt(i);
+            }
+        }
     }
 
     public void ShowRoomChoices(RoomChoiceOption[] options, Action<int> onSelected)

@@ -13,7 +13,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     [SerializeField] float maxHealth = 100f;
     [SerializeField] float panicMaxHealth = 0.25f;
-    [SerializeField] int hearts = 0;
+    [SerializeField] public int hearts = 0;
     [SerializeField] float currentHealth;
     [SerializeField] Vector3 hellOffset = new Vector3(-30f, 0f, 0f);
     PlayerAbilities playerAbilities;
@@ -25,6 +25,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     [SerializeField] bool startInHellInTutorialScene = true;
     [SerializeField] string tutorialSceneName = "Tutorial";
     bool isInAfterlife = false;
+
+    #nullable enable
+    [SerializeField] private PopUpManager? popUpManagerScript;
+    #nullable disable
+    
 
     public float MaxHealth => maxHealth;
 
@@ -170,7 +175,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
             OnHealthChanged?.Invoke();
         }
-        else
+        else if (popUpManagerScript == null || popUpManagerScript.phase > 4)
         {
             TakeHeart();
             StartCoroutine(InvincibilityCoroutine(afterlifeInvincibilityDuration));

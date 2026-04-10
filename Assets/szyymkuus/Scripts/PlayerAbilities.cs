@@ -47,6 +47,9 @@ public class PlayerAbilities : MonoBehaviour
     [SerializeField] int immunityLayer = 7;
     bool lesbianPanicActive = false;
 
+    [SerializeField] private AbilityCooldownUI basicAttackIcon;
+    [SerializeField] private AbilityCooldownUI specialAttackIcon;
+
 
 
     CinemachineImpulseSource impulseSource;
@@ -112,6 +115,7 @@ public class PlayerAbilities : MonoBehaviour
         Vector2 attackPoint = GetAttackPoint();
         Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint, basicAttackRadius, enemyLayers);
         Debug.Log(hits);
+        basicAttackIcon.StartCooldown(basicAttackCooldown);
         if (hits.Length > 0)
         {
             impulseSource.GenerateImpulse(force: 0.1f);
@@ -132,6 +136,7 @@ public class PlayerAbilities : MonoBehaviour
             return;
         }
         Debug.Log("Special attack used!");
+        specialAttackIcon.StartCooldown(specialAttackCooldown);
         Vector3 mousePos = GetMousePosition();
         Vector2 direction = (mousePos - transform.position).normalized;
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, specialAttackRange, enemyLayers);
