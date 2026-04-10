@@ -8,6 +8,8 @@ public class MaidStateManager : MonoBehaviour
     public MaidChase chaseState = new MaidChase();
     public MaidAttack attackState = new MaidAttack();
 
+    public Animator animator;
+
     public GameObject player;
     public EnemyStats stats;
 
@@ -15,6 +17,7 @@ public class MaidStateManager : MonoBehaviour
     {
         Enemy enemy = GetComponent<Enemy>();
         player = GameObject.FindGameObjectWithTag("Player");
+        animator = GetComponent<Animator>();
     }
 
     public void Start()

@@ -38,14 +38,18 @@ public class MaidAttack : MaidBaseState
         if (Vector2.Distance(enemy.transform.position, player.transform.position) < enemy.stats.attackRange && !isAttacking)
         {
             isAttacking = true;
-            enemy.StartCoroutine(AttackPlayer());
+            enemy.StartCoroutine(AttackPlayer(enemy));
+
         }
     }
 
-    public IEnumerator AttackPlayer()
+    public IEnumerator AttackPlayer(MaidStateManager enemy)
     {
+        enemy.animator.SetBool("isAttacking", true);
+        yield return new WaitForSeconds(stats.attackCooldown);
         player.GetComponent<PlayerHealth>().TakeDamage(stats.damage);
         yield return new WaitForSeconds(stats.attackCooldown);
         isAttacking = false;
+        enemy.animator.SetBool("isAttacking", false);
     }
 }

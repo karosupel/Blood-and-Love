@@ -49984,6 +49984,7 @@ MonoBehaviour:
   VisitedRooms: []
   spawnDataList:
   - {fileID: 11400000, guid: 7117b8fec8f088e4e8614b0ae55652a1, type: 2}
+  - {fileID: 11400000, guid: d569d70bd7581614283d7bafab0d06ed, type: 2}
   roomVisitStack: []
   instanceId: 
   roomTypeId: 

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7373377490526315924}
   - component: {fileID: 2139813787713820673}
   - component: {fileID: 250685769000684190}
+  - component: {fileID: 2106496568447744903}
   m_Layer: 3
   m_Name: Maid
   m_TagString: Untagged
@@ -194,3 +195,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 2042421123167681590, guid: 5840ebe076d0b584d831f396eaab45a9, type: 3}
   stats: {fileID: 11400000, guid: d333178434ee922468cacc4541627645, type: 2}
+--- !u!95 &2106496568447744903
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 272378486287725452}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 74e57a7a900a4954ba7ccbf5a8817633, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
