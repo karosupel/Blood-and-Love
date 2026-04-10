@@ -86,7 +86,7 @@ public class PlayerAbilities : MonoBehaviour
             foreach (var enemy in hits)
             {
                 //Debug.Log("enemy detected: " + enemy);
-                enemy.GetComponent<IDamageable>()?.TakeDamage(ultimateDamage, 5f);
+                enemy.GetComponent<IDamageable>()?.TakeDamage(ultimateDamage, 2f);
                 health.Heal(ultimateDamage*ultimateLifesteal);
             }
             if (addHeart)

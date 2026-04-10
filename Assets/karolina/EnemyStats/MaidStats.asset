@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f252367ac926ad4a83b1dda1f7164e0, type: 3}
   m_Name: MaidStats
   m_EditorClassIdentifier: 
-  health: 100
+  health: 30
   damage: 10
   moveSpeed: 3.5
   knockbackForce: 30

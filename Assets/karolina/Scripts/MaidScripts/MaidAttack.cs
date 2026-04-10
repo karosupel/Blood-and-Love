@@ -8,16 +8,21 @@ public class MaidAttack : MaidBaseState
     public EnemyStats stats;
 
     public bool isAttacking = false;
+    bool isDead = false;
 
     public override void EnterState(MaidStateManager enemy)
     {
-        Debug.Log("Entered Attack State");
+        //Debug.Log("Entered Attack State");
         player = enemy.player;
         stats = enemy.stats;
     }
 
     public override void UpdateState(MaidStateManager enemy)
     {
+        if (isDead)
+        {
+            return;
+        }
         //Vector2 direction = (enemy.transform.position - player.transform.position).normalized;
         if(enemy.transform.position.x < player.transform.position.x)
         {
@@ -63,5 +68,13 @@ public class MaidAttack : MaidBaseState
             return true;
         }
         return false;
+    }
+
+    public void StateMachineDead(bool isDead)
+    {
+        if (isDead)
+        {
+            isDead = true;
+        }
     }
 }

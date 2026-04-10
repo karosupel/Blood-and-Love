@@ -16,6 +16,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     [SerializeField] public Color materialPlaneColor;
     [SerializeField] public Color afterlifeColor;
+    bool isDead = false;
 
     public Animator animator;
 
@@ -23,9 +24,14 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         playerObject = GameObject.FindGameObjectWithTag("Player");
         currentHealth = stats.health;
+        animator = GetComponent<Animator>();
     }
     public void TakeDamage(float damage, float knockback = 1f)
     {
+        if (isDead)
+        {
+            return;
+        }
         currentHealth -= damage;
         Debug.Log("Enemy took " + damage);
         Knockback((Vector2)(gameObject.transform.position - playerObject.transform.position).normalized, stats.knockbackForce*knockback);
@@ -37,12 +43,23 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void Die()
     {
+        
+        isDead = true;
         Debug.Log("Enemy died");
+        animator.SetBool("isDead", true);
+
+    }
+    public void DestroyEnemy() // przeniesione z Die() do animacji, żeby można było dodać efekt pośmiertny
+    {
         Destroy(gameObject);
     }
 
     public void Knockback(Vector2 direction, float force)
     {
+        if (isDead)
+        {
+            return;
+        }
         rb.AddForce(direction * force, ForceMode2D.Impulse);
     }
 
@@ -56,6 +73,9 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void DealDamage(GameObject player, float damage)
     {
+        if (isDead)        {
+            return;
+        }
         if (player.layer != playerLayerIndex)
         {
             Debug.Log("WrongLayer! player layer: " + player.layer + " , expected: " + playerLayerIndex);
@@ -65,5 +85,9 @@ public class Enemy : MonoBehaviour, IDamageable
         player.GetComponent<IDamageable>()?.TakeDamage(damage);
     }
 
+    public bool IsDead()
+    {
+        return isDead;
+    }
 }
 
