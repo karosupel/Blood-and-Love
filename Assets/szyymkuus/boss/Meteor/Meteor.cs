@@ -13,9 +13,15 @@ public class Meteor : MonoBehaviour
     [SerializeField] GameObject target;
     [SerializeField] GameObject rock;
 
+    bool hellishVariant = false;
+
     float beginTime;
     bool meteorFalling = false;
     bool explosionTriggered = false;
+
+    [SerializeField] float hellishFlamesDuration = 3f;
+    [SerializeField] float hellishFlamesDamagePerSecond = 5f;
+    bool hellishFlamesActive = false;
 
 
     void Awake()
@@ -36,6 +42,10 @@ public class Meteor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (hellishFlamesActive)
+        {
+            return;
+        }
         if (beginTime + meteorDelay <= Time.time && !meteorFalling)
         {
             Debug.Log("meteor activation requested");
@@ -53,17 +63,46 @@ public class Meteor : MonoBehaviour
             {
                 hit.GetComponent<IDamageable>()?.TakeDamage(damage);
             }
-
-            Destroy(gameObject);
+            if (!hellishVariant)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            else
+            {
+                rock.SetActive(false);
+                hellishFlamesActive = true;
+                StartCoroutine(HellishFlamesCoroutine());
+            }
             
         }
     }
-
-
-    void OnDrawGizmos()
+    IEnumerator HellishFlamesCoroutine()
     {
-        // basic attack
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(target.transform.position, radius * transform.localScale.x);
+        Collider2D col = GetComponentInChildren<Collider2D>();
+        col.enabled = true;
+        SpriteRenderer spriteRenderer = target.GetComponent<SpriteRenderer>();
+        spriteRenderer.color = new Color(255f, 0f, 0f, 1f);
+        yield return new WaitForSeconds(hellishFlamesDuration);
+        Destroy(gameObject);
     }
+
+    public void SetVariant(bool isHellish)
+    {
+        hellishVariant = isHellish;
+    }
+
+
+    public void OnChildTriggerStay(Collider2D collision)
+    {
+        collision.GetComponent<IDamageable>().TakeDamage(hellishFlamesDamagePerSecond*Time.deltaTime);
+    }
+
+
+    //     void OnDrawGizmos()
+    //     {
+    //         // basic attack
+    //         Gizmos.color = Color.red;
+    //         Gizmos.DrawWireSphere(target.transform.position, radius * transform.localScale.x);
+    //     }
 }

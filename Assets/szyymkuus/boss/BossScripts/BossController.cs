@@ -15,6 +15,7 @@ public class BossController : MonoBehaviour
     [Header("Second Phase Settings")]
     [SerializeField] float sp_MeteorSizeMultiplier = 2f;
     [SerializeField] int sp_AdditionalProjectileOrigins = 2;
+    [SerializeField] float sp_ProjectileSpeedMultiplier = 1.3f;
 
     float lastMeteorStormTime;
     float lastProjectileStormTime;
@@ -186,7 +187,10 @@ public class BossController : MonoBehaviour
     public void EnterSecondPhase()
     {
         Debug.Log("Boss entered second phase! He is now stronger and more aggressive!");
+        ForceNewBarrier();
         abilities.MultiplyMeteorSize(sp_MeteorSizeMultiplier);
+        abilities.HellishVariant(true);
         abilities.AddProjectileStormOrigin(sp_AdditionalProjectileOrigins);
+        abilities.MultiplyProjectileStormSpeed(sp_ProjectileSpeedMultiplier);
     }
 }

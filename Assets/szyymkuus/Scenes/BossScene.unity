@@ -60517,11 +60517,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
       propertyPath: projectileStormOrigins
-      value: 5
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
+      propertyPath: projectileStormDuration
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
       propertyPath: projectileStormRateOfFire
-      value: 5
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
+      propertyPath: projectileStormProjectileSpeed
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4818951867835841841, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
       propertyPath: maxHealth

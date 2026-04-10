@@ -37,6 +37,7 @@ public class BossAbilities : MonoBehaviour
     GameObject activeBarrierInstance;
     BossController bossController;
     Collider2D bossCollider;
+    bool hellishVariant = false;
 
 
     void Awake()
@@ -75,6 +76,10 @@ public class BossAbilities : MonoBehaviour
             Vector3 randomPos = new Vector3(player.transform.position.x + randomOffset.x, player.transform.position.y + randomOffset.y, 0);
             GameObject newMeteor = Instantiate(meteorPrefab, randomPos, Quaternion.identity);
             newMeteor.transform.localScale *= meteorSizeMultiplier;
+            if (hellishVariant)
+            {
+                newMeteor.GetComponent<Meteor>()?.SetVariant(true);
+            }
             yield return new WaitForSeconds(interval);
             bossController.SetMeteorStormTimer(Time.time);
         }
@@ -115,6 +120,10 @@ public class BossAbilities : MonoBehaviour
                     Vector3 direction = (originPos - transform.position).normalized;
 
                     GameObject projectile = Instantiate(projectilePrefab, originPos, Quaternion.identity);
+                    if (hellishVariant)
+                    {
+                        projectile.GetComponent<SpriteRenderer>().color = Color.red;
+                    }
                     Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
                     if (rb != null)
                     {
@@ -242,7 +251,16 @@ public class BossAbilities : MonoBehaviour
     {
         projectileStormOrigins += amount;
     }
+    public void MultiplyProjectileStormSpeed(float multiplier)
+    {
+        projectileStormProjectileSpeed *= multiplier;
+    }
 
+
+    public void HellishVariant(bool isHellish)
+    {
+        hellishVariant = isHellish;
+    }
 
 
 }

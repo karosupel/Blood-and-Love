@@ -31,7 +31,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public int Hearts => hearts = 1;
     private Vector3 deathPlace;
     bool isInvincible = false;
-
+    [SerializeField] float cameraShakeCooldown = 0.5f;
+    float lastImpulse = 0;
 
     // CAMERA
 
@@ -133,7 +134,16 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         {
             return;
         }
-        impulseSource.GenerateImpulse(force: 1f);
+        if(Time.time >= lastImpulse + cameraShakeCooldown)
+        {
+            impulseSource.GenerateImpulse(force: 1f);
+            lastImpulse = Time.time;
+        }
+        else
+        {
+            Debug.Log("Camera shake cooldown: " + (lastImpulse + cameraShakeCooldown - Time.time));
+        }
+        
         if (!isInAfterlife)
         {
             currentHealth -= damage;
