@@ -37,6 +37,8 @@ public class GameUIHandler : MonoBehaviour
     [SerializeField] private Button HelpButton;
     [SerializeField] private GameObject HelpCanvas;
     [SerializeField] private Button HelpCanvasButton;
+    [SerializeField] private GameObject HelpCanvasHell;
+    [SerializeField] private Button HelpCanvasHellButton;
     [SerializeField] private Vector4 helpButtonRaycastPadding = new Vector4(24f, 24f, 24f, 24f);
     [SerializeField] private float helpHideDelaySeconds = 0.08f;
 
@@ -76,9 +78,15 @@ public class GameUIHandler : MonoBehaviour
             HelpCanvas.SetActive(false);
         }
 
+        if (HelpCanvasHell != null)
+        {
+            HelpCanvasHell.SetActive(false);
+        }
+
         ConfigureHelpButtonHitZone();
         ConfigureHelpButtonHover();
-        ConfigureHelpCanvasButtonHover();
+        ConfigureHelpCanvasButtonHover(HelpCanvasButton);
+        ConfigureHelpCanvasButtonHover(HelpCanvasHellButton);
 
     }
 
@@ -112,17 +120,17 @@ public class GameUIHandler : MonoBehaviour
         trigger.triggers.Add(onExit);
     }
 
-    private void ConfigureHelpCanvasButtonHover()
+    private void ConfigureHelpCanvasButtonHover(Button hoverButton)
     {
-        if (HelpCanvasButton == null)
+        if (hoverButton == null)
         {
             return;
         }
 
-        EventTrigger trigger = HelpCanvasButton.GetComponent<EventTrigger>();
+        EventTrigger trigger = hoverButton.GetComponent<EventTrigger>();
         if (trigger == null)
         {
-            trigger = HelpCanvasButton.gameObject.AddComponent<EventTrigger>();
+            trigger = hoverButton.gameObject.AddComponent<EventTrigger>();
         }
 
         if (trigger.triggers == null)
@@ -152,7 +160,7 @@ public class GameUIHandler : MonoBehaviour
             helpHideCoroutine = null;
         }
 
-        SetUiVisible(HelpCanvas, true);
+        ShowActiveHelpCanvas();
     }
 
     private void HandleHelpPointerExit()
@@ -180,7 +188,7 @@ public class GameUIHandler : MonoBehaviour
 
         if (helpHoverCounter == 0)
         {
-            SetUiVisible(HelpCanvas, false);
+            HideAllHelpCanvases();
         }
 
         helpHideCoroutine = null;
@@ -203,6 +211,30 @@ public class GameUIHandler : MonoBehaviour
         {
             targetGraphic.raycastPadding = helpButtonRaycastPadding;
         }
+    }
+
+    private GameObject GetActiveHelpCanvas()
+    {
+        bool isInAfterlife = PlayerHealth != null && PlayerHealth.IsInAfterlife;
+        if (isInAfterlife && HelpCanvasHell != null)
+        {
+            return HelpCanvasHell;
+        }
+
+        return HelpCanvas;
+    }
+
+    private void ShowActiveHelpCanvas()
+    {
+        GameObject activeCanvas = GetActiveHelpCanvas();
+        SetUiVisible(HelpCanvas, activeCanvas == HelpCanvas);
+        SetUiVisible(HelpCanvasHell, activeCanvas == HelpCanvasHell);
+    }
+
+    private void HideAllHelpCanvases()
+    {
+        SetUiVisible(HelpCanvas, false);
+        SetUiVisible(HelpCanvasHell, false);
     }
 
     private static void RemoveHelpHoverEntries(EventTrigger trigger, EventTriggerType eventType)
@@ -442,6 +474,11 @@ public class GameUIHandler : MonoBehaviour
         if (heartText != null)
         {
             SetUiVisible(heartText.gameObject, isInAfterlife);
+        }
+
+        if (helpHoverCounter > 0)
+        {
+            ShowActiveHelpCanvas();
         }
     }
 

@@ -34,6 +34,10 @@ public class SpawnerManagerScript : MonoBehaviour
 
     private Dictionary<string,RoomSpawnData> spawnDataDict_H;
 
+    #nullable enable
+    [SerializeField] private PopUpManager? popUpManagerScript;
+    #nullable disable
+
     
 
     public List<string> roomVisitStack = new List<string>();
@@ -130,7 +134,7 @@ public class SpawnerManagerScript : MonoBehaviour
             }
         }
 
-        if(playerHealthScript.IsInAfterlife && !EnemiesInAfterlife.Any() && !IsInTutorialScene())
+        if(playerHealthScript.IsInAfterlife && !EnemiesInAfterlife.Any() && !IsInTutorialScenePhase1())
         {
             playerHealthScript.GoToMaterialPlane();
         }
@@ -213,9 +217,15 @@ public class SpawnerManagerScript : MonoBehaviour
         return ActiveEnemiesInScene;
     }
 
-    private bool IsInTutorialScene()
+    private bool IsInTutorialScenePhase1()
     {
-        return SceneManager.GetActiveScene().name == tutorialSceneName;
-    }
+if (SceneManager.GetActiveScene().name == tutorialSceneName)
+        {
+            if (popUpManagerScript.phase == 1 || popUpManagerScript.phase == 2)
+            {
+                return true;
+            }
+        }
+        return false;    }
 
 }

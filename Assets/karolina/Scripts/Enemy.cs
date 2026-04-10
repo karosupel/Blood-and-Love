@@ -18,13 +18,13 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] public Color afterlifeColor;
     bool isDead = false;
 
-    public Animator animator;
+    //public Animator animator;
 
     private void Awake()
     {
         playerObject = GameObject.FindGameObjectWithTag("Player");
         currentHealth = stats.health;
-        animator = GetComponent<Animator>();
+        // animator = GetComponent<Animator>();
     }
     public void TakeDamage(float damage, float knockback = 1f)
     {
@@ -46,7 +46,8 @@ public class Enemy : MonoBehaviour, IDamageable
         
         isDead = true;
         Debug.Log("Enemy died");
-        animator.SetBool("isDead", true);
+        // animator.SetBool("isDead", true);
+        Destroy(gameObject);
 
     }
     public void DestroyEnemy() // przeniesione z Die() do animacji, żeby można było dodać efekt pośmiertny

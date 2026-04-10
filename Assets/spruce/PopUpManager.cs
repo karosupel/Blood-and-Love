@@ -9,6 +9,7 @@ public class PopUpManager : MonoBehaviour
     private int popUpIndex;
 
     [SerializeField] private GameObject player;
+    [SerializeField] private SpawnerManagerScript spawnerManagerScript;
 
     public int phase = 1;
 
@@ -109,8 +110,17 @@ public class PopUpManager : MonoBehaviour
         {
         popUps[popUpIndex].SetActive(true);
         yield return new WaitForSeconds(3);
-        yield return waitForKeyPress(new KeyCode[] { KeyCode.R });
-        popUps[popUpIndex].SetActive(false);
+        if (spawnerManagerScript.GetActiveEnemiesInScene().Count > 0)
+        {
+        yield return new WaitForSeconds(3);
+        player.GetComponent<PlayerHealth>().Heal(100f);
+        } else
+        {
+            popUps[popUpIndex].SetActive(false);
+            phase = 0;
+            yield return null;
+
+        }
         }
 
     }

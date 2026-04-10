@@ -76,7 +76,9 @@ public class BatAttacking : BatBaseState
         Gizmos.DrawLine(enemy.transform.position, player.transform.position);
     }
 
+#pragma warning disable CS0114 // Member hides inherited member; missing override keyword
     public void OnCollisionEnter2DState(BatStateManager enemy, Collision2D collision)
+#pragma warning restore CS0114 // Member hides inherited member; missing override keyword
     {
         if (collision.gameObject == player)
         {
