@@ -45,6 +45,7 @@ public class PlayerAbilities : MonoBehaviour
     [Header("Layers")]
     [SerializeField] int defaultLayer = 6;
     [SerializeField] int immunityLayer = 7;
+    bool lesbianPanicActive = false;
 
 
 
@@ -103,7 +104,7 @@ public class PlayerAbilities : MonoBehaviour
 
     public void UseBasicAttack()
     {
-        if (lastBasicAttackTime + basicAttackCooldown > Time.time)
+        if (lastBasicAttackTime + basicAttackCooldown > Time.time || lesbianPanicActive)
         {
             return;
         }
@@ -126,7 +127,7 @@ public class PlayerAbilities : MonoBehaviour
 
     public void UseSpecialAttack()
     {
-        if (lastSpecialAttackTime + specialAttackCooldown > Time.time)
+        if (lastSpecialAttackTime + specialAttackCooldown > Time.time || lesbianPanicActive)
         {
             return;
         }
@@ -161,6 +162,7 @@ public class PlayerAbilities : MonoBehaviour
 
     IEnumerator LesbianPanicCoroutine()
     {
+        lesbianPanicActive = true;
         playerController.IncreaseSpeed(panicSpeedMultiplier);
         Color originalSpriteColor = sprite.color;
         sprite.color = Color.yellow;
@@ -169,6 +171,7 @@ public class PlayerAbilities : MonoBehaviour
         playerController.Cleanse();
         playerController.ApplyStunImmunity(panicDuration);
         yield return new WaitForSeconds(panicDuration);
+        lesbianPanicActive = false;
         playerController.NormalSpeed();
         sprite.color = originalSpriteColor;
         //col.enabled = true;

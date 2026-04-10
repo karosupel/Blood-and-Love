@@ -186,10 +186,10 @@ public class BossController : MonoBehaviour
 
     public void EnterSecondPhase()
     {
+        abilities.HellishVariant(true);
         Debug.Log("Boss entered second phase! He is now stronger and more aggressive!");
         ForceNewBarrier();
         abilities.MultiplyMeteorSize(sp_MeteorSizeMultiplier);
-        abilities.HellishVariant(true);
         abilities.AddProjectileStormOrigin(sp_AdditionalProjectileOrigins);
         abilities.MultiplyProjectileStormSpeed(sp_ProjectileSpeedMultiplier);
     }

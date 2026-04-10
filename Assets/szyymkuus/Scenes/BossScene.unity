@@ -60531,6 +60531,14 @@ PrefabInstance:
       propertyPath: projectileStormProjectileSpeed
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
+      propertyPath: maximumProjectileStormRotationSpeed
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
+      propertyPath: minimumProjectileStormRotationSpeed
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 4818951867835841841, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
       propertyPath: maxHealth
       value: 20

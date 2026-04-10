@@ -204,8 +204,13 @@ public class BossAbilities : MonoBehaviour
             {
                 bossCollider.enabled = false;
             }
-
+            Debug.Log("Barrier instantiated with " + activeCrystalCount + " crystals. Boss collider disabled.");
             activeBarrierInstance = Instantiate(barrierPrefab, transform.position, Quaternion.identity);
+            if (hellishVariant)
+            {
+                activeBarrierInstance.GetComponent<SpriteRenderer>().color = new Color(1f, 0f, 0f, 0.4f); // Light red color for hellish variant
+                Debug.Log("Hellish variant active: Barrier color set to red.");
+            }
         }
     }
 

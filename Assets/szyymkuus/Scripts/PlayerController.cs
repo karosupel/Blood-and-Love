@@ -90,6 +90,7 @@ public class PlayerController : MonoBehaviour
             dashDirection = movementDirection;
             dashTimer = dashDuration;
             isDashing = true;
+            health.SetDashing(true);
             lastDashTime = Time.time;
         }
         if (isStunned)
@@ -115,6 +116,7 @@ public class PlayerController : MonoBehaviour
             if (dashTimer <= 0)
             {
                 isDashing = false;
+                health.SetDashing(false);
             }
             return;
         }

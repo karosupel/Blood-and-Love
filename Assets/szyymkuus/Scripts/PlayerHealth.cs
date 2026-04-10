@@ -20,6 +20,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     [SerializeField] float afterlifeInvincibilityDuration = 1f;
     [SerializeField] float materialInvincibilityDuration = 0.2f;
+    [SerializeField] float dashDamageMultiplier = 0.5f;
+    [Header("Tutorial settings")]
     [SerializeField] bool startInHellInTutorialScene = true;
     [SerializeField] string tutorialSceneName = "Tutorial";
     bool isInAfterlife = false;
@@ -31,6 +33,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public int Hearts => hearts = 1;
     private Vector3 deathPlace;
     bool isInvincible = false;
+    bool isDashing = false;
     [SerializeField] float cameraShakeCooldown = 0.5f;
     float lastImpulse = 0;
 
@@ -134,6 +137,10 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         {
             return;
         }
+        if (isDashing)
+        {
+            damage *= dashDamageMultiplier;
+        }
         if(Time.time >= lastImpulse + cameraShakeCooldown)
         {
             impulseSource.GenerateImpulse(force: 1f);
@@ -203,14 +210,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     }
 
 
-
-
-
-
-
-
-    void Update()
+    public void SetDashing(bool dashing)
     {
-        //Debug.Log("Current Health: " + currentHealth);
+        isDashing = dashing;
     }
 }
