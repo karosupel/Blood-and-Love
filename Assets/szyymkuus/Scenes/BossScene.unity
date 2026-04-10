@@ -8909,6 +8909,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -9977444188906493, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
+      propertyPath: m_DefaultVelocity.x
+      value: -0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: -9977444188906493, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
+      propertyPath: m_DefaultVelocity.y
+      value: -0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: -9977444188906493, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
+      propertyPath: m_ImpulseDefinition.m_ImpulseDuration
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 1893873750689975605, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
       propertyPath: cam
       value: 
@@ -47344,7 +47356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ChannelMask: 1
-  m_Gain: 1
+  m_Gain: 0.5
   m_Use2DDistance: 0
   m_UseLocalSpace: 1
   m_ReactionSettings:
