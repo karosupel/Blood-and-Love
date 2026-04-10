@@ -48,14 +48,14 @@ public class Meteor : MonoBehaviour
         }
         if (beginTime + meteorDelay <= Time.time && !meteorFalling)
         {
-            Debug.Log("meteor activation requested");
+            //Debug.Log("meteor activation requested");
             meteorFalling = true;
             rock.SetActive(true);
             rock.GetComponent<FallingRock>()?.BeginFall(target.transform.position, target.transform.position + new Vector3(0, meteorHeight, 0), delay - meteorDelay);
         }
         if (beginTime + delay <= Time.time && !explosionTriggered)
         {
-            Debug.Log("Explosion!");
+            //Debug.Log("Explosion!");
             explosionTriggered = true;
             Collider2D[] hits = Physics2D.OverlapCircleAll(target.transform.position, radius * transform.localScale.x, playerLayer);
             
@@ -80,9 +80,14 @@ public class Meteor : MonoBehaviour
     IEnumerator HellishFlamesCoroutine()
     {
         Collider2D col = GetComponentInChildren<Collider2D>();
+        ParticleSystem ps = GetComponentInChildren<ParticleSystem>();
+        var main = ps.main;
+        main.startLifetime = new ParticleSystem.MinMaxCurve(hellishFlamesDuration*0.95f, hellishFlamesDuration);
+        ps.Play();
+        //Debug.Log(ps.isPlaying);
         col.enabled = true;
         SpriteRenderer spriteRenderer = target.GetComponent<SpriteRenderer>();
-        spriteRenderer.color = new Color(255f, 0f, 0f, 1f);
+        spriteRenderer.color = new Color(0.1f, 0f, 0f, 0f);
         yield return new WaitForSeconds(hellishFlamesDuration);
         Destroy(gameObject);
     }
