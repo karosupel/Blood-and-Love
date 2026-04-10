@@ -13,13 +13,15 @@ public class BossAbilities : MonoBehaviour
     [SerializeField] float meteorStormCloseInnerRadius = 0;
     [SerializeField] float meteorStormCloseOuterRadius = 2;
     [SerializeField] float meteorStormDuration = 5f;
+    [SerializeField] float meteorSizeMultiplier = 1f;
     [SerializeField] GameObject meteorPrefab;
     [Header("Projectile Storm")]
     [SerializeField] float projectileStormDuration = 5f;
     [SerializeField] float projectileStormRateOfFire = 0.5f;
     [SerializeField] float projectileStormProjectileSpeed = 5f;
     [SerializeField] int projectileStormOrigins = 4;
-    [SerializeField] float rotationSpeed = 30f;
+    [SerializeField] float minimumProjectileStormRotationSpeed = 30f;
+    [SerializeField] float maximumProjectileStormRotationSpeed = 60f;
     [SerializeField] GameObject projectilePrefab;
     [Header("Barrier")]
     [SerializeField] float minimumCrystalDistance = 2f;
@@ -71,7 +73,8 @@ public class BossAbilities : MonoBehaviour
         {
             Vector2 randomOffset = Random.insideUnitCircle.normalized * Random.Range(innerRadius, outerRadius);
             Vector3 randomPos = new Vector3(player.transform.position.x + randomOffset.x, player.transform.position.y + randomOffset.y, 0);
-            Instantiate(meteorPrefab, randomPos, Quaternion.identity);
+            GameObject newMeteor = Instantiate(meteorPrefab, randomPos, Quaternion.identity);
+            newMeteor.transform.localScale *= meteorSizeMultiplier;
             yield return new WaitForSeconds(interval);
             bossController.SetMeteorStormTimer(Time.time);
         }
@@ -91,6 +94,7 @@ public class BossAbilities : MonoBehaviour
         float nextFireTime = 0f;
         float radius = 1f;
         float currentRotation = 0f;
+        float rotationSpeed = Random.Range(minimumProjectileStormRotationSpeed, maximumProjectileStormRotationSpeed) * (Random.value < 0.5f ? -1 : 1); // Randomize rotation direction
 
         while (elapsed < projectileStormDuration)
         {
@@ -227,4 +231,18 @@ public class BossAbilities : MonoBehaviour
         Gizmos.DrawWireSphere(player.transform.position, meteorStormCloseInnerRadius);
         Gizmos.DrawWireSphere(player.transform.position, meteorStormCloseOuterRadius);
     }
+
+
+
+    public void MultiplyMeteorSize(float multiplier)
+    {
+        meteorSizeMultiplier *= multiplier;
+    }
+    public void AddProjectileStormOrigin(int amount = 1)
+    {
+        projectileStormOrigins += amount;
+    }
+
+
+
 }

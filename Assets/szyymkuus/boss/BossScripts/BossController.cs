@@ -11,6 +11,11 @@ public class BossController : MonoBehaviour
     [SerializeField] float projectileStormCooldownMaximum;
     [SerializeField] float barrierCooldownMinimum;
     [SerializeField] float barrierCooldownMaximum;
+
+    [Header("Second Phase Settings")]
+    [SerializeField] float sp_MeteorSizeMultiplier = 2f;
+    [SerializeField] int sp_AdditionalProjectileOrigins = 2;
+
     float lastMeteorStormTime;
     float lastProjectileStormTime;
     float lastBarrierTime;
@@ -25,7 +30,17 @@ public class BossController : MonoBehaviour
     void Awake()
     {
         abilities = GetComponent<BossAbilities>();
-
+        lastBarrierTime = float.MinValue;
+        if (Random.value < 0.5f)
+        {
+            lastMeteorStormTime = float.MinValue;
+            lastProjectileStormTime = Time.time;
+        }
+        else
+        {
+            lastMeteorStormTime = Time.time;
+            lastProjectileStormTime = float.MinValue;
+        }
     }
 
 
@@ -48,13 +63,22 @@ public class BossController : MonoBehaviour
         {
             return;
         }
-        float randomCooldown = Random.Range(barrierCooldownMinimum, barrierCooldownMaximum);
-        isBarrierActive = true;
-        StartCoroutine(DelayBarrierCoroutine(randomCooldown));
+        if (lastBarrierTime + barrierCooldownMaximum < Time.time)
+        {
+            
+            StartCoroutine(DelayBarrierCoroutine(0f));
+            return;
+        }
+        else
+        {
+            float randomCooldown = Random.Range(barrierCooldownMinimum, barrierCooldownMaximum);
+            StartCoroutine(DelayBarrierCoroutine(randomCooldown));
+        }
     }
 
     IEnumerator DelayBarrierCoroutine(float delay)
     {
+        isBarrierActive = true;
         yield return new WaitForSeconds(delay);
         abilities.Barrier();
     }
@@ -90,13 +114,20 @@ public class BossController : MonoBehaviour
         {
             return;
         }
-        float randomCooldown = Random.Range(meteorStormCooldownMinimum, meteorStormCooldownMaximum);
-        isMeteorStormActive = true;
-        StartCoroutine(DelayMeteorStormCoroutine(randomCooldown));
+        if (lastMeteorStormTime + meteorStormCooldownMaximum < Time.time)
+        {
+            StartCoroutine(DelayMeteorStormCoroutine(0f));
+        }
+        else
+        {
+            float randomCooldown = Random.Range(meteorStormCooldownMinimum, meteorStormCooldownMaximum);
+            StartCoroutine(DelayMeteorStormCoroutine(randomCooldown));
+        }
     }
 
     IEnumerator DelayMeteorStormCoroutine(float delay)
     {
+        isMeteorStormActive = true;
         yield return new WaitForSeconds(delay);
         abilities.MeteorStorm();
     }
@@ -125,13 +156,20 @@ public class BossController : MonoBehaviour
         {
             return;
         }
-        float randomCooldown = Random.Range(projectileStormCooldownMinimum, projectileStormCooldownMaximum);
-        isProjectileStormActive = true;
-        StartCoroutine(DelayProjectileStormCoroutine(randomCooldown));
+        if (lastProjectileStormTime + projectileStormCooldownMaximum < Time.time)
+        {
+            StartCoroutine(DelayProjectileStormCoroutine(0f));
+        }
+        else
+        {
+            float randomCooldown = Random.Range(projectileStormCooldownMinimum, projectileStormCooldownMaximum);
+            StartCoroutine(DelayProjectileStormCoroutine(randomCooldown));
+        }
     }
 
     IEnumerator DelayProjectileStormCoroutine(float delay)
     {
+        isProjectileStormActive = true;
         yield return new WaitForSeconds(delay);
         abilities.ProjectileStorm();
     }
@@ -143,7 +181,12 @@ public class BossController : MonoBehaviour
 
     }
 
-
-
     #endregion
+
+    public void EnterSecondPhase()
+    {
+        Debug.Log("Boss entered second phase! He is now stronger and more aggressive!");
+        abilities.MultiplyMeteorSize(sp_MeteorSizeMultiplier);
+        abilities.AddProjectileStormOrigin(sp_AdditionalProjectileOrigins);
+    }
 }

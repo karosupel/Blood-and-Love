@@ -17,11 +17,12 @@ public class BossHealth : MonoBehaviour, IDamageable
 
 
     bool isInAfterlife = false;
-    Vector3 hellOffset = new Vector3(-30f, 0f, 0f);
+    Vector3 hellOffset = new Vector3(-3f, 0f, 0f);
 
     void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+        bossController = GetComponent<BossController>();
         currentHealth = maxHealth;
         currentHearts = maxHearts;
     }
@@ -78,6 +79,7 @@ public class BossHealth : MonoBehaviour, IDamageable
 
         Debug.Log("Boss died! But is he really gone?");
         GoToHell();
+        bossController.EnterSecondPhase();
     }
 
     void GoToHell()

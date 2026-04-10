@@ -47,7 +47,7 @@ public class Meteor : MonoBehaviour
         {
             Debug.Log("Explosion!");
             explosionTriggered = true;
-            Collider2D[] hits = Physics2D.OverlapCircleAll(target.transform.position, radius, playerLayer);
+            Collider2D[] hits = Physics2D.OverlapCircleAll(target.transform.position, radius * transform.localScale.x, playerLayer);
             
             foreach (var hit in hits)
             {
@@ -64,6 +64,6 @@ public class Meteor : MonoBehaviour
     {
         // basic attack
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(target.transform.position, radius);
+        Gizmos.DrawWireSphere(target.transform.position, radius * transform.localScale.x);
     }
 }

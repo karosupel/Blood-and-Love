@@ -8909,6 +8909,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -9977444188906493, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
+      propertyPath: m_ImpulseDefinition.m_ImpulseShape
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1893873750689975605, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
       propertyPath: cam
       value: 
@@ -47207,6 +47211,7 @@ GameObject:
   - component: {fileID: 1196204657}
   - component: {fileID: 1196204656}
   - component: {fileID: 1196204659}
+  - component: {fileID: 1196204660}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -47322,6 +47327,28 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1196204660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1196204655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c11265b855408d42af33d62691f5194, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ChannelMask: 1
+  m_Gain: 1
+  m_Use2DDistance: 0
+  m_UseLocalSpace: 1
+  m_ReactionSettings:
+    m_SecondaryNoise: {fileID: 0}
+    m_AmplitudeGain: 1
+    m_FrequencyGain: 1
+    m_Duration: 1
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &1219552625
 GameObject:
   m_ObjectHideFlags: 0
@@ -60485,12 +60512,20 @@ PrefabInstance:
       value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
+      propertyPath: sizeMultiplier
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
       propertyPath: projectileStormOrigins
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
       propertyPath: projectileStormRateOfFire
-      value: 6
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4818951867835841841, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
+      propertyPath: maxHealth
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7085965799371856217, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
       propertyPath: barrierCooldownMaximum
