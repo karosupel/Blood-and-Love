@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 3579913675998373311}
   - component: {fileID: 5704995066097110826}
   - component: {fileID: 737373099852120008}
+  - component: {fileID: 3442998618085249719}
+  - component: {fileID: 2933321037980374601}
   m_Layer: 3
   m_Name: Barrier
   m_TagString: Untagged
@@ -28,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -4.34, y: 13.39, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -74,7 +76,7 @@ SpriteRenderer:
   m_SortingLayerID: -997090627
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: -558349136, guid: e871e65ab9163ce4a88ae2aed5d5a53b, type: 3}
   m_Color: {r: 0, g: 0.78431374, b: 1, a: 0.39215687}
   m_FlipX: 0
   m_FlipY: 0
@@ -119,4 +121,37 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 1.5
+--- !u!95 &3442998618085249719
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1082306054906996894}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 8ae71ad5f16a08c45a8740fc32b39f38, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &2933321037980374601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1082306054906996894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da48a002c863dad4c946c010817542b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

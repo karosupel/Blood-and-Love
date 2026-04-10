@@ -25,12 +25,18 @@ public class BossController : MonoBehaviour
     bool isProjectileStormActive;
     bool isBarrierActive;
 
+    bool idle = true;
+    bool barrierRequested = false;
+    float cooldown = 0f;
+
 
     BossAbilities abilities;
+    Animator bossAnimator;
 
     void Awake()
     {
-        abilities = GetComponent<BossAbilities>();
+        abilities = GetComponent<BossAbilities>();;
+        bossAnimator = GetComponent<Animator>();
         lastBarrierTime = float.MinValue;
         if (Random.value < 0.5f)
         {
@@ -47,6 +53,25 @@ public class BossController : MonoBehaviour
 
     void Update()
     {
+        if(!abilities.IsBarrierActive() && (lastBarrierTime + barrierCooldownMinimum) <= Time.time && !barrierRequested)
+        {
+            StartCoroutine(RequestBarrierCoroutine(Random.Range(barrierCooldownMinimum, barrierCooldownMaximum)));
+            barrierRequested = true;
+        }
+        else
+        {   if (bossAnimator.GetBool("isCastingMeteorStorm") == false && bossAnimator.GetBool("isCastingProjectileStorm") == false)
+            {
+                if (Random.value < 0.5f)
+                {
+                    bossAnimator.SetBool("isCastingMeteorStorm", true);
+                }
+                else
+                {
+                    bossAnimator.SetBool("isCastingProjectileStorm", true);
+                }
+            }
+        }
+
         //RandomizeBarrier();
         //RandomizeMeteorStorm();
         //RandomizeProjectileStorm();
@@ -54,6 +79,14 @@ public class BossController : MonoBehaviour
     }
 
     #region  Barrier
+
+    IEnumerator RequestBarrierCoroutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        abilities.Barrier();
+        barrierRequested = false;
+    }
+
     void RandomizeBarrier()
     {
         if (isBarrierActive)
