@@ -176,7 +176,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   basicSpeed: 5
-  regenRate: 1
   dashVelocity: 20
   dashDuration: 0.15
   dashCooldown: 4
@@ -199,6 +198,10 @@ MonoBehaviour:
   hellOffset: {x: -30, y: 0, z: 0}
   afterlifeInvincibilityDuration: 1
   materialInvincibilityDuration: 0.2
+  dashDamageMultiplier: 0.5
+  startInHellInTutorialScene: 1
+  tutorialSceneName: Tutorial
+  cameraShakeCooldown: 0.5
 --- !u!114 &1893873750689975605
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -259,7 +262,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ImpulseDefinition:
     m_ImpulseChannel: 1
-    m_ImpulseShape: 4
+    m_ImpulseShape: 2
     m_CustomImpulseShape:
       serializedVersion: 2
       m_Curve: []
