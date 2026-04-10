@@ -193,6 +193,14 @@ public class BossAbilities : MonoBehaviour
                     if (crystal != null)
                     {
                         crystal.Initialize(this);
+                        if (hellishVariant)
+                        {
+                            crystal.GetComponent<SpriteRenderer>().color = Color.red;
+                        }
+                        else
+                        {
+                            crystal.GetComponent<SpriteRenderer>().color = Color.green;
+                        }
                         activeCrystalCount++;
                     }
                     Debug.DrawLine(transform.position, spawnPos, Color.green, 2f);
