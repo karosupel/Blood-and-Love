@@ -168,6 +168,7 @@ public class PlayerAbilities : MonoBehaviour
         sprite.color = Color.yellow;
         //col.enabled = false; // Zastąpione przez Layer
         gameObject.layer = immunityLayer;
+        health.SetPanicked(true);
         playerController.Cleanse();
         playerController.ApplyStunImmunity(panicDuration);
         yield return new WaitForSeconds(panicDuration);
@@ -176,6 +177,7 @@ public class PlayerAbilities : MonoBehaviour
         sprite.color = originalSpriteColor;
         //col.enabled = true;
         gameObject.layer = defaultLayer;
+        health.SetPanicked(false);
     }
     /*void OnDrawGizmos()
     {
