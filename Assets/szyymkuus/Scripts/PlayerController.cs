@@ -110,6 +110,7 @@ public class PlayerController : MonoBehaviour
             }
             dashTimer = dashDuration;
             isDashing = true;
+            animator.SetBool("isDashing", true);
             health.SetDashing(true);
             lastDashTime = Time.time;
             dashIcon.StartCooldown(dashCooldown);
@@ -124,16 +125,24 @@ public class PlayerController : MonoBehaviour
 
     void RotatePlayer()
     {
+        float direction;
         Vector2 mousePos = abilities.GetMousePosition();
-        float direction = mousePos.x - transform.position.x;
-        if (direction > 0)
+        if (isDashing)
         {
-            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+            direction = dashDirection[0];
         }
         else
         {
-            transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+            direction = mousePos.x - transform.position.x;
         }
+            if (direction > 0)
+            {
+                transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+            }
+            else
+            {
+                transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+            }
     }
 
     void FixedUpdate()
@@ -155,6 +164,7 @@ public class PlayerController : MonoBehaviour
             if (dashTimer <= 0)
             {
                 isDashing = false;
+                animator.SetBool("isDashing", false);
                 health.SetDashing(false);
             }
             return;

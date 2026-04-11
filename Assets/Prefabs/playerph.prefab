@@ -226,9 +226,10 @@ MonoBehaviour:
   basicAttackRadius: 0.7
   basicAttackCooldown: 0.8
   basicAttackLifesteal: 0.5
-  specialAttackDamage: 20
+  beam: {fileID: 2712477047193233196, guid: 2f33c67430706e0458edba7f57f6d773, type: 3}
+  specialAttackDamage: 15
   specialAttackRange: 5
-  specialAttackCooldown: 3
+  specialAttackCooldown: 5
   specialAttackLifesteal: 0.25
   ultimateDamage: 25
   ultimateRadius: 4.5

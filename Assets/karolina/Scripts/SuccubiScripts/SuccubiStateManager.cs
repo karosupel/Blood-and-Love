@@ -16,6 +16,7 @@ public class EnemyStateManager : MonoBehaviour
 
     public EnemyStats stats;
     public Enemy enemy;
+    public Animator animator;
 
     [SerializeField] public float offsetTime;
 
@@ -24,6 +25,7 @@ public class EnemyStateManager : MonoBehaviour
         enemy_rb = GetComponent<Rigidbody2D>();
         enemy = GetComponent<Enemy>();
         player = GameObject.FindGameObjectWithTag("Player");
+        animator = GetComponent<Animator>();
     }
 
     void Start()
@@ -34,11 +36,19 @@ public class EnemyStateManager : MonoBehaviour
 
     void Update()
     {
+        if (enemy.IsDead())
+        {
+            return;
+        }
         currentState.UpdateState(this);
     }
 
     void FixedUpdate()
     {
+        if (enemy.IsDead())
+        {
+            return;
+        }
         currentState.FixedUpdateState(this);
     }
 

@@ -73,10 +73,7 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void Update()
     {
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            TakeDamage(10f);
-        }
+
     }
 
     public void DealDamage(GameObject player, float damage)

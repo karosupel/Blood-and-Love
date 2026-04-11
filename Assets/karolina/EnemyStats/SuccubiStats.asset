@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f252367ac926ad4a83b1dda1f7164e0, type: 3}
   m_Name: SuccubiStats
   m_EditorClassIdentifier: 
-  health: 50
-  damage: 10
+  health: 80
+  damage: 20
   moveSpeed: 2
   knockbackForce: 15
   attackRange: 3
-  attackCooldown: 2
-  retreatRange: 2
-  retreatDistance: 5
+  attackCooldown: 3
+  retreatRange: 1
+  retreatDistance: 3.5

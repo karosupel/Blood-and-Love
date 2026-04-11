@@ -20,6 +20,7 @@ public class PlayerAbilities : MonoBehaviour
 
 
     [Header("Special Attack")]
+    [SerializeField] GameObject beam;
     [SerializeField] float specialAttackDamage = 10f;
     [SerializeField] float specialAttackRange = 5f;
     [SerializeField] float specialAttackCooldown = 3f;
@@ -50,6 +51,8 @@ public class PlayerAbilities : MonoBehaviour
     [SerializeField] private AbilityCooldownUI basicAttackIcon;
     [SerializeField] private AbilityCooldownUI specialAttackIcon;
 
+    Animator animator;
+
 
 
     CinemachineImpulseSource impulseSource;
@@ -60,6 +63,7 @@ public class PlayerAbilities : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
         col = GetComponent<BoxCollider2D>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
+        animator = GetComponent<Animator>();
     }
     void Start()
     {
@@ -121,6 +125,7 @@ public class PlayerAbilities : MonoBehaviour
         {
             return;
         }
+        animator.SetTrigger("clawsTrigger");
         Debug.Log("Basic attack used!");
         Vector2 attackPoint = GetAttackPoint();
         Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint, basicAttackRadius, enemyLayers);
@@ -154,14 +159,19 @@ public class PlayerAbilities : MonoBehaviour
         specialAttackIcon.StartCooldown(specialAttackCooldown);
         Vector3 mousePos = GetMousePosition();
         Vector2 direction = (mousePos - transform.position).normalized;
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, specialAttackRange, enemyLayers);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, specialAttackRange, enemyLayers);
         Debug.DrawLine(transform.position, transform.position + (Vector3)direction*specialAttackRange, Color.red, 1f);
-        IDamageable damageable = hit.collider?.GetComponent<IDamageable>();
-        if (damageable != null)
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        Instantiate(beam, transform.position + (Vector3)direction*specialAttackRange*0.5f, Quaternion.Euler(0f, 0f, angle - 90f));
+        foreach (var hit in hits)
         {
-            damageable.TakeDamage(specialAttackDamage);
-            health.Heal(specialAttackDamage*specialAttackLifesteal);
-            impulseSource.GenerateImpulse(0.3f);
+            IDamageable damageable = hit.collider?.GetComponent<IDamageable>();
+            if (damageable != null)
+            {
+                damageable.TakeDamage(specialAttackDamage);
+                health.Heal(specialAttackDamage*specialAttackLifesteal);
+                impulseSource.GenerateImpulse(0.3f);
+            }
         }
         lastSpecialAttackTime = Time.time;
     }
@@ -187,19 +197,22 @@ public class PlayerAbilities : MonoBehaviour
 
     IEnumerator LesbianPanicCoroutine()
     {
+        animator.SetBool("isPanicked", true);
         lesbianPanicActive = true;
         playerController.IncreaseSpeed(panicSpeedMultiplier);
-        Color originalSpriteColor = sprite.color;
-        sprite.color = Color.yellow;
+        //Color originalSpriteColor = sprite.color;
+        //sprite.color = Color.yellow;
         //col.enabled = false; // Zastąpione przez Layer
         gameObject.layer = immunityLayer;
         health.SetPanicked(true);
         playerController.Cleanse();
         playerController.ApplyStunImmunity(panicDuration);
-        yield return new WaitForSeconds(panicDuration);
+        yield return new WaitForSeconds(panicDuration - 1.5f);
+        animator.SetBool("isPanicked", false);
+        yield return new WaitForSeconds(1.5f);
         lesbianPanicActive = false;
         playerController.NormalSpeed();
-        sprite.color = originalSpriteColor;
+        //sprite.color = originalSpriteColor;
         //col.enabled = true;
         gameObject.layer = defaultLayer;
         health.SetPanicked(false);
