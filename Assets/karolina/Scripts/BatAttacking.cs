@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class BatAttacking : BatBaseState
 {
@@ -10,13 +11,47 @@ public class BatAttacking : BatBaseState
 
     private bool showAttackRange = false;
     private float attackRangeTimer;
+    private LineRenderer lineRenderer;
 
     public override void EnterState(BatStateManager enemy)
     {
         player = enemy.player;
         stats = enemy.stats;
+        
+        // Zainicjalizuj LineRenderer
+        BatStateManager batManager = enemy as BatStateManager;
+        if (batManager != null)
+        {
+            lineRenderer = batManager.GetComponent<LineRenderer>();
+            if (lineRenderer == null)
+            {
+                lineRenderer = batManager.gameObject.AddComponent<LineRenderer>();
+            }
+            lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+            lineRenderer.startColor = Color.red;
+            lineRenderer.endColor = Color.red;
+            lineRenderer.startWidth = 0.1f;
+            lineRenderer.endWidth = 0.1f;
+            lineRenderer.useWorldSpace = true;
+            lineRenderer.sortingOrder = 10;
+        }
 
-        attackCoroutine = enemy.StartCoroutine(AttackPlayer(enemy));
+        // Sprawdź czy gracz jest w zasięgu i w linii prostej
+        if (player != null && stats != null)
+        {
+            float distance = Vector2.Distance(enemy.transform.position, player.transform.position);
+            if (distance < stats.attackRange && IsPlayerInLineOfSight(enemy))
+            {
+                // Gracz w zasięgu i w linii prostej - start ataku
+                attackCoroutine = enemy.StartCoroutine(AttackPlayer(enemy));
+            }
+            else
+            {
+                // Gracz poza zasięgiem lub nie w linii prostej - powrót do repositionState
+                enemy.currentState = enemy.repositionState;
+                enemy.currentState.EnterState(enemy);
+            }
+        }
     }
 
     public override void ExitState(BatStateManager enemy)
@@ -24,32 +59,36 @@ public class BatAttacking : BatBaseState
         if (attackCoroutine != null)
         {
             enemy.StopCoroutine(attackCoroutine);
+            attackCoroutine = null;
         }
+        showAttackRange = false;
+        if (lineRenderer != null)
+            lineRenderer.positionCount = 0;
     }
 
     public override void UpdateState(BatStateManager enemy)
     {
-        // Zmniejszaj timer dla range preview
-        if (showAttackRange)
-        {
-            attackRangeTimer -= Time.deltaTime;
-            if (attackRangeTimer <= 0)
-            {
-                showAttackRange = false;
-            }
-        }
+        
     }
 
     IEnumerator AttackPlayer(BatStateManager enemy)
     {
-        // Pokaż range ataku przez 0.5 sekund
+        // Pokaż linie dashowania
         showAttackRange = true;
         attackRangeTimer = 0.5f;
+
+        while (attackRangeTimer > 0)
+        {
+            attackRangeTimer -= Time.deltaTime;
+            yield return null;
+        }
+
         yield return new WaitForSeconds(0.5f);
 
-        // Sprawdź czy gracz nadal jest w zasięgu
-        if (Vector2.Distance(enemy.transform.position, player.transform.position) > stats.attackRange)
+        // Sprawdź czy gracz nadal jest w zasięgu i w linii prostej
+        if (!IsPlayerInLineOfSight(enemy) || Vector2.Distance(enemy.transform.position, player.transform.position) > stats.attackRange)
         {
+            showAttackRange = false;
             enemy.currentState = enemy.repositionState;
             enemy.currentState.EnterState(enemy);
             yield break;
@@ -70,7 +109,7 @@ public class BatAttacking : BatBaseState
                 stats.moveSpeed * Time.deltaTime
             );
 
-            // Sprawdzaj czy znowu w zasięgu (może gracz się poruszył)
+            // Sprawdzaj czy gracz jest blisko (promieniowo)
             if (!damageDealt && Vector2.Distance(enemy.transform.position, player.transform.position) < stats.attackRange)
             {
                 player.GetComponent<PlayerHealth>().TakeDamage(stats.damage);
@@ -85,16 +124,21 @@ public class BatAttacking : BatBaseState
         yield return new WaitForSeconds(stats.attackCooldown);
 
         // zmiana stanu (BEZ ExitState tutaj!)
+        showAttackRange = false;
         enemy.currentState = enemy.repositionState;
         enemy.currentState.EnterState(enemy);
     }
 
-    public void DrawAttackRangeGizmo(BatStateManager enemy)
+    private bool IsPlayerInLineOfSight(BatStateManager enemy)
     {
-        if (player == null || stats == null) return;
+        if (player == null) return false;
 
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(enemy.transform.position, stats.attackRange);
+        Vector2 directionToPlayer = (player.transform.position - enemy.transform.position).normalized;
+        Vector2 forward = enemy.transform.up;
+
+        // Sprawdź czy gracz jest w linii prostej - dopuszczamy kąt do 15 stopni
+        float angle = Vector2.Angle(forward, directionToPlayer);
+        return angle <= 45f;
     }
 
     public bool ShouldShowAttackRange()
@@ -108,7 +152,16 @@ public class BatAttacking : BatBaseState
     {
         if (collision.gameObject == player)
         {
-            player.GetComponent<PlayerHealth>().TakeDamage(stats.damage);
+            // Sprawdzaj warunki ataku: odległość i linia prosta
+            float distance = Vector2.Distance(enemy.transform.position, player.transform.position);
+            if (distance < stats.attackRange && IsPlayerInLineOfSight(enemy))
+            {
+                if (attackCoroutine != null)
+                {
+                    enemy.StopCoroutine(attackCoroutine);
+                }
+                attackCoroutine = enemy.StartCoroutine(AttackPlayer(enemy));
+            }
         }
     }
 }

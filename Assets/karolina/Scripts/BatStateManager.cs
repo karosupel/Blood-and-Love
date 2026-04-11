@@ -11,6 +11,8 @@ public class BatStateManager : MonoBehaviour
     public GameObject player;
     public EnemyStats stats;
 
+    public bool isPlayerAttacked = false;
+
      void Awake()
     {
         Enemy enemy = GetComponent<Enemy>();
@@ -28,14 +30,31 @@ public class BatStateManager : MonoBehaviour
         currentState.UpdateState(this);
     }
 
-    private void OnDrawGizmos()
+    // Rysowanie range'a odbywa się teraz w UpdateState() przy użyciu LineRenderer
+    // zamiast w OnDrawGizmos()
+
+    void OnCollisionEnter2D(Collision2D collision)
     {
-        if (currentState != null)
+        if(collision.gameObject.layer == 6 && isPlayerAttacked == false)
         {
-            if (currentState is BatAttacking attack)
-            {
-                attack.DrawAttackRangeGizmo(this);
-            }
+            StartCoroutine(CollisionAttack());
         }
     }
+
+    public IEnumerator CollisionAttack()
+    {
+        if(isPlayerAttacked == false)
+        {
+            isPlayerAttacked = true;
+            player.GetComponent<PlayerHealth>().TakeDamage(stats.damage);
+            yield return new WaitForSeconds(1f);
+            isPlayerAttacked = false;
+        }
+    }
+
+    // void OnCollisionEnter2D(Collision2D collision)
+    // {
+    //     currentState = attackState;
+    //     currentState.OnCollisionEnter2DState(this, collision);
+    // }
 }

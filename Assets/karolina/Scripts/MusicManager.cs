@@ -27,10 +27,10 @@ public class MusicManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        if(backgroudMusic != null)
-        {
-            PlayBackgroundMusic(false, backgroudMusic);
-        }
+
+
+        PlayBackgroundMusic(false, backgroudMusic);
+
         musicSlider.onValueChanged.AddListener(delegate {SetVolume(musicSlider.value );});
     }
 
