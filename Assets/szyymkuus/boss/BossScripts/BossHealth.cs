@@ -10,9 +10,11 @@ public class BossHealth : MonoBehaviour, IDamageable
     [SerializeField] public int maxHearts = 5;
     [SerializeField] public float afterlifeInvincibilityDuration = 1f;
     int currentHearts;
-    bool isInvincible;
+    public bool isInvincible;
     GameObject player;
     BossController bossController;
+    BossAbilities bossAbilities;
+    Animator animator;
 
 
 
@@ -23,6 +25,8 @@ public class BossHealth : MonoBehaviour, IDamageable
     {
         player = GameObject.FindGameObjectWithTag("Player");
         bossController = GetComponent<BossController>();
+        animator = GetComponent<Animator>();
+        bossAbilities = GetComponent<BossAbilities>();
         currentHealth = maxHealth;
         currentHearts = maxHearts;
     }
@@ -53,11 +57,25 @@ public class BossHealth : MonoBehaviour, IDamageable
     void TakeHeart()
     {
         currentHearts--;
+        Debug.Log("Boss Hearts left: " + currentHearts + "/" + maxHearts);
         if (currentHearts < 0)
         {
-            Annihilate();
+            BeginAnnihilate();
         }
     }
+
+    void BeginAnnihilate()
+    {
+        animator.SetBool("isAnnihilated", true);
+        animator.SetBool("isCastingProjectileStorm", false);
+        animator.SetBool("isCastingMeteorStorm", false);
+        bossController.pauseCasting = true;
+        bossAbilities.BarrierDestroyed();
+        bossAbilities.StopAllCoroutines();
+        
+    }
+
+
 
     void Annihilate()
     {

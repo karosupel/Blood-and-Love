@@ -34,30 +34,27 @@ public class Barrier : MonoBehaviour
     }
 
 
-    public void Test(){
-        Debug.Log("AnimationEventPlayed!");
-    }
-
-    public Animator GetAnimator()
+    public void Test()
     {
-        return animator;
+  Debug.Log("AnimationEventPlayed!");      
     }
-
     public void BarrierFinished()
     {
-        Debug.Log("Barrier.BarrierFinished() called, bossAbilities is: " + (bossAbilities != null ? "valid" : "NULL"));
-        if (bossAbilities != null)
+        if (bossAbilities == null)
         {
-            bossAbilities.BarrierFinished();
+            Destroy(gameObject);
+            return;
         }
-        else
-        {
-            Debug.LogError("ERROR: bossAbilities is null in Barrier.BarrierFinished()!");
-        }
+        bossAbilities.BarrierFinished();
     }
     
     void BarrierDestroyed()
     {
+        if (bossAbilities == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
         bossAbilities?.BarrierDestroyed();
     }
 

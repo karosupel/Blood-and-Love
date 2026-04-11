@@ -28,15 +28,19 @@ public class BossController : MonoBehaviour
     bool idle = true;
     bool barrierRequested = false;
     float cooldown = 0f;
+    public bool pauseCasting = false;
+    float timer = 0;
 
 
     BossAbilities abilities;
     Animator bossAnimator;
+    BossHealth bossHealth;
 
     void Awake()
     {
         abilities = GetComponent<BossAbilities>();;
         bossAnimator = GetComponent<Animator>();
+        bossHealth = GetComponent<BossHealth>();
         lastBarrierTime = float.MinValue;
         if (Random.value < 0.5f)
         {
@@ -58,8 +62,20 @@ public class BossController : MonoBehaviour
             StartCoroutine(RequestBarrierCoroutine(Random.Range(barrierCooldownMinimum, barrierCooldownMaximum)));
             barrierRequested = true;
         }
-        else
-        {   if (bossAnimator.GetBool("isCastingMeteorStorm") == false && bossAnimator.GetBool("isCastingProjectileStorm") == false)
+        timer += Time.deltaTime;
+        if (timer >= 1)
+        {
+            timer = 0;
+            RandomizeNexAttack();
+        }
+
+
+        
+    }
+
+    void RandomizeNexAttack()
+    {
+        if (bossAnimator.GetBool("isCastingMeteorStorm") == false && bossAnimator.GetBool("isCastingProjectileStorm") == false && !pauseCasting)
             {
                 if (Random.value < 0.5f)
                 {
@@ -70,13 +86,16 @@ public class BossController : MonoBehaviour
                     bossAnimator.SetBool("isCastingProjectileStorm", true);
                 }
             }
-        }
 
         //RandomizeBarrier();
         //RandomizeMeteorStorm();
         //RandomizeProjectileStorm();
-        
     }
+
+
+
+
+
 
     #region  Barrier
 
@@ -219,6 +238,12 @@ public class BossController : MonoBehaviour
 
     public void EnterSecondPhase()
     {
+        bossHealth.isInvincible = true;
+        pauseCasting = true;
+        bossAnimator.SetBool("secondPhase", true);
+        abilities.StopAllCoroutines();
+        bossAnimator.SetBool("isCastingProjectileStorm", false);
+        bossAnimator.SetBool("isCastingMeteorStorm", false);
         abilities.HellishVariant(true);
         Debug.Log("Boss entered second phase! He is now stronger and more aggressive!");
         ForceNewBarrier();
