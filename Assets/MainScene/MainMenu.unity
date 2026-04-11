@@ -1967,6 +1967,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   backgroudMusic: {fileID: 8300000, guid: 848c34c4ff72c4c48b0b0081d16e70c0, type: 3}
+  hellMusic: {fileID: 0}
   musicSlider: {fileID: 826183214}
 --- !u!82 &997529350
 AudioSource:

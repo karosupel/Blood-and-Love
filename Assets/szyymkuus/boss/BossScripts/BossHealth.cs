@@ -1,9 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class BossHealth : MonoBehaviour, IDamageable
 {
+
+    public event Action OnHealthChanged;
+    public event Action<int> OnHeartsChanged;
+    public event Action<bool> OnAfterlifeStateChanged;
 
     [SerializeField] public float maxHealth = 200f;
     public float currentHealth;
@@ -12,6 +17,7 @@ public class BossHealth : MonoBehaviour, IDamageable
     int currentHearts;
     public bool isInvincible;
     GameObject player;
+    PlayerHealth playerHealth;
     BossController bossController;
     BossAbilities bossAbilities;
     Animator animator;
@@ -19,16 +25,29 @@ public class BossHealth : MonoBehaviour, IDamageable
 
 
     bool isInAfterlife = false;
-    Vector3 hellOffset = new Vector3(-3f, 0f, 0f);
+    Vector3 hellOffset = new Vector3(-30f, 0f, 0f);
+
+    public float MaxHealth => maxHealth;
+    public float CurrentHealth => currentHealth;
+    public int MaxHearts => maxHearts;
+    public int CurrentHearts => currentHearts;
+    public bool IsInAfterlife => isInAfterlife;
 
     void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            playerHealth = player.GetComponent<PlayerHealth>();
+        }
         bossController = GetComponent<BossController>();
         animator = GetComponent<Animator>();
         bossAbilities = GetComponent<BossAbilities>();
         currentHealth = maxHealth;
         currentHearts = maxHearts;
+        OnHealthChanged?.Invoke();
+        OnHeartsChanged?.Invoke(currentHearts);
+        OnAfterlifeStateChanged?.Invoke(isInAfterlife);
     }
 
     public void TakeDamage(float damage, float knockback)
@@ -40,6 +59,7 @@ public class BossHealth : MonoBehaviour, IDamageable
         if (!isInAfterlife)
         {
             currentHealth -= damage;
+            OnHealthChanged?.Invoke();
             Debug.Log("Boss HP: " + currentHealth + "/" + maxHealth);
             if (currentHealth <= 0)
             {
@@ -57,6 +77,7 @@ public class BossHealth : MonoBehaviour, IDamageable
     void TakeHeart()
     {
         currentHearts--;
+        OnHeartsChanged?.Invoke(currentHearts);
         Debug.Log("Boss Hearts left: " + currentHearts + "/" + maxHearts);
         if (currentHearts < 0)
         {
@@ -96,6 +117,10 @@ public class BossHealth : MonoBehaviour, IDamageable
     {
 
         Debug.Log("Boss died! But is he really gone?");
+        if (playerHealth != null)
+        {
+            playerHealth.GoToHell();
+        }
         GoToHell();
         bossController.EnterSecondPhase();
     }
@@ -108,9 +133,10 @@ public class BossHealth : MonoBehaviour, IDamageable
             return;
         }
 
-        Vector3 hellPosition = player.transform.position + hellOffset;
+        Vector3 hellPosition = transform.position + hellOffset;
         transform.position = hellPosition;
         isInAfterlife = true;
+        OnAfterlifeStateChanged?.Invoke(isInAfterlife);
         Debug.Log("Boss has been sent to Hell!");
     }
 }

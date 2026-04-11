@@ -5,8 +5,12 @@ public class HealthBar : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Image liquidFillImage;
-    [SerializeField] private PlayerHealth playerHealth;
+    #nullable enable
+    [SerializeField] private PlayerHealth? playerHealth;
+    [SerializeField] private BossHealth? bossHealth;
+    #nullable disable
     [SerializeField] private CanvasGroup healthBarCanvasGroup;
+    [SerializeField] private bool preferBossWhenAutoDetected = false;
 
     [Header("Settings")]
     [SerializeField] private float smoothSpeed = 4f;     // lerp speed
@@ -28,10 +32,7 @@ public class HealthBar : MonoBehaviour
 
     void Awake()
     {
-        if (playerHealth == null)
-        {
-            playerHealth = FindObjectOfType<PlayerHealth>();
-        }
+        ResolveHealthSource();
 
         if (healthBarCanvasGroup == null)
         {
@@ -66,6 +67,15 @@ public class HealthBar : MonoBehaviour
             playerHealth.OnAfterlifeStateChanged += HandleAfterlifeStateChanged;
             SyncWithPlayerHealth();
             HandleAfterlifeStateChanged(playerHealth.IsInAfterlife);
+            return;
+        }
+
+        if (bossHealth != null)
+        {
+            bossHealth.OnHealthChanged += SyncWithBossHealth;
+            bossHealth.OnAfterlifeStateChanged += HandleAfterlifeStateChanged;
+            SyncWithBossHealth();
+            HandleAfterlifeStateChanged(bossHealth.IsInAfterlife);
         }
     }
 
@@ -76,6 +86,12 @@ public class HealthBar : MonoBehaviour
             playerHealth.OnHealthChanged -= SyncWithPlayerHealth;
             playerHealth.OnAfterlifeStateChanged -= HandleAfterlifeStateChanged;
         }
+
+        if (bossHealth != null)
+        {
+            bossHealth.OnHealthChanged -= SyncWithBossHealth;
+            bossHealth.OnAfterlifeStateChanged -= HandleAfterlifeStateChanged;
+        }
     }
 
     void Update()
@@ -83,6 +99,10 @@ public class HealthBar : MonoBehaviour
         if (playerHealth != null)
         {
             HandleAfterlifeStateChanged(playerHealth.IsInAfterlife);
+        }
+        else if (bossHealth != null)
+        {
+            HandleAfterlifeStateChanged(bossHealth.IsInAfterlife);
         }
 
         // Smooth the liquid level toward the target
@@ -137,6 +157,64 @@ public class HealthBar : MonoBehaviour
         }
 
         SetHealth(playerHealth.CurrentHealth, playerHealth.MaxHealth);
+    }
+
+    private void SyncWithBossHealth()
+    {
+        if (bossHealth == null)
+        {
+            return;
+        }
+
+        SetHealth(bossHealth.CurrentHealth, bossHealth.MaxHealth);
+    }
+
+    private void ResolveHealthSource()
+    {
+        bool hasAssignedPlayer = playerHealth != null;
+        bool hasAssignedBoss = bossHealth != null;
+
+        if (hasAssignedPlayer && !hasAssignedBoss)
+        {
+            bossHealth = null;
+            return;
+        }
+
+        if (hasAssignedBoss && !hasAssignedPlayer)
+        {
+            playerHealth = null;
+            return;
+        }
+
+        if (!hasAssignedPlayer)
+        {
+            playerHealth = GetComponent<PlayerHealth>();
+            if (playerHealth == null)
+            {
+                playerHealth = FindObjectOfType<PlayerHealth>();
+            }
+        }
+
+        if (!hasAssignedBoss)
+        {
+            bossHealth = GetComponent<BossHealth>();
+            if (bossHealth == null)
+            {
+                bossHealth = FindObjectOfType<BossHealth>();
+            }
+        }
+
+        if (playerHealth != null && bossHealth != null)
+        {
+            if (preferBossWhenAutoDetected)
+            {
+                playerHealth = null;
+            }
+            else
+            {
+                bossHealth = null;
+            }
+        }
     }
 
     private void HandleAfterlifeStateChanged(bool isInAfterlife)

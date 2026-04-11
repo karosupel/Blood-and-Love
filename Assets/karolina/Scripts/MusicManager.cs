@@ -11,15 +11,11 @@ public class MusicManager : MonoBehaviour
     public AudioClip backgroudMusic;
     [SerializeField] private AudioClip hellMusic;
     [SerializeField] private Slider musicSlider;
+    [SerializeField] private bool autoFindMusicSliderOnSceneLoad = true;
 
     private PlayerHealth trackedPlayerHealth;
 
     void Awake()
-    {
-    }
-
-    // Start is called before the first frame update
-    void Start()
     {
         if(Instance == null)
         {
@@ -29,19 +25,22 @@ public class MusicManager : MonoBehaviour
         }
         else
         {
+            Instance.ApplyConfigurationFrom(this);
             Destroy(gameObject);
             return;
         }
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
 
 
 
         PlayBackgroundMusic(false, backgroudMusic);
 
 
-        if (musicSlider != null)
-        {
-            musicSlider.onValueChanged.AddListener(delegate { SetVolume(musicSlider.value); });
-        }
+        HookMusicSlider();
 
         SceneManager.sceneLoaded += HandleSceneLoaded;
         HookPlayerHealth();
@@ -53,6 +52,7 @@ public class MusicManager : MonoBehaviour
         {
             SceneManager.sceneLoaded -= HandleSceneLoaded;
             UnhookPlayerHealth();
+            UnhookMusicSlider();
             Instance = null;
         }
     }
@@ -92,6 +92,40 @@ public class MusicManager : MonoBehaviour
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         HookPlayerHealth();
+        HookMusicSlider();
+    }
+
+    private void HookMusicSlider()
+    {
+        UnhookMusicSlider();
+
+        if (musicSlider == null && autoFindMusicSliderOnSceneLoad)
+        {
+            musicSlider = FindObjectOfType<Slider>();
+        }
+
+        if (musicSlider == null)
+        {
+            return;
+        }
+
+        musicSlider.onValueChanged.AddListener(HandleMusicSliderValueChanged);
+        HandleMusicSliderValueChanged(musicSlider.value);
+    }
+
+    private void UnhookMusicSlider()
+    {
+        if (musicSlider == null)
+        {
+            return;
+        }
+
+        musicSlider.onValueChanged.RemoveListener(HandleMusicSliderValueChanged);
+    }
+
+    private void HandleMusicSliderValueChanged(float value)
+    {
+        SetVolume(value);
     }
 
     private void HookPlayerHealth()
@@ -138,6 +172,54 @@ public class MusicManager : MonoBehaviour
         }
 
         audioSource.clip = targetClip;
+        audioSource.Play();
+    }
+
+    private void ApplyConfigurationFrom(MusicManager sceneMusicManager)
+    {
+        if (sceneMusicManager == null)
+        {
+            return;
+        }
+
+        if (sceneMusicManager.backgroudMusic != null)
+        {
+            backgroudMusic = sceneMusicManager.backgroudMusic;
+        }
+
+        if (sceneMusicManager.hellMusic != null)
+        {
+            hellMusic = sceneMusicManager.hellMusic;
+        }
+
+        if (sceneMusicManager.musicSlider != null)
+        {
+            musicSlider = sceneMusicManager.musicSlider;
+            HookMusicSlider();
+        }
+
+        if (audioSource == null)
+        {
+            return;
+        }
+
+        if (trackedPlayerHealth != null)
+        {
+            HandleAfterlifeStateChanged(trackedPlayerHealth.IsInAfterlife);
+            return;
+        }
+
+        if (backgroudMusic == null)
+        {
+            return;
+        }
+
+        if (audioSource.clip == backgroudMusic && audioSource.isPlaying)
+        {
+            return;
+        }
+
+        audioSource.clip = backgroudMusic;
         audioSource.Play();
     }
 }

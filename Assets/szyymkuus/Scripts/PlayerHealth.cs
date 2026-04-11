@@ -13,7 +13,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     [SerializeField] float maxHealth = 100f;
     [SerializeField] float panicMaxHealth = 0.25f;
-    [SerializeField] public int hearts = 0;
+    [SerializeField] public int hearts = 1;
     [SerializeField] float currentHealth;
     [SerializeField] Vector3 hellOffset = new Vector3(-30f, 0f, 0f);
     PlayerAbilities playerAbilities;
@@ -35,7 +35,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     public float CurrentHealth => currentHealth;
     public bool IsInAfterlife => isInAfterlife;
-    public int Hearts => hearts = 1;
+    public int Hearts => hearts;
     private Vector3 deathPlace;
     bool isInvincible = false;
     bool isDashing = false;
@@ -88,8 +88,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         isInAfterlife = true;
         OnAfterlifeStateChanged?.Invoke(isInAfterlife);
         transform.position = transform.position + hellOffset;
+        SetConfinerForCurrentRoomVariant(true);
         NotifyCinemachineTeleport(hellOffset);
-        RoomManager.Instance?.SetConfinerForCurrentRoomVariant(true);
         StartCoroutine(InvincibilityCoroutine(afterlifeInvincibilityDuration));
 
     }
@@ -105,10 +105,106 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         Vector3 returnDelta = deathPlace - transform.position;
         StartCoroutine(InvincibilityCoroutine(materialInvincibilityDuration));
         transform.position = deathPlace;
+        SetConfinerForCurrentRoomVariant(false);
         NotifyCinemachineTeleport(returnDelta);
-        RoomManager.Instance?.SetConfinerForCurrentRoomVariant(false);
         playerAbilities.UseUltimate(addHeart: false, freeUse: true);
         OnHealthChanged?.Invoke();
+    }
+
+    void SetConfinerForCurrentRoomVariant(bool useHellVariant)
+    {
+        if (RoomManager.Instance != null)
+        {
+            RoomManager.Instance.SetConfinerForCurrentRoomVariant(useHellVariant);
+            return;
+        }
+
+        CinemachineConfiner confiner = FindObjectOfType<CinemachineConfiner>();
+        if (confiner == null)
+        {
+            Debug.LogWarning("Could not set confiner bounds because no CinemachineConfiner was found.");
+            return;
+        }
+
+        PolygonCollider2D targetBoundary = null;
+        PolygonCollider2D currentBoundary = confiner.m_BoundingShape2D as PolygonCollider2D;
+        PolygonCollider2D[] allBoundaries = FindObjectsOfType<PolygonCollider2D>(true);
+
+        if (currentBoundary != null && !string.IsNullOrEmpty(currentBoundary.gameObject.name))
+        {
+            string targetName = GetRoomVariantId(currentBoundary.gameObject.name, useHellVariant);
+            for (int i = 0; i < allBoundaries.Length; i++)
+            {
+                PolygonCollider2D candidate = allBoundaries[i];
+                if (candidate == null || !candidate.gameObject.scene.IsValid())
+                {
+                    continue;
+                }
+
+                if (string.Equals(candidate.gameObject.name, targetName, StringComparison.OrdinalIgnoreCase))
+                {
+                    targetBoundary = candidate;
+                    break;
+                }
+            }
+        }
+
+        if (targetBoundary == null)
+        {
+            float nearestDistance = float.MaxValue;
+            for (int i = 0; i < allBoundaries.Length; i++)
+            {
+                PolygonCollider2D candidate = allBoundaries[i];
+                if (candidate == null || !candidate.gameObject.scene.IsValid())
+                {
+                    continue;
+                }
+
+                string candidateName = candidate.gameObject.name;
+                if (string.IsNullOrEmpty(candidateName))
+                {
+                    continue;
+                }
+
+                bool isHellBoundary = candidateName.EndsWith("H", StringComparison.OrdinalIgnoreCase);
+                if (isHellBoundary != useHellVariant)
+                {
+                    continue;
+                }
+
+                float distance = Vector2.Distance(transform.position, candidate.bounds.center);
+                if (distance < nearestDistance)
+                {
+                    nearestDistance = distance;
+                    targetBoundary = candidate;
+                }
+            }
+        }
+
+        if (targetBoundary == null)
+        {
+            Debug.LogWarning("Could not set confiner bounds because no matching room boundary was found.");
+            return;
+        }
+
+        confiner.m_BoundingShape2D = targetBoundary;
+        confiner.InvalidatePathCache();
+    }
+
+    string GetRoomVariantId(string roomTypeId, bool useHellVariant)
+    {
+        bool isHellId = roomTypeId.EndsWith("H", StringComparison.OrdinalIgnoreCase);
+        if (useHellVariant)
+        {
+            return isHellId ? roomTypeId : roomTypeId + "H";
+        }
+
+        if (!isHellId)
+        {
+            return roomTypeId;
+        }
+
+        return roomTypeId.Substring(0, roomTypeId.Length - 1);
     }
 
     void NotifyCinemachineTeleport(Vector3 delta)
@@ -170,7 +266,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
             OnHealthChanged?.Invoke();
         }
-        else if (popUpManagerScript == null || popUpManagerScript.phase > 4)
+        else if (popUpManagerScript == null || (popUpManagerScript.phase > 4 || popUpManagerScript.phase == 0))
         {
             TakeHeart();
             StartCoroutine(InvincibilityCoroutine(afterlifeInvincibilityDuration));

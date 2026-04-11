@@ -1,0 +1,16 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class BossTransition : MonoBehaviour
+{
+    [SerializeField] private int bossSceneIndex = 3;
+ private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(bossSceneIndex);
+        }
+    }
+
+}
