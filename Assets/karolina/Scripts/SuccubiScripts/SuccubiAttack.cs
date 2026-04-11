@@ -73,6 +73,7 @@ public class SuccubiAttack : EnemyBaseState
         {
             isAttacking = false; // Prevent multiple coroutines from starting
             enemy.StartCoroutine(AttackCoroutine(enemy, stats.attackCooldown));
+            enemy.animator.SetTrigger("attack");
         }
     }
 

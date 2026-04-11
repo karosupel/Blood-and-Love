@@ -159,16 +159,19 @@ public class PlayerAbilities : MonoBehaviour
         specialAttackIcon.StartCooldown(specialAttackCooldown);
         Vector3 mousePos = GetMousePosition();
         Vector2 direction = (mousePos - transform.position).normalized;
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, specialAttackRange, enemyLayers);
+        RaycastHit2D[] hits = Physics2D.RaycastAll(transform.position, direction, specialAttackRange, enemyLayers);
         Debug.DrawLine(transform.position, transform.position + (Vector3)direction*specialAttackRange, Color.red, 1f);
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         Instantiate(beam, transform.position + (Vector3)direction*specialAttackRange*0.5f, Quaternion.Euler(0f, 0f, angle - 90f));
-        IDamageable damageable = hit.collider?.GetComponent<IDamageable>();
-        if (damageable != null)
+        foreach (var hit in hits)
         {
-            damageable.TakeDamage(specialAttackDamage);
-            health.Heal(specialAttackDamage*specialAttackLifesteal);
-            impulseSource.GenerateImpulse(0.3f);
+            IDamageable damageable = hit.collider?.GetComponent<IDamageable>();
+            if (damageable != null)
+            {
+                damageable.TakeDamage(specialAttackDamage);
+                health.Heal(specialAttackDamage*specialAttackLifesteal);
+                impulseSource.GenerateImpulse(0.3f);
+            }
         }
         lastSpecialAttackTime = Time.time;
     }

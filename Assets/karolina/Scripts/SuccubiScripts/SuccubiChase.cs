@@ -22,6 +22,14 @@ public class SuccubiChase : EnemyBaseState
         Vector2 direction = (player.transform.position - enemy.transform.position).normalized;
         enemy.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
         enemy.transform.position += (Vector3)direction * Time.deltaTime * stats.moveSpeed;
+        // if (direction[0] < 0)
+        // {
+        //     enemy.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+        // }
+        // else
+        // {
+        //     enemy.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        // }
 
         if (Vector2.Distance(enemy.transform.position, player.transform.position) < stats.attackRange) //attacks when player is within attack range
         {
