@@ -60,6 +60,13 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
+
+        if (isStunned)
+        {
+            animator.SetBool("isWalking", false);
+            return;
+        }
+
         RotatePlayer();
 
         horizontal = Input.GetAxisRaw("Horizontal");
@@ -115,12 +122,6 @@ public class PlayerController : MonoBehaviour
             lastDashTime = Time.time;
             dashIcon.StartCooldown(dashCooldown);
         }
-        if (isStunned)
-        {
-            return;
-        }
-
-
     }
 
     void RotatePlayer()
@@ -155,6 +156,7 @@ public class PlayerController : MonoBehaviour
 
         if (isStunned)
         {
+            rb.velocity = Vector2.zero;
             return;
         }
         if (isDashing)
@@ -198,6 +200,12 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
+
+        if (stunCoroutine != null)
+        {
+            StopCoroutine(stunCoroutine);
+        }
+
         stunCoroutine = StartCoroutine(StunCoroutine(duration));
         Debug.Log("started coroutine " + stunCoroutine);
     }
@@ -221,10 +229,24 @@ public void Cleanse() //swierk tu był naprawiać sry za grzebanie u ciebie uwu
     IEnumerator StunCoroutine(float duration)
     {
         isStunned = true;
+            StopMovementAndDash();
         yield return new WaitForSeconds(duration);
         isStunned = false;
+            stunCoroutine = null;
         StartCoroutine(StunImmunityCoroutine());
     }
+
+        private void StopMovementAndDash()
+        {
+            isDashing = false;
+            dashTimer = 0f;
+            movementDirection = Vector2.zero;
+            movement = Vector2.zero;
+            rb.velocity = Vector2.zero;
+            animator.SetBool("isWalking", false);
+            animator.SetBool("isDashing", false);
+            health.SetDashing(false);
+        }
 
     IEnumerator StunImmunityCoroutine(float duration = 1f)
     {

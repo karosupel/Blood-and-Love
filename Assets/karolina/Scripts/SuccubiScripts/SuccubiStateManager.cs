@@ -52,6 +52,17 @@ public class EnemyStateManager : MonoBehaviour
         currentState.FixedUpdateState(this);
     }
 
+    // Animation Event: call this on the exact hit frame of succubi attack animation.
+    public void OnSuccubiAttackHitAnimationEvent()
+    {
+        if (enemy != null && enemy.IsDead())
+        {
+            return;
+        }
+
+        attackState.OnAttackAnimationHit(this);
+    }
+
     // Rysowanie range'a odbywa się teraz w UpdateState() przy użyciu LineRenderer
     // zamiast w OnDrawGizmos()
 }

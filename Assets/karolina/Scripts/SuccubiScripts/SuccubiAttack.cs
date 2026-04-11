@@ -16,12 +16,14 @@ public class SuccubiAttack : EnemyBaseState
     private ContactFilter2D interactFilter;
     
     private bool showAttackRange = false;
-    private float attackRangeTimer;
     private LineRenderer lineRenderer;
     private bool hasLockedAttackData = false;
     private Vector2 lockedAttackDirection = Vector2.up;
     private Vector2 lastDirection = Vector2.up;
     private int currentAttackId = 0;
+    private bool waitingForAnimationHit = false;
+    private bool animationHitReceived = false;
+    private const float animationEventTimeout = 2f;
     
     public override void EnterState(EnemyStateManager enemy)
     {
@@ -52,21 +54,9 @@ public class SuccubiAttack : EnemyBaseState
 
     public override void UpdateState(EnemyStateManager enemy)
     {
-        // Zmniejszaj timer dla range preview
         if (showAttackRange)
         {
-            attackRangeTimer -= Time.deltaTime;
-            if (attackRangeTimer <= 0)
-            {
-                showAttackRange = false;
-                if (lineRenderer != null)
-                    lineRenderer.positionCount = 0; // Wyczyść LineRenderer
-            }
-            else
-            {
-                // Rysuj range przy użyciu LineRenderer
-                DrawAttackRangeLineRenderer(enemy, attackAngle);
-            }
+            DrawAttackRangeLineRenderer(enemy, attackAngle);
         }
         else if (lineRenderer != null)
         {
@@ -78,7 +68,11 @@ public class SuccubiAttack : EnemyBaseState
             currentAttackId++;
             int attackId = currentAttackId;
             LockAttackData(enemy);
+            animationHitReceived = false;
+            waitingForAnimationHit = true;
+            showAttackRange = true;
             isAttacking = false; // Prevent multiple coroutines from starting
+            enemy.animator.SetTrigger("attack");
             enemy.StartCoroutine(AttackCoroutine(enemy, stats.attackCooldown, attackId));
         }
     }
@@ -91,30 +85,32 @@ public class SuccubiAttack : EnemyBaseState
             yield break; 
         }
 
-        if(CalculateAttackRange(enemy, attackAngle))
+        if (!CalculateAttackRange(enemy, attackAngle))
         {
-            // Pokaż range przez 0.5 sekund
-            showAttackRange = true;
-            attackRangeTimer = enemy.offsetTime;
-            enemy.animator.SetTrigger("attack");
-            yield return new WaitForSeconds(enemy.offsetTime);
+            enemy.currentState = enemy.chaseState;
+            enemy.currentState.EnterState(enemy);
+            FinishAttack(attackId);
+            yield break;
+        }
 
-            if (attackId != currentAttackId)
-            {
-                yield break;
-            }
+        float elapsed = 0f;
+        while (!animationHitReceived && attackId == currentAttackId && elapsed < animationEventTimeout)
+        {
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
 
-            if(CalculateAttackRange(enemy, attackAngle))
-            {
-                enemyReference.DealDamage(player, stats.damage);
-                player.GetComponent<IConditionable>()?.Stun(1f);
-                yield return new WaitForSeconds(cooldown);
-            }
-            else
-            {
-                enemy.currentState = enemy.chaseState;
-                enemy.currentState.EnterState(enemy);
-            }
+        if (attackId != currentAttackId)
+        {
+            yield break;
+        }
+
+        bool canHitPlayer = animationHitReceived && CalculateAttackRange(enemy, attackAngle);
+        if (canHitPlayer)
+        {
+            enemyReference.DealDamage(player, stats.damage);
+            player.GetComponent<IConditionable>()?.Stun(1f);
+            yield return new WaitForSeconds(cooldown);
         }
         else
         {
@@ -132,8 +128,30 @@ public class SuccubiAttack : EnemyBaseState
             return;
         }
 
+        waitingForAnimationHit = false;
+        animationHitReceived = false;
+        showAttackRange = false;
+        if (lineRenderer != null)
+        {
+            lineRenderer.positionCount = 0;
+        }
         ClearLockedAttackData();
         isAttacking = true;
+    }
+
+    public void OnAttackAnimationHit(EnemyStateManager enemy)
+    {
+        if (!waitingForAnimationHit)
+        {
+            return;
+        }
+
+        if (enemy == null || enemy.currentState != enemy.attackState)
+        {
+            return;
+        }
+
+        animationHitReceived = true;
     }
 
     bool CalculateAttackRange(EnemyStateManager enemy, float attackAngle)
