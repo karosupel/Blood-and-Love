@@ -38,6 +38,7 @@ public class Dialogue : MonoBehaviour
     [SerializeField, Min(0.001f)] private float letterDelaySeconds = 0.03f;
 
     [Header("Flow")]
+    [SerializeField] private bool disableDialoguePanelObjectWhenHidden = true;
 
     private Coroutine playRoutine;
     private float cachedTimeScale = 1f;
@@ -48,7 +49,10 @@ public class Dialogue : MonoBehaviour
     {
         if (dialoguePanel != null)
         {
-            dialoguePanel.SetActive(false);
+            if (disableDialoguePanelObjectWhenHidden)
+            {
+                dialoguePanel.SetActive(false);
+            }
         }
 
         if (dialogueText != null)
@@ -215,7 +219,10 @@ public class Dialogue : MonoBehaviour
 
         if (dialoguePanel != null)
         {
-            dialoguePanel.SetActive(false);
+            if (disableDialoguePanelObjectWhenHidden)
+            {
+                dialoguePanel.SetActive(false);
+            }
         }
 
         if (dialogueText != null)

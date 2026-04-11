@@ -1,26 +1,36 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class CutsceneManager : MonoBehaviour
 {
+    [System.Serializable]
+    public class CutsceneEntry
+    {
+        [Header("Content")]
+        public string enterDialogueId;
+        public Sprite image;
+        public string exitDialogueId;
+
+        [Header("Optional Scene Transition")]
+        public bool transitionToScene;
+        public int nextSceneBuildIndex = -1;
+        [Min(0f)] public float sceneTransitionDelaySeconds = 1f;
+    }
+
     [Header("References")]
     [SerializeField] private Dialogue dialogue;
 
-    [Header("Dialogue IDs")]
-    [SerializeField] private string introDialogueId;
-    [SerializeField] private string afterImageDialogueId;
+    [Header("Cutscene List")]
+    [SerializeField] private List<CutsceneEntry> cutscenes = new List<CutsceneEntry>();
+    [SerializeField, Min(0)] private int startCutsceneIndex;
 
     [Header("Cutscene Image")]
-    [SerializeField] private Sprite cutsceneSprite;
     [SerializeField] private Image cutsceneImage;
     [SerializeField] private Transform foregroundImageParent;
     [SerializeField] private Transform backgroundImageParent;
-
-    [Header("Scene Transition")]
-    [SerializeField] private int nextSceneBuildIndex = -1;
-    [SerializeField, Min(0f)] private float sceneTransitionDelaySeconds = 1f;
 
     [Header("Flow")]
     [SerializeField] private bool playOnStart = true;
@@ -38,7 +48,7 @@ public class CutsceneManager : MonoBehaviour
     {
         if (playOnStart)
         {
-            StartCutscene();
+            StartCutsceneSequence(startCutsceneIndex);
         }
     }
 
@@ -59,9 +69,26 @@ public class CutsceneManager : MonoBehaviour
 
     public void StartCutscene()
     {
+        StartCutsceneSequence(startCutsceneIndex);
+    }
+
+    public void StartCutsceneSequence(int fromIndex = 0)
+    {
         if (dialogue == null)
         {
             Debug.LogWarning("CutsceneManager: Dialogue reference is missing.");
+            return;
+        }
+
+        if (cutscenes == null || cutscenes.Count == 0)
+        {
+            Debug.LogWarning("CutsceneManager: cutscene list is empty.");
+            return;
+        }
+
+        if (fromIndex < 0 || fromIndex >= cutscenes.Count)
+        {
+            Debug.LogWarning($"CutsceneManager: cutscene start index {fromIndex} is out of range.");
             return;
         }
 
@@ -70,34 +97,58 @@ public class CutsceneManager : MonoBehaviour
             StopCoroutine(cutsceneRoutine);
         }
 
-        cutsceneRoutine = StartCoroutine(CutsceneRoutine());
+        cutsceneRoutine = StartCoroutine(CutsceneRoutine(fromIndex));
     }
 
-    private IEnumerator CutsceneRoutine()
+    private IEnumerator CutsceneRoutine(int fromIndex)
     {
-        yield return PlayDialogueAndWait(introDialogueId);
-
-        ShowFullscreenImage();
-
-        cachedTimeScale = Time.timeScale;
-        waitingForFullscreenClick = true;
-        Time.timeScale = 0f;
-
-        yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
-
-        Time.timeScale = cachedTimeScale;
-        waitingForFullscreenClick = false;
-
-        MoveImageToBackground();
-
-        yield return PlayDialogueAndWait(afterImageDialogueId);
-
-        if (sceneTransitionDelaySeconds > 0f)
+        for (int i = fromIndex; i < cutscenes.Count; i++)
         {
-            yield return new WaitForSecondsRealtime(sceneTransitionDelaySeconds);
+            CutsceneEntry entry = cutscenes[i];
+            if (entry == null)
+            {
+                continue;
+            }
+
+            yield return PlayDialogueAndWait(entry.enterDialogueId);
+
+            if (entry.image != null)
+            {
+                ShowFullscreenImage(entry.image);
+
+                cachedTimeScale = Time.timeScale;
+                waitingForFullscreenClick = true;
+                Time.timeScale = 0f;
+
+                yield return WaitForFreshLeftClick();
+
+                Time.timeScale = cachedTimeScale;
+                waitingForFullscreenClick = false;
+
+                MoveImageToBackground(entry.image);
+            }
+            else
+            {
+                SetCutsceneImageVisible(false);
+            }
+
+            yield return PlayDialogueAndWait(entry.exitDialogueId);
+
+            if (entry.transitionToScene)
+            {
+                if (entry.sceneTransitionDelaySeconds > 0f)
+                {
+                    yield return new WaitForSecondsRealtime(entry.sceneTransitionDelaySeconds);
+                }
+
+                if (TryLoadScene(entry.nextSceneBuildIndex))
+                {
+                    cutsceneRoutine = null;
+                    yield break;
+                }
+            }
         }
 
-        TransitionToNextScene();
         cutsceneRoutine = null;
     }
 
@@ -122,50 +173,35 @@ public class CutsceneManager : MonoBehaviour
         yield return new WaitUntil(() => !dialogue.IsPlaying);
     }
 
-    private void ShowFullscreenImage()
+    private void ShowFullscreenImage(Sprite spriteToUse)
     {
-        Sprite spriteToUse = ResolveCutsceneSprite();
-
-        if (spriteToUse == null)
-        {
-            Debug.LogWarning("CutsceneManager: no cutscene sprite assigned. Set Cutscene Sprite or assign a sprite on Fullscreen Image.");
-        }
-
         if (cutsceneImage != null)
         {
             cutsceneImage.sprite = spriteToUse;
         }
 
+        SetForegroundLayerOrder();
         MoveCutsceneImageToParent(foregroundImageParent);
         SetCutsceneImageVisible(spriteToUse != null);
     }
 
-    private void MoveImageToBackground()
+    private void MoveImageToBackground(Sprite spriteToUse)
     {
-        Sprite spriteToUse = ResolveCutsceneSprite();
-
         if (cutsceneImage != null)
         {
             cutsceneImage.sprite = spriteToUse;
         }
 
+        SetBackgroundLayerOrder();
         MoveCutsceneImageToParent(backgroundImageParent);
         SetCutsceneImageVisible(spriteToUse != null);
     }
 
-    private Sprite ResolveCutsceneSprite()
+    private IEnumerator WaitForFreshLeftClick()
     {
-        if (cutsceneSprite != null)
-        {
-            return cutsceneSprite;
-        }
-
-        if (cutsceneImage != null)
-        {
-            return cutsceneImage.sprite;
-        }
-
-        return null;
+        // Ignore the click that may have just advanced dialogue.
+        yield return new WaitUntil(() => !Input.GetMouseButton(0));
+        yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
     }
 
     private void MoveCutsceneImageToParent(Transform parent)
@@ -175,7 +211,24 @@ public class CutsceneManager : MonoBehaviour
             return;
         }
 
-        cutsceneImage.rectTransform.SetParent(parent, false);
+        RectTransform parentRect = parent as RectTransform;
+        if (parentRect == null)
+        {
+            Debug.LogWarning("CutsceneManager: image parent should be a UI RectTransform under a Canvas.");
+            return;
+        }
+
+        RectTransform imageRect = cutsceneImage.rectTransform;
+        imageRect.SetParent(parentRect, false);
+        imageRect.localScale = Vector3.one;
+        imageRect.localRotation = Quaternion.identity;
+        imageRect.anchoredPosition = Vector2.zero;
+
+        // Stretch to fill the chosen layer parent so ordering is controlled by hierarchy.
+        imageRect.anchorMin = Vector2.zero;
+        imageRect.anchorMax = Vector2.one;
+        imageRect.offsetMin = Vector2.zero;
+        imageRect.offsetMax = Vector2.zero;
     }
 
     private void SetCutsceneImageVisible(bool isVisible)
@@ -186,17 +239,34 @@ public class CutsceneManager : MonoBehaviour
         }
 
         cutsceneImage.gameObject.SetActive(isVisible);
-        cutsceneImage.enabled = isVisible && ResolveCutsceneSprite() != null;
+        cutsceneImage.enabled = isVisible && cutsceneImage.sprite != null;
     }
 
-    private void TransitionToNextScene()
+    private void SetForegroundLayerOrder()
     {
-        if (nextSceneBuildIndex >= 0 && nextSceneBuildIndex < SceneManager.sceneCountInBuildSettings)
+        if (foregroundImageParent != null)
         {
-            SceneManager.LoadScene(nextSceneBuildIndex);
-            return;
+            foregroundImageParent.SetAsLastSibling();
+        }
+    }
+
+    private void SetBackgroundLayerOrder()
+    {
+        if (backgroundImageParent != null)
+        {
+            backgroundImageParent.SetAsFirstSibling();
+        }
+    }
+
+    private bool TryLoadScene(int sceneBuildIndex)
+    {
+        if (sceneBuildIndex >= 0 && sceneBuildIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(sceneBuildIndex);
+            return true;
         }
 
-        Debug.LogWarning("CutsceneManager: next scene build index is out of range.");
+        Debug.LogWarning($"CutsceneManager: scene build index {sceneBuildIndex} is out of range.");
+        return false;
     }
 }
