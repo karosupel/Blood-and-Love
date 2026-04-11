@@ -16,16 +16,15 @@ public class SuccubiRetreat : EnemyBaseState
     public override void UpdateState(EnemyStateManager enemy)
     {
         Vector2 direction = (enemy.transform.position - player.transform.position).normalized;
-        enemy.transform.rotation = Quaternion.LookRotation(Vector3.forward, direction);
         enemy.transform.position += (Vector3)direction * Time.deltaTime * enemy.stats.moveSpeed;
-        // if (direction[0] < 0)
-        // {
-        //     enemy.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-        // }
-        // else
-        // {
-        //     enemy.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
-        // }
+        if (direction[0] < 0)
+        {
+            enemy.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+        }
+        else
+        {
+            enemy.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        }
 
         if (Vector2.Distance(enemy.transform.position, player.transform.position) > enemy.stats.retreatDistance)
         {

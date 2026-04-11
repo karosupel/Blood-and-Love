@@ -18,6 +18,10 @@ public class SuccubiAttack : EnemyBaseState
     private bool showAttackRange = false;
     private float attackRangeTimer;
     private LineRenderer lineRenderer;
+    private bool hasLockedAttackData = false;
+    private Vector2 lockedAttackDirection = Vector2.up;
+    private Vector2 lastDirection = Vector2.up;
+    private int currentAttackId = 0;
     
     public override void EnterState(EnemyStateManager enemy)
     {
@@ -71,16 +75,19 @@ public class SuccubiAttack : EnemyBaseState
         
         if (isAttacking && player != null)
         {
+            currentAttackId++;
+            int attackId = currentAttackId;
+            LockAttackData(enemy);
             isAttacking = false; // Prevent multiple coroutines from starting
-            enemy.StartCoroutine(AttackCoroutine(enemy, stats.attackCooldown));
-            enemy.animator.SetTrigger("attack");
+            enemy.StartCoroutine(AttackCoroutine(enemy, stats.attackCooldown, attackId));
         }
     }
 
-    public IEnumerator AttackCoroutine(EnemyStateManager enemy, float cooldown)
+    public IEnumerator AttackCoroutine(EnemyStateManager enemy, float cooldown, int attackId)
     {
         if (player == null)
         {
+            FinishAttack(attackId);
             yield break; 
         }
 
@@ -89,8 +96,13 @@ public class SuccubiAttack : EnemyBaseState
             // Pokaż range przez 0.5 sekund
             showAttackRange = true;
             attackRangeTimer = enemy.offsetTime;
-
+            enemy.animator.SetTrigger("attack");
             yield return new WaitForSeconds(enemy.offsetTime);
+
+            if (attackId != currentAttackId)
+            {
+                yield break;
+            }
 
             if(CalculateAttackRange(enemy, attackAngle))
             {
@@ -98,24 +110,30 @@ public class SuccubiAttack : EnemyBaseState
                 player.GetComponent<IConditionable>()?.Stun(1f);
                 yield return new WaitForSeconds(cooldown);
             }
-            else if (!CalculateAttackRange(enemy, attackAngle))
+            else
             {
                 enemy.currentState = enemy.chaseState;
                 enemy.currentState.EnterState(enemy);
             }
         }
-        else if (!CalculateAttackRange(enemy, attackAngle))
+        else
         {
             enemy.currentState = enemy.chaseState;
             enemy.currentState.EnterState(enemy);
         }
-        else if (Vector2.Distance(enemy.transform.position, player.transform.position) < stats.retreatRange) //player is too close after attack, switch to retreat state
+
+        FinishAttack(attackId); // Allow attacking again after cooldown if player is still in range
+    }
+
+    private void FinishAttack(int attackId)
+    {
+        if (attackId != currentAttackId)
         {
-            enemy.currentState = enemy.retreatState;
-            enemy.currentState.EnterState(enemy);
+            return;
         }
 
-        isAttacking = true; // Allow attacking again after cooldown if player is still in range
+        ClearLockedAttackData();
+        isAttacking = true;
     }
 
     bool CalculateAttackRange(EnemyStateManager enemy, float attackAngle)
@@ -125,12 +143,18 @@ public class SuccubiAttack : EnemyBaseState
             return false;
         }
 
-        Vector2 directionToPlayer = (player.transform.position - enemy.transform.position).normalized;
+        Vector2 attackOrigin = GetAttackOrigin(enemy);
+        Vector2 toPlayer = (Vector2)player.transform.position - attackOrigin;
+        if (toPlayer.sqrMagnitude <= 0.0001f)
+        {
+            return true;
+        }
 
-        Vector2 forward = enemy.transform.up;
+        Vector2 directionToPlayer = toPlayer.normalized;
+        Vector2 forward = GetAttackForwardDirection(enemy);
 
         float angle = Vector2.Angle(forward, directionToPlayer);
-        float distance = Vector2.Distance(enemy.transform.position, player.transform.position);
+        float distance = Vector2.Distance(attackOrigin, player.transform.position);
 
         bool inAngle = angle <= attackAngle / 2f;
         bool inRange = distance <= stats.attackRange;
@@ -140,14 +164,58 @@ public class SuccubiAttack : EnemyBaseState
         return inAngle && inRange;
     }
 
-    private Vector2 lastDirection = Vector2.right;
+    private void LockAttackData(EnemyStateManager enemy)
+    {
+        if (player == null)
+        {
+            return;
+        }
+
+        Vector2 directionToPlayer = (player.transform.position - enemy.transform.position);
+        if (directionToPlayer.sqrMagnitude > 0.0001f)
+        {
+            lastDirection = directionToPlayer.normalized;
+        }
+
+        lockedAttackDirection = lastDirection;
+        hasLockedAttackData = true;
+    }
+
+    private void ClearLockedAttackData()
+    {
+        hasLockedAttackData = false;
+    }
+
+    private Vector2 GetAttackForwardDirection(EnemyStateManager enemy)
+    {
+        if (hasLockedAttackData)
+        {
+            return lockedAttackDirection;
+        }
+
+        if (player != null)
+        {
+            Vector2 directionToPlayer = (player.transform.position - enemy.transform.position);
+            if (directionToPlayer.sqrMagnitude > 0.0001f)
+            {
+                lastDirection = directionToPlayer.normalized;
+            }
+        }
+
+        return lastDirection;
+    }
+
+    private Vector2 GetAttackOrigin(EnemyStateManager enemy)
+    {
+        return enemy.transform.position;
+    }
 
     public void DrawAttackRangeLineRenderer(EnemyStateManager enemy, float attackAngle)
     {
         if (enemyReference == null || lineRenderer == null) return;
 
-        Transform t = enemyReference.transform;
-        Vector2 forward = t.up;
+        Vector2 forward = GetAttackForwardDirection(enemy);
+        Vector2 attackOrigin = GetAttackOrigin(enemy);
         float halfAngle = attackAngle / 2f;
 
         Vector2 leftDir = Quaternion.Euler(0, 0, -halfAngle) * forward;
@@ -157,22 +225,22 @@ public class SuccubiAttack : EnemyBaseState
         List<Vector3> positions = new List<Vector3>();
 
         // Punkt środka
-        positions.Add(t.position);
+        positions.Add(attackOrigin);
 
         // Lewy kierunek na koniec rangu
-        positions.Add(t.position + (Vector3)(leftDir * stats.attackRange));
+        positions.Add((Vector3)attackOrigin + (Vector3)(leftDir * stats.attackRange));
 
         // Arc od lewej do prawej
         for (int i = 1; i <= segments; i++)
         {
             float angle = -halfAngle + (attackAngle / segments) * i;
             Vector2 dir = Quaternion.Euler(0, 0, angle) * forward;
-            positions.Add(t.position + (Vector3)(dir * stats.attackRange));
+            positions.Add((Vector3)attackOrigin + (Vector3)(dir * stats.attackRange));
         }
 
         // Prawy kierunek i powrót do środka
-        positions.Add(t.position + (Vector3)(rightDir * stats.attackRange));
-        positions.Add(t.position);
+        positions.Add((Vector3)attackOrigin + (Vector3)(rightDir * stats.attackRange));
+        positions.Add(attackOrigin);
 
         // Ustaw pozycje w LineRenderer
         lineRenderer.positionCount = positions.Count;
