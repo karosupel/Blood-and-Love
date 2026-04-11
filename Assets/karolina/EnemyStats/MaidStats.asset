@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: MaidStats
   m_EditorClassIdentifier: 
   health: 30
-  damage: 10
-  moveSpeed: 3.5
-  knockbackForce: 30
+  damage: 20
+  moveSpeed: 4
+  knockbackForce: 20
   attackRange: 2
   attackCooldown: 0.52
   retreatRange: 0

@@ -10,25 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0909e0acfd57fe243b2badb7c9291246, type: 3}
-  m_Name: Blue_SpawnPoints
+  m_Name: Green_SpawnPoints
   m_EditorClassIdentifier: 
-  roomTypeId: Blue_
+  roomTypeId: Green_
   spawnPoints:
   - enemyPrefab: {fileID: 6860560017868925659, guid: 56b49cda01ba02a4cadf6d41666138c4, type: 3}
-    enemyHellPrefab: {fileID: 272378486287725452, guid: 20d9f6396634d554a83de064194783e6, type: 3}
-    position: {x: -5, y: -11, z: 0}
-  - enemyPrefab: {fileID: 272378486287725452, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
     enemyHellPrefab: {fileID: 6860560017868925659, guid: 56b49cda01ba02a4cadf6d41666138c4, type: 3}
-    position: {x: -7, y: -11, z: 0}
+    position: {x: -1, y: -22, z: 0}
+  - enemyPrefab: {fileID: 6860560017868925659, guid: 56b49cda01ba02a4cadf6d41666138c4, type: 3}
+    enemyHellPrefab: {fileID: 6860560017868925659, guid: 56b49cda01ba02a4cadf6d41666138c4, type: 3}
+    position: {x: -3, y: -22, z: 0}
+  - enemyPrefab: {fileID: 6860560017868925659, guid: 56b49cda01ba02a4cadf6d41666138c4, type: 3}
+    enemyHellPrefab: {fileID: 6860560017868925659, guid: 56b49cda01ba02a4cadf6d41666138c4, type: 3}
+    position: {x: 1, y: -22, z: 0}
+  - enemyPrefab: {fileID: 6860560017868925659, guid: 56b49cda01ba02a4cadf6d41666138c4, type: 3}
+    enemyHellPrefab: {fileID: 0}
+    position: {x: 3, y: -22, z: 0}
   - enemyPrefab: {fileID: 272378486287725452, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
-    enemyHellPrefab: {fileID: 272378486287725452, guid: 20d9f6396634d554a83de064194783e6, type: 3}
-    position: {x: -5, y: -13, z: 0}
-  - enemyPrefab: {fileID: 8532529733808721580, guid: 1a0e6a9200156bf4aba86d6ae61cf4e4, type: 3}
     enemyHellPrefab: {fileID: 0}
-    position: {x: -3, y: -11, z: 0}
-  - enemyPrefab: {fileID: 6860560017868925659, guid: 56b49cda01ba02a4cadf6d41666138c4, type: 3}
+    position: {x: -2, y: -25, z: 0}
+  - enemyPrefab: {fileID: 272378486287725452, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
     enemyHellPrefab: {fileID: 0}
-    position: {x: -3, y: -11, z: 0}
-  - enemyPrefab: {fileID: 6860560017868925659, guid: 56b49cda01ba02a4cadf6d41666138c4, type: 3}
-    enemyHellPrefab: {fileID: 0}
-    position: {x: -3, y: -11, z: 0}
+    position: {x: 2, y: -25, z: 0}

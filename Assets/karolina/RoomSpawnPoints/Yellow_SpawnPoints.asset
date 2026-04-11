@@ -16,13 +16,19 @@ MonoBehaviour:
   spawnPoints:
   - enemyPrefab: {fileID: 8532529733808721580, guid: 1a0e6a9200156bf4aba86d6ae61cf4e4, type: 3}
     enemyHellPrefab: {fileID: 8532529733808721580, guid: eff6309495261994dbea3b8298964398, type: 3}
+    position: {x: -7, y: -33, z: 0}
+  - enemyPrefab: {fileID: 8532529733808721580, guid: 1a0e6a9200156bf4aba86d6ae61cf4e4, type: 3}
+    enemyHellPrefab: {fileID: 0}
+    position: {x: -6, y: -33, z: 0}
+  - enemyPrefab: {fileID: 8532529733808721580, guid: 1a0e6a9200156bf4aba86d6ae61cf4e4, type: 3}
+    enemyHellPrefab: {fileID: 0}
+    position: {x: -5, y: -33, z: 0}
+  - enemyPrefab: {fileID: 8532529733808721580, guid: 1a0e6a9200156bf4aba86d6ae61cf4e4, type: 3}
+    enemyHellPrefab: {fileID: 0}
+    position: {x: -6, y: -35, z: 0}
+  - enemyPrefab: {fileID: 8532529733808721580, guid: 1a0e6a9200156bf4aba86d6ae61cf4e4, type: 3}
+    enemyHellPrefab: {fileID: 0}
     position: {x: 5, y: -34, z: 0}
   - enemyPrefab: {fileID: 8532529733808721580, guid: 1a0e6a9200156bf4aba86d6ae61cf4e4, type: 3}
-    enemyHellPrefab: {fileID: 8532529733808721580, guid: eff6309495261994dbea3b8298964398, type: 3}
-    position: {x: 3, y: -34, z: 0}
-  - enemyPrefab: {fileID: 8532529733808721580, guid: 1a0e6a9200156bf4aba86d6ae61cf4e4, type: 3}
-    enemyHellPrefab: {fileID: 8532529733808721580, guid: eff6309495261994dbea3b8298964398, type: 3}
-    position: {x: -3, y: -34, z: 0}
-  - enemyPrefab: {fileID: 8532529733808721580, guid: 1a0e6a9200156bf4aba86d6ae61cf4e4, type: 3}
-    enemyHellPrefab: {fileID: 8532529733808721580, guid: eff6309495261994dbea3b8298964398, type: 3}
-    position: {x: -5, y: -34, z: 0}
+    enemyHellPrefab: {fileID: 0}
+    position: {x: 6, y: -34, z: 0}
