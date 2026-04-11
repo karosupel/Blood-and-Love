@@ -3737,8 +3737,8 @@ MonoBehaviour:
   creditsBackButton: {fileID: 1352710427}
   creditsBackButtonName: CreditsExitButton
   menuInSeparateScene: 1
-  firstStageSceneName: Tutorial
-  firstStageBuildIndex: 2
+  firstStageSceneName: Cutscene
+  firstStageBuildIndex: 4
   pauseGameWhileOpen: 1
 --- !u!4 &1648378431
 Transform:

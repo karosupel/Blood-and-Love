@@ -10,6 +10,7 @@ public class BossHealth : MonoBehaviour, IDamageable
     public event Action OnHealthChanged;
     public event Action<int> OnHeartsChanged;
     public event Action<bool> OnAfterlifeStateChanged;
+    public event Action OnBossDefeated;
 
     [SerializeField] public float maxHealth = 200f;
     public float currentHealth;
@@ -119,6 +120,7 @@ public class BossHealth : MonoBehaviour, IDamageable
     void Annihilate()
     {
         Debug.Log("Boss has been annihilated! Now, you can live happily, sure that he won't ever come back!");
+        OnBossDefeated?.Invoke();
         Destroy(gameObject);
     }
 

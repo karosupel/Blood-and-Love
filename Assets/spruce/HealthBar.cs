@@ -30,6 +30,8 @@ public class HealthBar : MonoBehaviour
     private static readonly int LiquidColorID = Shader.PropertyToID("_LiquidColor");
     private static readonly int WaveSpeedID   = Shader.PropertyToID("_WaveSpeed");
 
+    [SerializeField] private bool bossHealthBar = false;
+
     void Awake()
     {
         ResolveHealthSource();
@@ -116,7 +118,7 @@ public class HealthBar : MonoBehaviour
             : Color.Lerp(criticalColor, damagedColor,  _currentFill * 2f);
 
         // Add a subtle shimmer when health is full.
-        if (_isAtFullHealth)
+        if (_isAtFullHealth && !bossHealthBar)
         {
             float sparkle = (Mathf.Sin(Time.time * sparkleSpeed) * 0.5f + 0.5f) * sparkleStrength;
             liquidColor = Color.Lerp(liquidColor, Color.red, sparkle);

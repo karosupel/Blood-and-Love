@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/MainScene/BossScene.unity
     guid: 764db28fa68155e40b723f7085f34e9b
+  - enabled: 1
+    path: Assets/MainScene/Cutscene.unity
+    guid: 682e166ea52000442bb2f0c790215f4a
   m_configObjects: {}
