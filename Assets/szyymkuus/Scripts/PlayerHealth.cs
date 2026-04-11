@@ -42,6 +42,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     [SerializeField] float cameraShakeCooldown = 0.5f;
     float lastImpulse = 0;
     bool isPanicked = false;
+    SpriteRenderer spriteRenderer;
 
     // CAMERA
 
@@ -55,6 +56,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         OnHealthChanged?.Invoke();
         OnHeartsChanged?.Invoke(hearts);
         impulseSource = GetComponent<CinemachineImpulseSource>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     void Start()
@@ -249,6 +251,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
             lastImpulse = Time.time;
         }
         
+        StartCoroutine(ColorCoroutine(0.1f, Color.red));
         if (!isInAfterlife)
         {
             currentHealth -= damage;
@@ -272,6 +275,14 @@ public class PlayerHealth : MonoBehaviour, IDamageable
             StartCoroutine(InvincibilityCoroutine(afterlifeInvincibilityDuration));
         }
 
+    }
+
+    IEnumerator ColorCoroutine(float duration, Color targetColor)
+    {
+        Color basicColor = Color.white;
+        spriteRenderer.color = targetColor;
+        yield return new WaitForSeconds(duration);
+        spriteRenderer.color = basicColor;
     }
 
     public void TakeHeart()

@@ -50,6 +50,8 @@ public class PlayerAbilities : MonoBehaviour
     [SerializeField] private AbilityCooldownUI basicAttackIcon;
     [SerializeField] private AbilityCooldownUI specialAttackIcon;
 
+    Animator animator;
+
 
 
     CinemachineImpulseSource impulseSource;
@@ -60,6 +62,7 @@ public class PlayerAbilities : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
         col = GetComponent<BoxCollider2D>();
         impulseSource = GetComponent<CinemachineImpulseSource>();
+        animator = GetComponent<Animator>();
     }
     void Start()
     {
@@ -121,6 +124,7 @@ public class PlayerAbilities : MonoBehaviour
         {
             return;
         }
+        animator.SetTrigger("clawsTrigger");
         Debug.Log("Basic attack used!");
         Vector2 attackPoint = GetAttackPoint();
         Collider2D[] hits = Physics2D.OverlapCircleAll(attackPoint, basicAttackRadius, enemyLayers);
@@ -187,19 +191,22 @@ public class PlayerAbilities : MonoBehaviour
 
     IEnumerator LesbianPanicCoroutine()
     {
+        animator.SetBool("isPanicked", true);
         lesbianPanicActive = true;
         playerController.IncreaseSpeed(panicSpeedMultiplier);
-        Color originalSpriteColor = sprite.color;
-        sprite.color = Color.yellow;
+        //Color originalSpriteColor = sprite.color;
+        //sprite.color = Color.yellow;
         //col.enabled = false; // Zastąpione przez Layer
         gameObject.layer = immunityLayer;
         health.SetPanicked(true);
         playerController.Cleanse();
         playerController.ApplyStunImmunity(panicDuration);
-        yield return new WaitForSeconds(panicDuration);
+        yield return new WaitForSeconds(panicDuration - 1.5f);
+        animator.SetBool("isPanicked", false);
+        yield return new WaitForSeconds(1.5f);
         lesbianPanicActive = false;
         playerController.NormalSpeed();
-        sprite.color = originalSpriteColor;
+        //sprite.color = originalSpriteColor;
         //col.enabled = true;
         gameObject.layer = defaultLayer;
         health.SetPanicked(false);
