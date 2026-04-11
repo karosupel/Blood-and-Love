@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using Unity.VisualScripting;
 
 public class BossHealth : MonoBehaviour, IDamageable
 {
@@ -59,6 +60,7 @@ public class BossHealth : MonoBehaviour, IDamageable
         if (!isInAfterlife)
         {
             currentHealth -= damage;
+            StartCoroutine(QuickRecolor());
             OnHealthChanged?.Invoke();
             Debug.Log("Boss HP: " + currentHealth + "/" + maxHealth);
             if (currentHealth <= 0)
@@ -73,6 +75,22 @@ public class BossHealth : MonoBehaviour, IDamageable
             bossController.ForceNewBarrier();
         }
     }
+
+        public IEnumerator QuickRecolor()
+    {
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null)
+        {
+            yield break;
+        }
+
+        spriteRenderer.color = Color.red;
+        yield return new WaitForSeconds(0.1f);
+        spriteRenderer.color = Color.white;
+
+
+    }
+
 
     void TakeHeart()
     {

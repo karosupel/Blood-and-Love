@@ -52,6 +52,13 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     {
         playerAbilities = GetComponent<PlayerAbilities>();
         currentHealth = maxHealth;
+
+        if (BossFightRestartState.TryConsumeHeartRestore(out int restoredHearts))
+        {
+            hearts = restoredHearts;
+            isInAfterlife = false;
+        }
+
         OnHealthChanged?.Invoke();
         OnHeartsChanged?.Invoke(hearts);
         impulseSource = GetComponent<CinemachineImpulseSource>();
@@ -72,8 +79,33 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     public void Die()
     {
+        if (ShouldShowImmediateGameOverInBossPhaseOne())
+        {
+            Debug.Log("Player died in boss phase 1. Showing Game Over without sending player to afterlife.");
+            TriggerImmediateGameOver();
+            return;
+        }
+
         Debug.Log("Player has died! Fight for your life!");
         GoToHell();
+    }
+
+    bool ShouldShowImmediateGameOverInBossPhaseOne()
+    {
+        BossHealth bossHealth = FindObjectOfType<BossHealth>();
+        if (bossHealth == null)
+        {
+            return false;
+        }
+
+        return !bossHealth.IsInAfterlife;
+    }
+
+    void TriggerImmediateGameOver()
+    {
+        hearts = -1;
+        OnHeartsChanged?.Invoke(hearts);
+        Annihilate();
     }
 
     public void GoToHell()
