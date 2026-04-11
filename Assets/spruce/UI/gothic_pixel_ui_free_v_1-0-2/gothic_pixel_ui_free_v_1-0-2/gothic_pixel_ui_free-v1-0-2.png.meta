@@ -294,7 +294,7 @@ TextureImporter:
         width: 44
         height: 18
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -315,7 +315,7 @@ TextureImporter:
         width: 44
         height: 18
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -336,7 +336,7 @@ TextureImporter:
         width: 32
         height: 7
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -344,6 +344,48 @@ TextureImporter:
       bones: []
       spriteID: f3376dcac0a0f7c4ab2c00ec7802952d
       internalID: 1637098738
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gothic_pixel_ui_free-v1-0-2_12
+      rect:
+        serializedVersion: 2
+        x: 1216
+        y: 756
+        width: 9
+        height: 28
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e3adccd780d36a44ad90d03031b94c3
+      internalID: 463142407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gothic_pixel_ui_free-v1-0-2_13
+      rect:
+        serializedVersion: 2
+        x: 1189
+        y: 708
+        width: 54
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 259e9bbf54ae2504da6ba66119a2d5cc
+      internalID: -967517529
       vertices: []
       indices: 
       edges: []
@@ -363,6 +405,8 @@ TextureImporter:
       gothic_pixel_ui_free-v1-0-2_1: 506357402
       gothic_pixel_ui_free-v1-0-2_10: -1442371384
       gothic_pixel_ui_free-v1-0-2_11: 1637098738
+      gothic_pixel_ui_free-v1-0-2_12: 463142407
+      gothic_pixel_ui_free-v1-0-2_13: -967517529
       gothic_pixel_ui_free-v1-0-2_2: -1266465781
       gothic_pixel_ui_free-v1-0-2_3: 150675218
       gothic_pixel_ui_free-v1-0-2_4: -336420722
