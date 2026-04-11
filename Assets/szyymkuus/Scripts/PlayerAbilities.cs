@@ -20,6 +20,7 @@ public class PlayerAbilities : MonoBehaviour
 
 
     [Header("Special Attack")]
+    [SerializeField] GameObject beam;
     [SerializeField] float specialAttackDamage = 10f;
     [SerializeField] float specialAttackRange = 5f;
     [SerializeField] float specialAttackCooldown = 3f;
@@ -160,6 +161,8 @@ public class PlayerAbilities : MonoBehaviour
         Vector2 direction = (mousePos - transform.position).normalized;
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, specialAttackRange, enemyLayers);
         Debug.DrawLine(transform.position, transform.position + (Vector3)direction*specialAttackRange, Color.red, 1f);
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        Instantiate(beam, transform.position + (Vector3)direction*specialAttackRange*0.5f, Quaternion.Euler(0f, 0f, angle - 90f));
         IDamageable damageable = hit.collider?.GetComponent<IDamageable>();
         if (damageable != null)
         {
