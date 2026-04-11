@@ -13,11 +13,7 @@ public class Barrier : MonoBehaviour
         animator = GetComponent<Animator>();
         if (animator != null)
         {
-            Debug.Log("Barrier Animator found. Is playing: " + !animator.enabled);
-            if (animator.runtimeAnimatorController == null)
-            {
-                Debug.LogWarning("WARNING: Animator Controller is NULL on Barrier!");
-            }
+
         }
         else
         {
@@ -30,14 +26,9 @@ public class Barrier : MonoBehaviour
     public void Init(BossAbilities boss)
     {
         bossAbilities = boss;
-        Debug.Log("Barrier initialized with BossAbilities: " + (boss != null));
     }
 
 
-    public void Test()
-    {
-  Debug.Log("AnimationEventPlayed!");      
-    }
     public void BarrierFinished()
     {
         if (bossAbilities == null)

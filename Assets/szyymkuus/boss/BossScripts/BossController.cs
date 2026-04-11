@@ -57,6 +57,7 @@ public class BossController : MonoBehaviour
 
     void Update()
     {
+
         if(!abilities.IsBarrierActive() && (lastBarrierTime + barrierCooldownMinimum) <= Time.time && !barrierRequested)
         {
             StartCoroutine(RequestBarrierCoroutine(Random.Range(barrierCooldownMinimum, barrierCooldownMaximum)));
@@ -142,14 +143,25 @@ public class BossController : MonoBehaviour
         isBarrierActive = false;
     }
 
+    // public void ForceNewBarrier()
+    // {
+    //     if(isBarrierActive)
+    //     {
+    //         return;
+    //     }
+
+    //     lastBarrierTime = float.MinValue;
+    //     isBarrierActive = false;
+    //}
+
     public void ForceNewBarrier()
     {
-        if(isBarrierActive)
+        Debug.Log("Forcing new barrier. IsBarrierActive: " + abilities.IsBarrierActive());
+        if(abilities.IsBarrierActive())
         {
             return;
         }
-        lastBarrierTime = float.MinValue;
-        isBarrierActive = false;
+        StartCoroutine(RequestBarrierCoroutine(0f));
     }
 
     #endregion

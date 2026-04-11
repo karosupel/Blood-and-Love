@@ -152,6 +152,12 @@ public class BossAbilities : MonoBehaviour
     #region Barrier
     public void Barrier()
     {
+
+        GameObject[] crystals = GameObject.FindGameObjectsWithTag("BarrierCrystal");
+        foreach (var crystal in crystals)
+        {
+            Destroy(crystal);
+        }
         activeCrystalCount = 0;
 
         if (activeBarrierInstance != null)
@@ -159,6 +165,7 @@ public class BossAbilities : MonoBehaviour
             Destroy(activeBarrierInstance);
             activeBarrierInstance = null;
         }
+        Debug.Log("Preparing new Barrier");
 
         int crystalsToSpawn = Random.Range(minimumCrystals, maximumCrystals + 1);
         for (int i = 0; i < crystalsToSpawn; i++)

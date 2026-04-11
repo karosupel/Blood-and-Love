@@ -147,10 +147,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable
             impulseSource.GenerateImpulse(force: 1f);
             lastImpulse = Time.time;
         }
-        else
-        {
-            Debug.Log("Camera shake cooldown: " + (lastImpulse + cameraShakeCooldown - Time.time));
-        }
         
         if (!isInAfterlife)
         {
@@ -159,8 +155,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable
             {
                 playerAbilities.LesbianPanic();
             }
-
-            Debug.Log("Player took damage, current health: " + currentHealth);
             if (currentHealth <= 0)
             {
                 currentHealth = 0f;
@@ -183,7 +177,6 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     {
         hearts--;
         OnHeartsChanged?.Invoke(hearts);
-        Debug.Log("Gracz trafiony w zaświatach! pozostało " + hearts + " serc!");
         if (hearts < 0) //do zmiany, zależnie czy gracz kiedy ma 0 serc nadal może żyć
         {
             Annihilate();

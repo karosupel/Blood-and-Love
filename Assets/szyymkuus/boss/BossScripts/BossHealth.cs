@@ -8,7 +8,7 @@ public class BossHealth : MonoBehaviour, IDamageable
     [SerializeField] public float maxHealth = 200f;
     public float currentHealth;
     [SerializeField] public int maxHearts = 5;
-    [SerializeField] public float afterlifeInvincibilityDuration = 1f;
+    [SerializeField] public float afterlifeInvincibilityDuration = 2f;
     int currentHearts;
     public bool isInvincible;
     GameObject player;
@@ -49,7 +49,7 @@ public class BossHealth : MonoBehaviour, IDamageable
         else
         {
             TakeHeart();
-            StartCoroutine(InvincibilityCoroutine(afterlifeInvincibilityDuration));
+            //StartCoroutine(InvincibilityCoroutine(afterlifeInvincibilityDuration));
             bossController.ForceNewBarrier();
         }
     }

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - RoomManager
   - SpawnerManager
+  - BarrierCrystal
   layers:
   - Default
   - TransparentFX
