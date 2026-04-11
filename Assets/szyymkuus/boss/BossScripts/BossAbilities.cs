@@ -40,6 +40,7 @@ public class BossAbilities : MonoBehaviour
     bool hellishVariant = false;
     Animator bossAnimator;
     Animator barrierAnimator;
+    BossHealth bossHealth;
 
 
     void Awake()
@@ -48,6 +49,7 @@ public class BossAbilities : MonoBehaviour
         bossController = GetComponent<BossController>();
         bossCollider = GetComponent<Collider2D>();
         bossAnimator = GetComponent<Animator>();
+        bossHealth = GetComponent<BossHealth>();
     }
     // Start is called before the first frame update
     void Start()
@@ -58,7 +60,10 @@ public class BossAbilities : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (activeBarrierInstance != null)
+        {
+            activeBarrierInstance.transform.position = transform.position;
+        }
     }
     
     #region Meteor Storm
@@ -72,7 +77,6 @@ public class BossAbilities : MonoBehaviour
 
     IEnumerator MeteorStormCoroutine(int meteors, float time, float innerRadius, float outerRadius)
     {
-        yield return new WaitForSeconds(1f); // Short delay before meteors start falling, can be adjusted or removed as needed
         float interval = time / meteors;
         for (int i = 0; i < meteors; i++)
         {
@@ -99,7 +103,6 @@ public class BossAbilities : MonoBehaviour
     }
     IEnumerator ProjectileStormCoroutine()
     {
-        yield return new WaitForSeconds(1f); // Short delay before starting to fire projectiles, can be adjusted or removed as needed
         float elapsed = 0f;
         float fireInterval = 1f / projectileStormRateOfFire; // Convert projectiles/second to interval
         float nextFireTime = 0f;
@@ -316,5 +319,12 @@ public class BossAbilities : MonoBehaviour
     public bool IsBarrierActive()
     {
         return activeBarrierInstance != null;
+    }
+
+    public void ResumeCasting()
+    {
+        bossController.pauseCasting = false;
+        bossHealth.isInvincible = false;
+        
     }
 }
