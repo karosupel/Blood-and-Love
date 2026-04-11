@@ -8,6 +8,9 @@ public class BatAttacking : BatBaseState
 
     Coroutine attackCoroutine;
 
+    private bool showAttackRange = false;
+    private float attackRangeTimer;
+
     public override void EnterState(BatStateManager enemy)
     {
         player = enemy.player;
@@ -26,13 +29,31 @@ public class BatAttacking : BatBaseState
 
     public override void UpdateState(BatStateManager enemy)
     {
-        // brak logiki w Update — wszystko w coroutine
+        // Zmniejszaj timer dla range preview
+        if (showAttackRange)
+        {
+            attackRangeTimer -= Time.deltaTime;
+            if (attackRangeTimer <= 0)
+            {
+                showAttackRange = false;
+            }
+        }
     }
 
     IEnumerator AttackPlayer(BatStateManager enemy)
     {
-        // małe opóźnienie przed dash
-        yield return new WaitForSeconds(0.3f);
+        // Pokaż range ataku przez 0.5 sekund
+        showAttackRange = true;
+        attackRangeTimer = 0.5f;
+        yield return new WaitForSeconds(0.5f);
+
+        // Sprawdź czy gracz nadal jest w zasięgu
+        if (Vector2.Distance(enemy.transform.position, player.transform.position) > stats.attackRange)
+        {
+            enemy.currentState = enemy.repositionState;
+            enemy.currentState.EnterState(enemy);
+            yield break;
+        }
 
         // zapamiętaj pozycję gracza (dash w konkretny punkt)
         Vector2 dashTarget = player.transform.position;
@@ -70,10 +91,15 @@ public class BatAttacking : BatBaseState
 
     public void DrawAttackRangeGizmo(BatStateManager enemy)
     {
-        if (player == null) return;
+        if (player == null || stats == null) return;
 
         Gizmos.color = Color.red;
-        Gizmos.DrawLine(enemy.transform.position, player.transform.position);
+        Gizmos.DrawWireSphere(enemy.transform.position, stats.attackRange);
+    }
+
+    public bool ShouldShowAttackRange()
+    {
+        return showAttackRange;
     }
 
     public void OnCollisionEnter2DState(BatStateManager enemy, Collision2D collision)

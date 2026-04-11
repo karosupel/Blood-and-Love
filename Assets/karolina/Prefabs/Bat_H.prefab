@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 5718432611206770077}
   - component: {fileID: 3486900348996580925}
   m_Layer: 3
-  m_Name: Bat
+  m_Name: Bat_H
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -78,7 +78,7 @@ SpriteRenderer:
   m_SortingLayerID: -997090627
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1462458039, guid: b54453afc49a4a34caddee712d3c30b7, type: 3}
+  m_Sprite: {fileID: 264181382, guid: 934d9c906451da243aabf764ba67668f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -109,7 +109,7 @@ MonoBehaviour:
   isInAfterlife: 0
   materialPlaneColor: {r: 1, g: 1, b: 1, a: 1}
   afterlifeColor: {r: 1, g: 1, b: 1, a: 1}
-  animator: {fileID: 0}
+  animator: {fileID: 3486900348996580925}
 --- !u!61 &2604491540010952568
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -206,7 +206,7 @@ Animator:
   m_GameObject: {fileID: 8532529733808721580}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 3831431c776253641a1cb618951bc34b, type: 2}
+  m_Controller: {fileID: 9100000, guid: bc75c77f3bf1141479fdcc59549ca471, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

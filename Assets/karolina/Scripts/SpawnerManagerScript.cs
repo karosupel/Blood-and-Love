@@ -57,7 +57,7 @@ public class SpawnerManagerScript : MonoBehaviour
             { "Red_", () => SpawnEnemies() },
             { "Green_", SpawnEnemyGreen },
             { "Boss_", SpawnEnemyBoss },
-            { "Yellow_", SpawnEnemyYellow }
+            { "Yellow_", () => SpawnEnemies() }
         };
 
         spawnDataDict = new Dictionary<string, RoomSpawnData>();
