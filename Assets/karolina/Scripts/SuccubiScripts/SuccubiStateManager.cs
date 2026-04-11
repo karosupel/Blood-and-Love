@@ -42,19 +42,6 @@ public class EnemyStateManager : MonoBehaviour
         currentState.FixedUpdateState(this);
     }
 
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        if (currentState != null)
-        {
-            if (currentState is SuccubiAttack attack)
-            {
-                //attack.DrawAttack(this);
-                if (attack.ShouldShowAttackRange())
-                {
-                    attack.DrawAttackRange(this, attack.attackAngle);
-                }
-            }
-        }
-    }
+    // Rysowanie range'a odbywa się teraz w UpdateState() przy użyciu LineRenderer
+    // zamiast w OnDrawGizmos()
 }

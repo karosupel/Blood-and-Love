@@ -33,10 +33,10 @@ public class MusicManager : MonoBehaviour
             return;
         }
 
-        if(backgroudMusic != null)
-        {
-            PlayBackgroundMusic(false, backgroudMusic);
-        }
+
+
+        PlayBackgroundMusic(false, backgroudMusic);
+
 
         if (musicSlider != null)
         {
