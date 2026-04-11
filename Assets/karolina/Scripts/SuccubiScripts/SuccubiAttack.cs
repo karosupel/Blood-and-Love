@@ -17,6 +17,7 @@ public class SuccubiAttack : EnemyBaseState
     
     private bool showAttackRange = false;
     private float attackRangeTimer;
+    private LineRenderer lineRenderer;
     
     public override void EnterState(EnemyStateManager enemy)
     {
@@ -28,6 +29,21 @@ public class SuccubiAttack : EnemyBaseState
         LayerMask mask = LayerMask.GetMask("WhipLayer");
 		interactFilter.SetLayerMask(mask);
         interactFilter.useTriggers = true;
+        
+        // Zainicjalizuj LineRenderer
+        if (enemyReference != null)
+        {
+            lineRenderer = enemyReference.GetComponent<LineRenderer>();
+            if (lineRenderer == null)
+            {
+                lineRenderer = enemyReference.gameObject.AddComponent<LineRenderer>();
+            }
+            lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
+            lineRenderer.startColor = Color.red;
+            lineRenderer.endColor = Color.red;
+            lineRenderer.startWidth = 0.1f;
+            lineRenderer.endWidth = 0.1f;
+        }
     }
 
     public override void UpdateState(EnemyStateManager enemy)
@@ -39,7 +55,18 @@ public class SuccubiAttack : EnemyBaseState
             if (attackRangeTimer <= 0)
             {
                 showAttackRange = false;
+                if (lineRenderer != null)
+                    lineRenderer.positionCount = 0; // Wyczyść LineRenderer
             }
+            else
+            {
+                // Rysuj range przy użyciu LineRenderer
+                DrawAttackRangeLineRenderer(enemy, attackAngle);
+            }
+        }
+        else if (lineRenderer != null)
+        {
+            lineRenderer.positionCount = 0; // Upewni się, że LineRenderer jest pusty gdy nie rysujemy
         }
         
         if (isAttacking && player != null)
@@ -114,35 +141,43 @@ public class SuccubiAttack : EnemyBaseState
 
     private Vector2 lastDirection = Vector2.right;
 
-    public void DrawAttackRange(EnemyStateManager enemy, float attackAngle)
+    public void DrawAttackRangeLineRenderer(EnemyStateManager enemy, float attackAngle)
     {
-        if (enemyReference == null) return;
+        if (enemyReference == null || lineRenderer == null) return;
 
         Transform t = enemyReference.transform;
-
-        Gizmos.color = Color.red;
-
         Vector2 forward = t.up;
-
         float halfAngle = attackAngle / 2f;
 
         Vector2 leftDir = Quaternion.Euler(0, 0, -halfAngle) * forward;
         Vector2 rightDir = Quaternion.Euler(0, 0, halfAngle) * forward;
 
-        Gizmos.DrawLine(t.position, t.position + (Vector3)(leftDir * stats.attackRange));
-        Gizmos.DrawLine(t.position, t.position + (Vector3)(rightDir * stats.attackRange));
-
         int segments = 20;
-        Vector3 prevPoint = t.position + (Vector3)(leftDir * stats.attackRange);
+        List<Vector3> positions = new List<Vector3>();
 
+        // Punkt środka
+        positions.Add(t.position);
+
+        // Lewy kierunek na koniec rangu
+        positions.Add(t.position + (Vector3)(leftDir * stats.attackRange));
+
+        // Arc od lewej do prawej
         for (int i = 1; i <= segments; i++)
         {
             float angle = -halfAngle + (attackAngle / segments) * i;
             Vector2 dir = Quaternion.Euler(0, 0, angle) * forward;
-            Vector3 newPoint = t.position + (Vector3)(dir * stats.attackRange);
+            positions.Add(t.position + (Vector3)(dir * stats.attackRange));
+        }
 
-            Gizmos.DrawLine(prevPoint, newPoint);
-            prevPoint = newPoint;
+        // Prawy kierunek i powrót do środka
+        positions.Add(t.position + (Vector3)(rightDir * stats.attackRange));
+        positions.Add(t.position);
+
+        // Ustaw pozycje w LineRenderer
+        lineRenderer.positionCount = positions.Count;
+        for (int i = 0; i < positions.Count; i++)
+        {
+            lineRenderer.SetPosition(i, positions[i]);
         }
     }
 
