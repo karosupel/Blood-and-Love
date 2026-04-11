@@ -54,6 +54,11 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (PauseMenuManager.IsPaused)
+        {
+            return;
+        }
+
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
         movementDirection = new Vector2 (horizontal, vertical).normalized;
@@ -110,6 +115,12 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (PauseMenuManager.IsPaused)
+        {
+            rb.velocity = Vector2.zero;
+            return;
+        }
+
         if (isStunned)
         {
             return;

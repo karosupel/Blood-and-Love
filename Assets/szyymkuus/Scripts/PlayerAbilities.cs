@@ -76,6 +76,11 @@ public class PlayerAbilities : MonoBehaviour
 
     public void UseUltimate(bool addHeart = true, bool freeUse = false)
     {
+        if (PauseMenuManager.IsPaused)
+        {
+            return;
+        }
+
         if (health.CurrentHealth >= health.MaxHealth || freeUse)
         {
             Debug.Log("Ultimate used!");
@@ -107,6 +112,11 @@ public class PlayerAbilities : MonoBehaviour
 
     public void UseBasicAttack()
     {
+        if (PauseMenuManager.IsPaused)
+        {
+            return;
+        }
+
         if (lastBasicAttackTime + basicAttackCooldown > Time.time || lesbianPanicActive)
         {
             return;
@@ -131,6 +141,11 @@ public class PlayerAbilities : MonoBehaviour
 
     public void UseSpecialAttack()
     {
+        if (PauseMenuManager.IsPaused)
+        {
+            return;
+        }
+
         if (lastSpecialAttackTime + specialAttackCooldown > Time.time || lesbianPanicActive)
         {
             return;
@@ -153,6 +168,11 @@ public class PlayerAbilities : MonoBehaviour
 
     public void LesbianPanic()
     {
+        if (PauseMenuManager.IsPaused)
+        {
+            return;
+        }
+
         if (lastPanicTime + panicCooldown <= Time.time)
         {
             lastPanicTime = Time.time;

@@ -152,6 +152,12 @@ public class GameUIHandler : MonoBehaviour
 
     private void HandleHelpPointerEnter()
     {
+        if (PauseMenuManager.IsPaused)
+        {
+            HideAllHelpCanvases();
+            return;
+        }
+
         helpHoverCounter++;
 
         if (helpHideCoroutine != null)
@@ -161,6 +167,14 @@ public class GameUIHandler : MonoBehaviour
         }
 
         ShowActiveHelpCanvas();
+    }
+
+    private void Update()
+    {
+        if (PauseMenuManager.IsPaused)
+        {
+            HideAllHelpCanvases();
+        }
     }
 
     private void HandleHelpPointerExit()
