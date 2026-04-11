@@ -43,6 +43,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     float lastImpulse = 0;
     bool isPanicked = false;
     SpriteRenderer spriteRenderer;
+    Animator animator;
 
     // CAMERA
 
@@ -57,6 +58,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         OnHeartsChanged?.Invoke(hearts);
         impulseSource = GetComponent<CinemachineImpulseSource>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        animator = GetComponent<Animator>();
     }
 
     void Start()
@@ -75,7 +77,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     public void Die()
     {
         Debug.Log("Player has died! Fight for your life!");
-        GoToHell();
+        animator.SetTrigger("die");
     }
 
     public void GoToHell()

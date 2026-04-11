@@ -207,9 +207,9 @@ public class PlayerAbilities : MonoBehaviour
         health.SetPanicked(true);
         playerController.Cleanse();
         playerController.ApplyStunImmunity(panicDuration);
-        yield return new WaitForSeconds(panicDuration - 1.5f);
+        yield return new WaitForSeconds(panicDuration - 2f);
         animator.SetBool("isPanicked", false);
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(2f);
         lesbianPanicActive = false;
         playerController.NormalSpeed();
         //sprite.color = originalSpriteColor;
