@@ -179,6 +179,7 @@ MonoBehaviour:
   dashVelocity: 20
   dashDuration: 0.15
   dashCooldown: 4
+  dashIcon: {fileID: 0}
 --- !u!114 &176212138154439505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,6 +202,7 @@ MonoBehaviour:
   dashDamageMultiplier: 0.5
   startInHellInTutorialScene: 1
   tutorialSceneName: Tutorial
+  popUpManagerScript: {fileID: 0}
   cameraShakeCooldown: 0.5
 --- !u!114 &1893873750689975605
 MonoBehaviour:
@@ -222,13 +224,13 @@ MonoBehaviour:
   basicAttackRange: 1
   basicAttackRadius: 0.7
   basicAttackCooldown: 1
-  basicAttackLifesteal: 0.1
-  specialAttackDamage: 10
+  basicAttackLifesteal: 0.3
+  specialAttackDamage: 20
   specialAttackRange: 5
   specialAttackCooldown: 3
   specialAttackLifesteal: 0.1
-  ultimateDamage: 100
-  ultimateRadius: 10
+  ultimateDamage: 50
+  ultimateRadius: 4.5
   ultimateMaxHealthCost: 0.7
   ultimateLifesteal: 0.05
   panicDuration: 3
@@ -236,6 +238,8 @@ MonoBehaviour:
   panicSpeedMultiplier: 1.5
   defaultLayer: 6
   immunityLayer: 7
+  basicAttackIcon: {fileID: 0}
+  specialAttackIcon: {fileID: 0}
 --- !u!114 &-1062201922653140822
 MonoBehaviour:
   m_ObjectHideFlags: 0

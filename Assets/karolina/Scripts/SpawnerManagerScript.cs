@@ -59,7 +59,7 @@ public class SpawnerManagerScript : MonoBehaviour
         {
             { "Blue_", () => SpawnEnemies() },
             { "Red_", () => SpawnEnemies() },
-            { "Green_", SpawnEnemyGreen },
+            { "Green_", () => SpawnEnemies() },
             { "Boss_", SpawnEnemyBoss },
             { "Yellow_", () => SpawnEnemies() }
         };
