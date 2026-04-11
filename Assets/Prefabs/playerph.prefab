@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 1893873750689975605}
   - component: {fileID: -1062201922653140822}
   - component: {fileID: -9977444188906493}
+  - component: {fileID: -3147226717114866069}
   m_Layer: 6
   m_Name: playerph
   m_TagString: Player
@@ -33,9 +34,9 @@ Transform:
   m_GameObject: {fileID: 7360516727195389011}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.05, y: 8.83, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalPosition: {x: -0.053, y: 8.796, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -80,7 +81,7 @@ SpriteRenderer:
   m_SortingLayerID: -997090627
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 1758412348, guid: aa65d16d3ba36ba4f8e06f08d9f55c0e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -150,7 +151,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: -0.03815365}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -161,7 +162,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.42, y: 0.74863434}
   m_EdgeRadius: 0
 --- !u!114 &8961522646229606399
 MonoBehaviour:
@@ -177,8 +178,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   basicSpeed: 5
   dashVelocity: 20
-  dashDuration: 0.15
-  dashCooldown: 4
+  dashDuration: 0.2
+  dashCooldown: 3
   dashIcon: {fileID: 0}
 --- !u!114 &176212138154439505
 MonoBehaviour:
@@ -198,8 +199,8 @@ MonoBehaviour:
   currentHealth: 0
   hellOffset: {x: -30, y: 0, z: 0}
   afterlifeInvincibilityDuration: 1
-  materialInvincibilityDuration: 0.2
-  dashDamageMultiplier: 0.5
+  materialInvincibilityDuration: 0.3
+  dashDamageMultiplier: 0.35
   startInHellInTutorialScene: 1
   tutorialSceneName: Tutorial
   popUpManagerScript: {fileID: 0}
@@ -223,16 +224,16 @@ MonoBehaviour:
   basicAttackDamage: 10
   basicAttackRange: 1
   basicAttackRadius: 0.7
-  basicAttackCooldown: 1
-  basicAttackLifesteal: 0.3
+  basicAttackCooldown: 0.8
+  basicAttackLifesteal: 0.5
   specialAttackDamage: 20
   specialAttackRange: 5
   specialAttackCooldown: 3
-  specialAttackLifesteal: 0.1
-  ultimateDamage: 50
+  specialAttackLifesteal: 0.25
+  ultimateDamage: 25
   ultimateRadius: 4.5
-  ultimateMaxHealthCost: 0.7
-  ultimateLifesteal: 0.05
+  ultimateMaxHealthCost: 0.5
+  ultimateLifesteal: 0.1
   panicDuration: 3
   panicCooldown: 60
   panicSpeedMultiplier: 1.5
@@ -305,3 +306,24 @@ MonoBehaviour:
     m_DissipationDistance: 100
     m_PropagationSpeed: 343
   m_DefaultVelocity: {x: -0.3, y: -0.7, z: 0}
+--- !u!95 &-3147226717114866069
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7360516727195389011}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7adb8ed128efacb459802fa10176eb91, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
