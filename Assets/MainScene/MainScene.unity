@@ -11704,22 +11704,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 176212138154439505, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
-      propertyPath: dashDamageMultiplier
-      value: 0.35
-      objectReference: {fileID: 0}
-    - target: {fileID: 176212138154439505, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
-      propertyPath: materialInvincibilityDuration
-      value: 0.3
-      objectReference: {fileID: 0}
     - target: {fileID: 1893873750689975605, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
       propertyPath: cam
       value: 
       objectReference: {fileID: 1196204657}
-    - target: {fileID: 1893873750689975605, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
-      propertyPath: ultimateDamage
-      value: 25
-      objectReference: {fileID: 0}
     - target: {fileID: 1893873750689975605, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
       propertyPath: basicAttackIcon
       value: 
@@ -11728,25 +11716,17 @@ PrefabInstance:
       propertyPath: specialAttackIcon
       value: 
       objectReference: {fileID: 190755695}
-    - target: {fileID: 1893873750689975605, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
-      propertyPath: ultimateLifesteal
-      value: 0.1
+    - target: {fileID: 7136555675231522108, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 1893873750689975605, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
-      propertyPath: basicAttackCooldown
-      value: 0.8
+    - target: {fileID: 7136555675231522108, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 1893873750689975605, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
-      propertyPath: basicAttackLifesteal
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1893873750689975605, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
-      propertyPath: ultimateMaxHealthCost
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1893873750689975605, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
-      propertyPath: specialAttackLifesteal
-      value: 0.25
+    - target: {fileID: 7136555675231522108, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7136555675231522108, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
       propertyPath: m_LocalPosition.x
@@ -11788,6 +11768,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7136555675231522108, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7360516727195389011, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
       propertyPath: m_Name
       value: playerph
@@ -11796,18 +11780,6 @@ PrefabInstance:
       propertyPath: dashIcon
       value: 
       objectReference: {fileID: 190755697}
-    - target: {fileID: 8961522646229606399, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
-      propertyPath: dashCooldown
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8961522646229606399, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
-      propertyPath: dashDuration
-      value: 0.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8961522646229606399, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
-      propertyPath: dashVelocity
-      value: 20
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

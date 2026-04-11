@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     float lastDashTime = float.MinValue;
     float dashTimer;
     bool isDashing;
+    Animator animator;
 
     bool isStunned = false;
     int stunImmune = 0;
@@ -44,7 +45,8 @@ public class PlayerController : MonoBehaviour
         health = GetComponent<PlayerHealth>();
         speed = basicSpeed;
         col = GetComponent<BoxCollider2D>();
-    }
+        animator = GetComponent<Animator>();
+        }
     // Start is called before the first frame update
     void Start()
     {
@@ -58,6 +60,7 @@ public class PlayerController : MonoBehaviour
         {
             return;
         }
+        RotatePlayer();
 
         horizontal = Input.GetAxisRaw("Horizontal");
         vertical = Input.GetAxisRaw("Vertical");
@@ -117,8 +120,20 @@ public class PlayerController : MonoBehaviour
         }
 
 
+    }
 
-
+    void RotatePlayer()
+    {
+        Vector2 mousePos = abilities.GetMousePosition();
+        float direction = mousePos.x - transform.position.x;
+        if (direction > 0)
+        {
+            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        }
+        else
+        {
+            transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+        }
     }
 
     void FixedUpdate()
@@ -145,6 +160,14 @@ public class PlayerController : MonoBehaviour
             return;
         }
         movement = movementDirection * speed * Time.fixedDeltaTime;
+        if (movement == Vector2.zero)
+        {
+            animator.SetBool("isWalking", false);
+        }
+        else
+        {
+            animator.SetBool("isWalking", true);
+        }
         rb.MovePosition(rb.position + movement);
 
     }
