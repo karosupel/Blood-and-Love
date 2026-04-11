@@ -5,6 +5,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 
 public class GameUIHandler : MonoBehaviour
 {
@@ -42,10 +43,28 @@ public class GameUIHandler : MonoBehaviour
     [SerializeField] private Vector4 helpButtonRaycastPadding = new Vector4(24f, 24f, 24f, 24f);
     [SerializeField] private float helpHideDelaySeconds = 0.08f;
 
+    [Header("Game Over UI")]
+    [SerializeField] private GameObject gameOverRoot;
+    [SerializeField] private Button gameOverMainMenuButton;
+    [SerializeField] private int mainMenuBuildIndex = 0;
+    [SerializeField] private bool freezeTimeOnGameOver = true;
+    [SerializeField] private float gameOverFadeDuration = 0.3f;
+    [SerializeField] private float gameOverScaleDuration = 0.22f;
+    [SerializeField] private float gameOverStartScale = 0.9f;
+    [SerializeField] private AudioClip gameOverMusicClip;
+    [Range(0f, 1f)]
+    [SerializeField] private float gameOverMusicVolume = 1f;
+    [SerializeField] private bool loopGameOverMusic = false;
+
 
     private Action<int> onRoomChoiceSelected;
     private int helpHoverCounter;
     private Coroutine helpHideCoroutine;
+    private bool isGameOverShown;
+    private float previousTimeScale = 1f;
+    private bool previousAudioPaused;
+    private Coroutine gameOverAnimationCoroutine;
+    private AudioSource gameOverAudioSource;
 
     public bool IsChoosingRoom { get; private set; }
 
@@ -83,11 +102,48 @@ public class GameUIHandler : MonoBehaviour
             HelpCanvasHell.SetActive(false);
         }
 
+        if (gameOverRoot != null)
+        {
+            gameOverRoot.SetActive(false);
+        }
+
+        EnsureGameOverAudioSource();
+        BindGameOverButton();
+
         ConfigureHelpButtonHitZone();
         ConfigureHelpButtonHover();
         ConfigureHelpCanvasButtonHover(HelpCanvasButton);
         ConfigureHelpCanvasButtonHover(HelpCanvasHellButton);
 
+    }
+
+    private void EnsureGameOverAudioSource()
+    {
+        if (gameOverAudioSource != null)
+        {
+            return;
+        }
+
+        gameOverAudioSource = GetComponent<AudioSource>();
+        if (gameOverAudioSource == null)
+        {
+            gameOverAudioSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        gameOverAudioSource.playOnAwake = false;
+        gameOverAudioSource.loop = false;
+        gameOverAudioSource.ignoreListenerPause = true;
+    }
+
+    private void BindGameOverButton()
+    {
+        if (gameOverMainMenuButton == null)
+        {
+            return;
+        }
+
+        gameOverMainMenuButton.onClick.RemoveListener(ReturnToMainMenu);
+        gameOverMainMenuButton.onClick.AddListener(ReturnToMainMenu);
     }
 
     private void ConfigureHelpButtonHover()
@@ -442,7 +498,7 @@ public class GameUIHandler : MonoBehaviour
         }
 
         HealthChanged();
-        HeartsChanged(PlayerHealth != null ? PlayerHealth.Hearts : 0);
+        HeartsChanged(PlayerHealth != null ? PlayerHealth.hearts : 0);
         AfterlifeStateChanged(PlayerHealth != null && PlayerHealth.IsInAfterlife);
     }
 
@@ -454,6 +510,8 @@ public class GameUIHandler : MonoBehaviour
             PlayerHealth.OnAfterlifeStateChanged -= AfterlifeStateChanged;
             PlayerHealth.OnHeartsChanged -= HeartsChanged;
         }
+
+        RestoreTimeAndAudioIfNeeded();
     }
 
 
@@ -502,6 +560,154 @@ public class GameUIHandler : MonoBehaviour
         {
             heartText.text = hearts.ToString();
         }
+
+        if (hearts < 0)
+        {
+            ShowGameOver();
+        }
+    }
+
+    private void ShowGameOver()
+    {
+        if (isGameOverShown)
+        {
+            return;
+        }
+
+        isGameOverShown = true;
+        IsChoosingRoom = false;
+        onRoomChoiceSelected = null;
+
+        HideAllHelpCanvases();
+
+        if (roomChoiceRoot != null)
+        {
+            roomChoiceRoot.SetActive(false);
+        }
+
+        if (freezeTimeOnGameOver)
+        {
+            previousTimeScale = Time.timeScale;
+            previousAudioPaused = AudioListener.pause;
+            Time.timeScale = 0f;
+            AudioListener.pause = true;
+        }
+
+        if (gameOverRoot != null)
+        {
+            SetUiVisible(gameOverRoot, true);
+
+            if (gameOverAnimationCoroutine != null)
+            {
+                StopCoroutine(gameOverAnimationCoroutine);
+            }
+
+            gameOverAnimationCoroutine = StartCoroutine(AnimateGameOverUi());
+        }
+
+        PlayGameOverMusic();
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
+    private IEnumerator AnimateGameOverUi()
+    {
+        if (gameOverRoot == null)
+        {
+            gameOverAnimationCoroutine = null;
+            yield break;
+        }
+
+        CanvasGroup canvasGroup = gameOverRoot.GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+        {
+            canvasGroup = gameOverRoot.AddComponent<CanvasGroup>();
+        }
+
+        RectTransform rectTransform = gameOverRoot.GetComponent<RectTransform>();
+
+        float initialScale = Mathf.Max(0.01f, gameOverStartScale);
+        float fadeDuration = Mathf.Max(0.01f, gameOverFadeDuration);
+        float scaleDuration = Mathf.Max(0.01f, gameOverScaleDuration);
+        float totalDuration = Mathf.Max(fadeDuration, scaleDuration);
+
+        canvasGroup.alpha = 0f;
+        if (rectTransform != null)
+        {
+            rectTransform.localScale = Vector3.one * initialScale;
+        }
+
+        float elapsed = 0f;
+        while (elapsed < totalDuration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+
+            float fadeT = Mathf.Clamp01(elapsed / fadeDuration);
+            canvasGroup.alpha = fadeT;
+
+            if (rectTransform != null)
+            {
+                float scaleT = Mathf.Clamp01(elapsed / scaleDuration);
+                float easedScaleT = 1f - Mathf.Pow(1f - scaleT, 3f);
+                float scale = Mathf.Lerp(initialScale, 1f, easedScaleT);
+                rectTransform.localScale = Vector3.one * scale;
+            }
+
+            yield return null;
+        }
+
+        canvasGroup.alpha = 1f;
+        if (rectTransform != null)
+        {
+            rectTransform.localScale = Vector3.one;
+        }
+
+        gameOverAnimationCoroutine = null;
+    }
+
+    private void PlayGameOverMusic()
+    {
+        if (gameOverMusicClip == null)
+        {
+            return;
+        }
+
+        EnsureGameOverAudioSource();
+        if (gameOverAudioSource == null)
+        {
+            return;
+        }
+
+        gameOverAudioSource.clip = gameOverMusicClip;
+        gameOverAudioSource.volume = Mathf.Clamp01(gameOverMusicVolume);
+        gameOverAudioSource.loop = loopGameOverMusic;
+        gameOverAudioSource.ignoreListenerPause = true;
+        gameOverAudioSource.Play();
+    }
+
+    private void ReturnToMainMenu()
+    {
+        RestoreTimeAndAudioIfNeeded();
+
+        if (mainMenuBuildIndex >= 0 && mainMenuBuildIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(mainMenuBuildIndex);
+            return;
+        }
+
+        Debug.LogWarning("GameUIHandler: Main menu build index is out of range. Set Main Menu Build Index on GameUIHandler.");
+    }
+
+    private void RestoreTimeAndAudioIfNeeded()
+    {
+        if (!freezeTimeOnGameOver || !isGameOverShown)
+        {
+            return;
+        }
+
+        Time.timeScale = previousTimeScale;
+        AudioListener.pause = previousAudioPaused;
     }
 
     private void SetBorderChildrenColor(Color targetColor)
