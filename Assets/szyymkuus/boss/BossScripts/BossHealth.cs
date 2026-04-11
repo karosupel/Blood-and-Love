@@ -111,6 +111,6 @@ public class BossHealth : MonoBehaviour, IDamageable
         Vector3 hellPosition = player.transform.position + hellOffset;
         transform.position = hellPosition;
         isInAfterlife = true;
-        Debug.Log("Boss has been sent to Hell! But will he stay there?");
+        Debug.Log("Boss has been sent to Hell!");
     }
 }
