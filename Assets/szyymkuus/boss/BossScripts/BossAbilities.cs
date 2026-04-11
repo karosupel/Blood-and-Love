@@ -32,13 +32,14 @@ public class BossAbilities : MonoBehaviour
     [SerializeField] GameObject barrierPrefab;
     [Header("Other")]
     [SerializeField] GameObject player;
-    Animator animator;
 
     int activeCrystalCount;
     GameObject activeBarrierInstance;
     BossController bossController;
     Collider2D bossCollider;
     bool hellishVariant = false;
+    Animator bossAnimator;
+    Animator barrierAnimator;
 
 
     void Awake()
@@ -46,7 +47,7 @@ public class BossAbilities : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         bossController = GetComponent<BossController>();
         bossCollider = GetComponent<Collider2D>();
-        animator = GetComponent<Animator>();
+        bossAnimator = GetComponent<Animator>();
     }
     // Start is called before the first frame update
     void Start()
@@ -63,7 +64,6 @@ public class BossAbilities : MonoBehaviour
     #region Meteor Storm
     public float MeteorStorm()
     {
-        animator.SetBool("isCastingMeteorStorm", true);
         StartCoroutine(MeteorStormCoroutine(farMeteors, meteorStormDuration, meteorStormFarInnerRadius, meteorStormFarOuterRadius));
         StartCoroutine(MeteorStormCoroutine(closeMeteors, meteorStormDuration, meteorStormCloseInnerRadius, meteorStormCloseOuterRadius));
         return meteorStormDuration;
@@ -87,14 +87,13 @@ public class BossAbilities : MonoBehaviour
             yield return new WaitForSeconds(interval);
             bossController.SetMeteorStormTimer(Time.time);
         }
-        animator.SetBool("isCastingMeteorStorm", false);
+        bossAnimator.SetBool("isCastingMeteorStorm", false);
     }
     #endregion
 
     #region Projectile Storm
     public float ProjectileStorm()
     {
-        animator.SetBool("isCastingProjectileStorm", true);
         StartCoroutine(ProjectileStormCoroutine());
         return projectileStormDuration;
     }
@@ -141,9 +140,9 @@ public class BossAbilities : MonoBehaviour
             }
             yield return null;
         }
+        bossAnimator.SetBool("isCastingProjectileStorm", false);
         Debug.Log($"Projectile Storm Elapsed Time: {elapsed}");
         bossController.SetProjectileStormTimer(Time.time);
-        animator.SetBool("isCastingProjectileStorm", false);
     }
     #endregion
 
@@ -182,7 +181,7 @@ public class BossAbilities : MonoBehaviour
                     {
                         wallHit = true;
                         Debug.DrawLine(transform.position, spawnPos, Color.red, 2f);
-                        Debug.Log($"Invalid crystal position at {spawnPos}, hit {hit.collider.name}");
+                        //Debug.Log($"Invalid crystal position at {spawnPos}, hit {hit.collider.name}");
                         break;
                     }
                 }
@@ -194,10 +193,18 @@ public class BossAbilities : MonoBehaviour
                     if (crystal != null)
                     {
                         crystal.Initialize(this);
+                        if (hellishVariant)
+                        {
+                            crystal.GetComponent<SpriteRenderer>().color = Color.red;
+                        }
+                        else
+                        {
+                            crystal.GetComponent<SpriteRenderer>().color = Color.green;
+                        }
                         activeCrystalCount++;
                     }
                     Debug.DrawLine(transform.position, spawnPos, Color.green, 2f);
-                    Debug.Log($"Spawned barrier crystal at {spawnPos}");
+                    //Debug.Log($"Spawned barrier crystal at {spawnPos}");
                 }
 
                 attempts++;
@@ -206,19 +213,36 @@ public class BossAbilities : MonoBehaviour
 
         if (activeCrystalCount > 0)
         {
-            Debug.Log("Instantiated barrier at position: " + transform.position);
-            // Disable boss collider when barrier is made
-            if (bossCollider != null)
-            {
-                bossCollider.enabled = false;
-            }
-            Debug.Log("Barrier instantiated with " + activeCrystalCount + " crystals. Boss collider disabled.");
             activeBarrierInstance = Instantiate(barrierPrefab, transform.position, Quaternion.identity);
+            Barrier barrier = activeBarrierInstance.GetComponent<Barrier>();
+            if (barrier != null)
+            {
+                barrier.Init(this);
+            }
+            barrierAnimator = activeBarrierInstance.GetComponent<Animator>();
+            activeBarrierInstance.GetComponent<Collider2D>().enabled = false;
             if (hellishVariant)
             {
-                activeBarrierInstance.GetComponent<SpriteRenderer>().color = new Color(1f, 0f, 0f, 0.4f); // Light red color for hellish variant
-                Debug.Log("Hellish variant active: Barrier color set to red.");
+                activeBarrierInstance.GetComponent<SpriteRenderer>().color = new Color(1f, 0f, 0f, 1f); // Light red color for hellish variant
+                //Debug.Log("Hellish variant active: Barrier color set to red.");
             }
+        }
+    }
+
+    public void BarrierFinished()
+    {
+        // Disable boss collider when barrier is made
+        Debug.Log("Barrier Finished (bossAbilities) running. Collider: " + bossCollider);
+        activeBarrierInstance.GetComponent<Collider2D>().enabled = true;
+        Debug.Log("Collider: " + activeBarrierInstance.GetComponent<Collider2D>() + " , state: " + activeBarrierInstance.GetComponent<Collider2D>().enabled);
+        if (bossCollider != null)
+        {
+            bossCollider.enabled = false;
+            Debug.Log("Boss collider: " + bossCollider.enabled);
+        }
+        if (activeBarrierInstance != null)
+        {
+            activeBarrierInstance.GetComponent<Collider2D>().enabled = true;
         }
     }
 
@@ -228,6 +252,19 @@ public class BossAbilities : MonoBehaviour
         if (activeCrystalCount <= 0)
         {
             if (activeBarrierInstance != null)
+            {
+                Animator animator = activeBarrierInstance.GetComponent<Animator>();
+                if (animator != null)
+                {
+                    animator.SetTrigger("Collapse");
+                }
+            }
+        }
+    }
+
+    public void BarrierDestroyed()
+    {
+        if (activeBarrierInstance != null)
             {
                 Destroy(activeBarrierInstance);
                 activeBarrierInstance = null;
@@ -240,7 +277,6 @@ public class BossAbilities : MonoBehaviour
 
             activeCrystalCount = 0;
             bossController.SetBarrierTimer(Time.time);
-        }
     }
     #endregion
 
@@ -276,4 +312,9 @@ public class BossAbilities : MonoBehaviour
     }
 
 
+
+    public bool IsBarrierActive()
+    {
+        return activeBarrierInstance != null;
+    }
 }
