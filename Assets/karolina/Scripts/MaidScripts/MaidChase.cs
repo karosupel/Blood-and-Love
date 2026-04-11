@@ -9,7 +9,7 @@ public class MaidChase : MaidBaseState
 
     public override void EnterState(MaidStateManager enemy)
     {
-        Debug.Log("Entered Chase State");
+        //Debug.Log("Entered Chase State");
         player = enemy.player;
         stats = enemy.stats;
     }

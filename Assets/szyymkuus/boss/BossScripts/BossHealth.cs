@@ -8,11 +8,13 @@ public class BossHealth : MonoBehaviour, IDamageable
     [SerializeField] public float maxHealth = 200f;
     public float currentHealth;
     [SerializeField] public int maxHearts = 5;
-    [SerializeField] public float afterlifeInvincibilityDuration = 1f;
+    [SerializeField] public float afterlifeInvincibilityDuration = 2f;
     int currentHearts;
-    bool isInvincible;
+    public bool isInvincible;
     GameObject player;
     BossController bossController;
+    BossAbilities bossAbilities;
+    Animator animator;
 
 
 
@@ -23,6 +25,8 @@ public class BossHealth : MonoBehaviour, IDamageable
     {
         player = GameObject.FindGameObjectWithTag("Player");
         bossController = GetComponent<BossController>();
+        animator = GetComponent<Animator>();
+        bossAbilities = GetComponent<BossAbilities>();
         currentHealth = maxHealth;
         currentHearts = maxHearts;
     }
@@ -45,7 +49,7 @@ public class BossHealth : MonoBehaviour, IDamageable
         else
         {
             TakeHeart();
-            StartCoroutine(InvincibilityCoroutine(afterlifeInvincibilityDuration));
+            //StartCoroutine(InvincibilityCoroutine(afterlifeInvincibilityDuration));
             bossController.ForceNewBarrier();
         }
     }
@@ -53,11 +57,25 @@ public class BossHealth : MonoBehaviour, IDamageable
     void TakeHeart()
     {
         currentHearts--;
+        Debug.Log("Boss Hearts left: " + currentHearts + "/" + maxHearts);
         if (currentHearts < 0)
         {
-            Annihilate();
+            BeginAnnihilate();
         }
     }
+
+    void BeginAnnihilate()
+    {
+        animator.SetBool("isAnnihilated", true);
+        animator.SetBool("isCastingProjectileStorm", false);
+        animator.SetBool("isCastingMeteorStorm", false);
+        bossController.pauseCasting = true;
+        bossAbilities.BarrierDestroyed();
+        bossAbilities.StopAllCoroutines();
+        
+    }
+
+
 
     void Annihilate()
     {
@@ -93,6 +111,6 @@ public class BossHealth : MonoBehaviour, IDamageable
         Vector3 hellPosition = player.transform.position + hellOffset;
         transform.position = hellPosition;
         isInAfterlife = true;
-        Debug.Log("Boss has been sent to Hell! But will he stay there?");
+        Debug.Log("Boss has been sent to Hell!");
     }
 }

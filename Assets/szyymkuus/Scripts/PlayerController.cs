@@ -94,9 +94,17 @@ public class PlayerController : MonoBehaviour
         {
             health.Heal(10f);
         }
-        if (Input.GetKeyDown(KeyCode.Space) && lastDashTime + dashCooldown <= Time.time && movementDirection != Vector2.zero)
+        if (Input.GetKeyDown(KeyCode.Space) && lastDashTime + dashCooldown <= Time.time)
         {
-            dashDirection = movementDirection;
+            if (movementDirection != Vector2.zero)
+            {
+                dashDirection = movementDirection;
+            }
+            else
+            {
+                Vector3 mousePos = abilities.GetMousePosition();
+                dashDirection = (mousePos - transform.position).normalized * -1f;
+            }
             dashTimer = dashDuration;
             isDashing = true;
             health.SetDashing(true);
@@ -191,4 +199,6 @@ public void Cleanse() //swierk tu był naprawiać sry za grzebanie u ciebie uwu
         yield return new WaitForSeconds(duration);
         stunImmune--;
     }
+
+
 }

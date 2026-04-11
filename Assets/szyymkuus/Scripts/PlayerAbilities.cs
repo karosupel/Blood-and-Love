@@ -66,7 +66,7 @@ public class PlayerAbilities : MonoBehaviour
         cam = Camera.main;
     }
 
-    Vector3 GetMousePosition()
+    public Vector3 GetMousePosition()
     {
         Vector3 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
         mousePos.z = 0f;

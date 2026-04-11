@@ -9376,6 +9376,10 @@ PrefabInstance:
       propertyPath: playerHealth
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7960871327377971498, guid: 38bfd206a6f6c0542ae7c8119b36803a, type: 3}
+      propertyPath: m_Value
+      value: 0.504
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -48334,63 +48338,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 748990723}
   m_CullTransparentMesh: 1
---- !u!1001 &767364757
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 272378486287725452, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
-      propertyPath: m_Name
-      value: Maid
-      objectReference: {fileID: 0}
-    - target: {fileID: 2572876619143484607, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -5.2124352
-      objectReference: {fileID: 0}
-    - target: {fileID: 2572876619143484607, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 13.785918
-      objectReference: {fileID: 0}
-    - target: {fileID: 2572876619143484607, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2572876619143484607, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2572876619143484607, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2572876619143484607, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2572876619143484607, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2572876619143484607, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2572876619143484607, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2572876619143484607, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: afeeaf9ebc01b724daf658a253a7cedd, type: 3}
 --- !u!1 &784841622
 GameObject:
   m_ObjectHideFlags: 0
@@ -50126,6 +50073,7 @@ MonoBehaviour:
   spawnDataList:
   - {fileID: 11400000, guid: 7117b8fec8f088e4e8614b0ae55652a1, type: 2}
   - {fileID: 11400000, guid: d569d70bd7581614283d7bafab0d06ed, type: 2}
+    - {fileID: 11400000, guid: 8efa46ade72d37543ac478b8ec54dfa0, type: 2}
   popUpManagerScript: {fileID: 0}
   roomVisitStack: []
   instanceId: 
@@ -50141,7 +50089,7 @@ Transform:
   m_GameObject: {fileID: 1389584687}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1375.4313, y: 943.0821, z: 13.492704}
+  m_LocalPosition: {x: 5.1, y: -34.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -64945,5 +64893,4 @@ SceneRoots:
   - {fileID: 427375474}
   - {fileID: 190755694}
   - {fileID: 168785944}
-  - {fileID: 767364757}
   - {fileID: 1783589504}

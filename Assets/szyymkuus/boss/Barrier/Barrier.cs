@@ -13,11 +13,7 @@ public class Barrier : MonoBehaviour
         animator = GetComponent<Animator>();
         if (animator != null)
         {
-            Debug.Log("Barrier Animator found. Is playing: " + !animator.enabled);
-            if (animator.runtimeAnimatorController == null)
-            {
-                Debug.LogWarning("WARNING: Animator Controller is NULL on Barrier!");
-            }
+
         }
         else
         {
@@ -30,34 +26,26 @@ public class Barrier : MonoBehaviour
     public void Init(BossAbilities boss)
     {
         bossAbilities = boss;
-        Debug.Log("Barrier initialized with BossAbilities: " + (boss != null));
     }
 
-
-    public void Test(){
-        Debug.Log("AnimationEventPlayed!");
-    }
-
-    public Animator GetAnimator()
-    {
-        return animator;
-    }
 
     public void BarrierFinished()
     {
-        Debug.Log("Barrier.BarrierFinished() called, bossAbilities is: " + (bossAbilities != null ? "valid" : "NULL"));
-        if (bossAbilities != null)
+        if (bossAbilities == null)
         {
-            bossAbilities.BarrierFinished();
+            Destroy(gameObject);
+            return;
         }
-        else
-        {
-            Debug.LogError("ERROR: bossAbilities is null in Barrier.BarrierFinished()!");
-        }
+        bossAbilities.BarrierFinished();
     }
     
     void BarrierDestroyed()
     {
+        if (bossAbilities == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
         bossAbilities?.BarrierDestroyed();
     }
 
