@@ -5060,7 +5060,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc868a5fa3accd24597f81a21c01b9b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
+  damage: 25
   radius: 0.5
   meteorDelay: 0.5
   meteorHeight: 10

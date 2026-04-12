@@ -49,6 +49,11 @@ public class BossAbilities : MonoBehaviour
     BossHealth bossHealth;
     private OffensiveCastType activeOffensiveCast = OffensiveCastType.None;
     private int activeMeteorCoroutines = 0;
+    private float meteorAnimationEventFallbackTimer = 0f;
+    private float meteorCastTimeoutTimer = 0f;
+    private int meteorCastId = 0;
+    private const float meteorAnimationEventFallbackDelay = 1f;
+    private const float meteorCastFailSafeBuffer = 1.5f;
 
 
     void Awake()
@@ -72,9 +77,17 @@ public class BossAbilities : MonoBehaviour
         {
             activeBarrierInstance.transform.position = transform.position;
         }
+
+        HandleMeteorStormFailSafes();
     }
     
     #region Meteor Storm
+    // AnimationEvent wrapper to avoid relying on non-void return signatures.
+    public void MeteorStormAnimationEvent()
+    {
+        MeteorStorm();
+    }
+
     public float MeteorStorm()
     {
         if (!TryBeginOffensiveCast(OffensiveCastType.MeteorStorm))
@@ -83,40 +96,129 @@ public class BossAbilities : MonoBehaviour
             return 0f;
         }
 
-        activeMeteorCoroutines = 2;
-        StartCoroutine(MeteorStormCoroutine(farMeteors, meteorStormDuration, meteorStormFarInnerRadius, meteorStormFarOuterRadius));
-        StartCoroutine(MeteorStormCoroutine(closeMeteors, meteorStormDuration, meteorStormCloseInnerRadius, meteorStormCloseOuterRadius));
+        meteorCastId++;
+        meteorCastTimeoutTimer = 0f;
+        activeMeteorCoroutines = 0;
+
+        TryStartMeteorWave(farMeteors, meteorStormDuration, meteorStormFarInnerRadius, meteorStormFarOuterRadius, meteorCastId);
+        TryStartMeteorWave(closeMeteors, meteorStormDuration, meteorStormCloseInnerRadius, meteorStormCloseOuterRadius, meteorCastId);
+
+        if (activeMeteorCoroutines <= 0)
+        {
+            CompleteMeteorStormCast(meteorCastId);
+            return 0f;
+        }
+
         return meteorStormDuration;
     }
 
-
-    IEnumerator MeteorStormCoroutine(int meteors, float time, float innerRadius, float outerRadius)
+    private void TryStartMeteorWave(int meteors, float time, float innerRadius, float outerRadius, int castId)
     {
-        float interval = time / meteors;
-        for (int i = 0; i < meteors; i++)
+        if (meteors <= 0 || time <= 0f)
         {
-            Vector2 randomOffset = Random.insideUnitCircle.normalized * Random.Range(innerRadius, outerRadius);
-            if (player != null)
+            return;
+        }
+
+        activeMeteorCoroutines++;
+        StartCoroutine(MeteorStormCoroutine(meteors, time, innerRadius, outerRadius, castId));
+    }
+
+
+    IEnumerator MeteorStormCoroutine(int meteors, float time, float innerRadius, float outerRadius, int castId)
+    {
+        try
+        {
+            float interval = time / meteors;
+            for (int i = 0; i < meteors; i++)
             {
-                Vector3 randomPos = new Vector3(player.transform.position.x + randomOffset.x, player.transform.position.y + randomOffset.y, 0);
-                GameObject newMeteor = Instantiate(meteorPrefab, randomPos, Quaternion.identity);
-                newMeteor.transform.localScale *= meteorSizeMultiplier;
-                if (!hellishVariant)
+                Vector2 randomOffset = Random.insideUnitCircle.normalized * Random.Range(innerRadius, outerRadius);
+                if (player != null)
                 {
-                    newMeteor.GetComponent<Meteor>()?.SetVariant(true);
+                    Vector3 randomPos = new Vector3(player.transform.position.x + randomOffset.x, player.transform.position.y + randomOffset.y, 0);
+                    GameObject newMeteor = Instantiate(meteorPrefab, randomPos, Quaternion.identity);
+                    newMeteor.transform.localScale *= meteorSizeMultiplier;
+                    if (!hellishVariant)
+                    {
+                        newMeteor.GetComponent<Meteor>()?.SetVariant(true);
+                    }
                 }
+
+                yield return new WaitForSeconds(interval);
+            }
+        }
+        finally
+        {
+            CompleteMeteorStormWave(castId);
+        }
+    }
+
+    private void CompleteMeteorStormWave(int castId)
+    {
+        if (castId != meteorCastId)
+        {
+            return;
         }
 
-            yield return new WaitForSeconds(interval);
-        }
-
-        activeMeteorCoroutines--;
+        activeMeteorCoroutines = Mathf.Max(0, activeMeteorCoroutines - 1);
         if (activeMeteorCoroutines <= 0)
         {
-            activeMeteorCoroutines = 0;
+            CompleteMeteorStormCast(castId);
+        }
+    }
+
+    private void CompleteMeteorStormCast(int castId)
+    {
+        if (castId != meteorCastId)
+        {
+            return;
+        }
+
+        activeMeteorCoroutines = 0;
+        meteorCastTimeoutTimer = 0f;
+        if (bossAnimator != null)
+        {
             bossAnimator.SetBool("isCastingMeteorStorm", false);
-            bossController.SetMeteorStormTimer(Time.time);
-            EndOffensiveCast(OffensiveCastType.MeteorStorm);
+        }
+
+        bossController?.SetMeteorStormTimer(Time.time);
+        EndOffensiveCast(OffensiveCastType.MeteorStorm);
+    }
+
+    private void HandleMeteorStormFailSafes()
+    {
+        if (bossAnimator == null)
+        {
+            return;
+        }
+
+        bool meteorAnimationFlag = bossAnimator.GetBool("isCastingMeteorStorm");
+
+        if (meteorAnimationFlag && activeOffensiveCast == OffensiveCastType.None)
+        {
+            meteorAnimationEventFallbackTimer += Time.deltaTime;
+            if (meteorAnimationEventFallbackTimer >= meteorAnimationEventFallbackDelay)
+            {
+                meteorAnimationEventFallbackTimer = 0f;
+                MeteorStorm();
+            }
+        }
+        else
+        {
+            meteorAnimationEventFallbackTimer = 0f;
+        }
+
+        if (activeOffensiveCast == OffensiveCastType.MeteorStorm)
+        {
+            meteorCastTimeoutTimer += Time.deltaTime;
+            float meteorCastMaxDuration = Mathf.Max(1f, meteorStormDuration + meteorCastFailSafeBuffer);
+            if (meteorCastTimeoutTimer >= meteorCastMaxDuration)
+            {
+                CompleteMeteorStormCast(meteorCastId);
+            }
+        }
+        else
+        {
+            meteorCastTimeoutTimer = 0f;
         }
     }
     #endregion
@@ -372,6 +474,13 @@ public class BossAbilities : MonoBehaviour
     {
         activeOffensiveCast = OffensiveCastType.None;
         activeMeteorCoroutines = 0;
+        meteorAnimationEventFallbackTimer = 0f;
+        meteorCastTimeoutTimer = 0f;
+
+        if (bossAnimator != null)
+        {
+            bossAnimator.SetBool("isCastingMeteorStorm", false);
+        }
     }
 
     private bool TryBeginOffensiveCast(OffensiveCastType castType)

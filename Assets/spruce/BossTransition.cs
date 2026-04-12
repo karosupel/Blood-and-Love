@@ -13,7 +13,9 @@ public class BossTransition : MonoBehaviour
             PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
             if (playerHealth != null)
             {
-                BossFightRestartState.SavePreFightHearts(playerHealth.hearts);
+                int cachedHearts = Mathf.Max(0, playerHealth.hearts);
+                BossFightRestartState.SavePreFightHearts(cachedHearts);
+                BossFightRestartState.ScheduleHeartRestore(cachedHearts);
             }
 
             UnityEngine.SceneManagement.SceneManager.LoadScene(bossSceneIndex);
