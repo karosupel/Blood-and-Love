@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class BossAbilities : MonoBehaviour
 {
+    private enum OffensiveCastType
+    {
+        None,
+        MeteorStorm,
+        ProjectileStorm
+    }
 
     [Header("Meteor Storm")]
     [SerializeField] int farMeteors = 10;
@@ -41,6 +47,8 @@ public class BossAbilities : MonoBehaviour
     Animator bossAnimator;
     Animator barrierAnimator;
     BossHealth bossHealth;
+    private OffensiveCastType activeOffensiveCast = OffensiveCastType.None;
+    private int activeMeteorCoroutines = 0;
 
 
     void Awake()
@@ -69,6 +77,13 @@ public class BossAbilities : MonoBehaviour
     #region Meteor Storm
     public float MeteorStorm()
     {
+        if (!TryBeginOffensiveCast(OffensiveCastType.MeteorStorm))
+        {
+            bossAnimator.SetBool("isCastingMeteorStorm", false);
+            return 0f;
+        }
+
+        activeMeteorCoroutines = 2;
         StartCoroutine(MeteorStormCoroutine(farMeteors, meteorStormDuration, meteorStormFarInnerRadius, meteorStormFarOuterRadius));
         StartCoroutine(MeteorStormCoroutine(closeMeteors, meteorStormDuration, meteorStormCloseInnerRadius, meteorStormCloseOuterRadius));
         return meteorStormDuration;
@@ -84,23 +99,37 @@ public class BossAbilities : MonoBehaviour
             if (player != null)
             {
                 Vector3 randomPos = new Vector3(player.transform.position.x + randomOffset.x, player.transform.position.y + randomOffset.y, 0);
-            
-            GameObject newMeteor = Instantiate(meteorPrefab, randomPos, Quaternion.identity);
-            newMeteor.transform.localScale *= meteorSizeMultiplier;
-            if (hellishVariant)
-            {
-                newMeteor.GetComponent<Meteor>()?.SetVariant(true);
-            }
-            yield return new WaitForSeconds(interval);
-            bossController.SetMeteorStormTimer(Time.time);
+                GameObject newMeteor = Instantiate(meteorPrefab, randomPos, Quaternion.identity);
+                newMeteor.transform.localScale *= meteorSizeMultiplier;
+                if (!hellishVariant)
+                {
+                    newMeteor.GetComponent<Meteor>()?.SetVariant(true);
+                }
         }
-        bossAnimator.SetBool("isCastingMeteorStorm", false);
-    }}
+
+            yield return new WaitForSeconds(interval);
+        }
+
+        activeMeteorCoroutines--;
+        if (activeMeteorCoroutines <= 0)
+        {
+            activeMeteorCoroutines = 0;
+            bossAnimator.SetBool("isCastingMeteorStorm", false);
+            bossController.SetMeteorStormTimer(Time.time);
+            EndOffensiveCast(OffensiveCastType.MeteorStorm);
+        }
+    }
     #endregion
 
     #region Projectile Storm
     public float ProjectileStorm()
     {
+        if (!TryBeginOffensiveCast(OffensiveCastType.ProjectileStorm))
+        {
+            bossAnimator.SetBool("isCastingProjectileStorm", false);
+            return 0f;
+        }
+
         StartCoroutine(ProjectileStormCoroutine());
         return projectileStormDuration;
     }
@@ -134,7 +163,7 @@ public class BossAbilities : MonoBehaviour
                     GameObject projectile = Instantiate(projectilePrefab, originPos, Quaternion.identity);
                     if (hellishVariant)
                     {
-                        projectile.GetComponent<SpriteRenderer>().color = Color.red;
+                        projectile.GetComponent<SpriteRenderer>().color = Color.blue;
                     }
                     Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
                     if (rb != null)
@@ -149,6 +178,7 @@ public class BossAbilities : MonoBehaviour
         bossAnimator.SetBool("isCastingProjectileStorm", false);
         Debug.Log($"Projectile Storm Elapsed Time: {elapsed}");
         bossController.SetProjectileStormTimer(Time.time);
+        EndOffensiveCast(OffensiveCastType.ProjectileStorm);
     }
     #endregion
 
@@ -257,6 +287,8 @@ public class BossAbilities : MonoBehaviour
         {
             activeBarrierInstance.GetComponent<Collider2D>().enabled = true;
         }
+
+        bossHealth?.NotifyBarrierCastFinished();
     }
 
     public void OnCrystalDestroyed()
@@ -329,6 +361,36 @@ public class BossAbilities : MonoBehaviour
     public bool IsBarrierActive()
     {
         return activeBarrierInstance != null;
+    }
+
+    public bool IsOffensiveAbilityActive()
+    {
+        return activeOffensiveCast != OffensiveCastType.None;
+    }
+
+    public void ResetOffensiveCastState()
+    {
+        activeOffensiveCast = OffensiveCastType.None;
+        activeMeteorCoroutines = 0;
+    }
+
+    private bool TryBeginOffensiveCast(OffensiveCastType castType)
+    {
+        if (activeOffensiveCast != OffensiveCastType.None)
+        {
+            return false;
+        }
+
+        activeOffensiveCast = castType;
+        return true;
+    }
+
+    private void EndOffensiveCast(OffensiveCastType castType)
+    {
+        if (activeOffensiveCast == castType)
+        {
+            activeOffensiveCast = OffensiveCastType.None;
+        }
     }
 
     public void ResumeCasting()

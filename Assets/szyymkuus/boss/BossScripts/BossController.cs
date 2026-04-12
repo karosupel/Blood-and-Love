@@ -76,7 +76,10 @@ public class BossController : MonoBehaviour
 
     void RandomizeNexAttack()
     {
-        if (bossAnimator.GetBool("isCastingMeteorStorm") == false && bossAnimator.GetBool("isCastingProjectileStorm") == false && !pauseCasting)
+        if (!pauseCasting
+            && !abilities.IsOffensiveAbilityActive()
+            && bossAnimator.GetBool("isCastingMeteorStorm") == false
+            && bossAnimator.GetBool("isCastingProjectileStorm") == false)
             {
                 if (Random.value < 0.5f)
                 {
@@ -254,6 +257,7 @@ public class BossController : MonoBehaviour
         pauseCasting = true;
         bossAnimator.SetBool("secondPhase", true);
         abilities.StopAllCoroutines();
+        abilities.ResetOffensiveCastState();
         bossAnimator.SetBool("isCastingProjectileStorm", false);
         bossAnimator.SetBool("isCastingMeteorStorm", false);
         abilities.HellishVariant(true);
