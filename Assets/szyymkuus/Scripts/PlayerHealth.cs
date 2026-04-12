@@ -70,6 +70,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     void Start()
     {
+        if (popUpManagerScript == null && SceneManager.GetActiveScene().name == tutorialSceneName)
+        {
+            popUpManagerScript = FindObjectOfType<PopUpManager>();
+        }
+
         if (!startInHellInTutorialScene)
         {
             return;
@@ -325,6 +330,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     public void TakeHeart()
     {
+        if (SceneManager.GetActiveScene().name == tutorialSceneName)
+        {
+            return;
+        }
+
         hearts--;
         OnHeartsChanged?.Invoke(hearts);
         if (hearts < 0) //do zmiany, zależnie czy gracz kiedy ma 0 serc nadal może żyć
@@ -352,6 +362,18 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         isInvincible = true;
         yield return new WaitForSeconds(duration);
         isInvincible = false;
+    }
+
+    private bool CanTakeHeartInAfterlife()
+    {
+        bool isTutorialScene = SceneManager.GetActiveScene().name == tutorialSceneName;
+
+        if (isTutorialScene)
+        {
+            return false;
+        }
+
+        return true;
     }
 
 

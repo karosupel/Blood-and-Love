@@ -16,6 +16,7 @@ public class BossHealth : MonoBehaviour, IDamageable
     public float currentHealth;
     [SerializeField] public int maxHearts = 5;
     [SerializeField] public float afterlifeInvincibilityDuration = 2f;
+    [SerializeField] private float barrierCastHeartImmunityFallback = 3f;
     int currentHearts;
     public bool isInvincible;
     GameObject player;
@@ -28,6 +29,8 @@ public class BossHealth : MonoBehaviour, IDamageable
 
     bool isInAfterlife = false;
     Vector3 hellOffset = new Vector3(-30f, 0f, 0f);
+    bool waitingForBarrierCastAfterHeartHit = false;
+    Coroutine barrierCastImmunityFallbackCoroutine;
 
     public float MaxHealth => maxHealth;
     public float CurrentHealth => currentHealth;
@@ -72,7 +75,7 @@ public class BossHealth : MonoBehaviour, IDamageable
         else
         {
             TakeHeart();
-            //StartCoroutine(InvincibilityCoroutine(afterlifeInvincibilityDuration));
+            StartBarrierCastHeartImmunity();
             bossController.ForceNewBarrier();
         }
     }
@@ -106,12 +109,20 @@ public class BossHealth : MonoBehaviour, IDamageable
 
     void BeginAnnihilate()
     {
+        if (barrierCastImmunityFallbackCoroutine != null)
+        {
+            StopCoroutine(barrierCastImmunityFallbackCoroutine);
+            barrierCastImmunityFallbackCoroutine = null;
+        }
+        waitingForBarrierCastAfterHeartHit = false;
+
         animator.SetBool("isAnnihilated", true);
         animator.SetBool("isCastingProjectileStorm", false);
         animator.SetBool("isCastingMeteorStorm", false);
         bossController.pauseCasting = true;
         bossAbilities.BarrierDestroyed();
         bossAbilities.StopAllCoroutines();
+        bossAbilities.ResetOffensiveCastState();
         
     }
 
@@ -130,6 +141,49 @@ public class BossHealth : MonoBehaviour, IDamageable
     {
         isInvincible = true;
         yield return new WaitForSeconds(duration);
+        isInvincible = false;
+    }
+
+    void StartBarrierCastHeartImmunity()
+    {
+        waitingForBarrierCastAfterHeartHit = true;
+        isInvincible = true;
+
+        if (barrierCastImmunityFallbackCoroutine != null)
+        {
+            StopCoroutine(barrierCastImmunityFallbackCoroutine);
+        }
+
+        barrierCastImmunityFallbackCoroutine = StartCoroutine(BarrierCastHeartImmunityFallbackCoroutine());
+    }
+
+    IEnumerator BarrierCastHeartImmunityFallbackCoroutine()
+    {
+        yield return new WaitForSeconds(Mathf.Max(0.1f, barrierCastHeartImmunityFallback));
+        barrierCastImmunityFallbackCoroutine = null;
+        EndBarrierCastHeartImmunity();
+    }
+
+    public void NotifyBarrierCastFinished()
+    {
+        if (!waitingForBarrierCastAfterHeartHit)
+        {
+            return;
+        }
+
+        EndBarrierCastHeartImmunity();
+    }
+
+    void EndBarrierCastHeartImmunity()
+    {
+        waitingForBarrierCastAfterHeartHit = false;
+
+        if (barrierCastImmunityFallbackCoroutine != null)
+        {
+            StopCoroutine(barrierCastImmunityFallbackCoroutine);
+            barrierCastImmunityFallbackCoroutine = null;
+        }
+
         isInvincible = false;
     }
 
