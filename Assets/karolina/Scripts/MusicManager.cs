@@ -10,6 +10,7 @@ public class MusicManager : MonoBehaviour
     private AudioSource audioSource;
     public AudioClip backgroudMusic;
     [SerializeField] private AudioClip hellMusic;
+    [SerializeField] private bool loopBackgroundMusic = true;
     [SerializeField] private Slider musicSlider;
     [SerializeField] private bool autoFindMusicSliderOnSceneLoad = true;
 
@@ -21,6 +22,7 @@ public class MusicManager : MonoBehaviour
         {
             Instance = this;
             audioSource = GetComponent<AudioSource>();
+            ApplyAudioSourcePlaybackSettings();
             DontDestroyOnLoad(gameObject);
         }
         else
@@ -69,6 +71,13 @@ public class MusicManager : MonoBehaviour
 
     public void PlayBackgroundMusic(bool reset, AudioClip audioClip = null)
     {
+        if (audioSource == null)
+        {
+            return;
+        }
+
+        ApplyAudioSourcePlaybackSettings();
+
         if(audioClip != null)
         {
             audioSource.clip = audioClip;
@@ -160,6 +169,8 @@ public class MusicManager : MonoBehaviour
             return;
         }
 
+        ApplyAudioSourcePlaybackSettings();
+
         AudioClip targetClip = isInAfterlife ? hellMusic : backgroudMusic;
         if (targetClip == null)
         {
@@ -182,6 +193,8 @@ public class MusicManager : MonoBehaviour
             return;
         }
 
+        loopBackgroundMusic = sceneMusicManager.loopBackgroundMusic;
+
         if (sceneMusicManager.backgroudMusic != null)
         {
             backgroudMusic = sceneMusicManager.backgroudMusic;
@@ -203,6 +216,8 @@ public class MusicManager : MonoBehaviour
             return;
         }
 
+        ApplyAudioSourcePlaybackSettings();
+
         if (trackedPlayerHealth != null)
         {
             HandleAfterlifeStateChanged(trackedPlayerHealth.IsInAfterlife);
@@ -221,5 +236,15 @@ public class MusicManager : MonoBehaviour
 
         audioSource.clip = backgroudMusic;
         audioSource.Play();
+    }
+
+    private void ApplyAudioSourcePlaybackSettings()
+    {
+        if (audioSource == null)
+        {
+            return;
+        }
+
+        audioSource.loop = loopBackgroundMusic;
     }
 }
