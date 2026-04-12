@@ -87,6 +87,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
             Debug.Log("Player is already in afterlife!");
             return;
         }
+        animator.SetBool("isHellish", true);
         Debug.Log("Player's soul goes to afterlife!");
         deathPlace = transform.position;
         isInAfterlife = true;
@@ -103,6 +104,8 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         {
             return;
         }
+        animator.SetBool("isHellish", false);
+        animator.SetTrigger("rebirth");
         currentHealth = 0.3f * maxHealth;
         isInAfterlife = false;
         OnAfterlifeStateChanged?.Invoke(isInAfterlife);
@@ -293,7 +296,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
         OnHeartsChanged?.Invoke(hearts);
         if (hearts < 0) //do zmiany, zależnie czy gracz kiedy ma 0 serc nadal może żyć
         {
-            Annihilate();
+            animator.SetTrigger("die");
         } 
     }
 

@@ -8,7 +8,7 @@ public class SuccubiChase : EnemyBaseState
     private EnemyStats stats;
     public override void EnterState(EnemyStateManager enemy)
     {
-        Debug.Log("Entered Chase State");
+        //Debug.Log("Entered Chase State");
         player = enemy.player;
         stats = enemy.stats;
     }

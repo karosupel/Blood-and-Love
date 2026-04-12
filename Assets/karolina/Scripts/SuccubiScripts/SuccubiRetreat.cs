@@ -8,7 +8,7 @@ public class SuccubiRetreat : EnemyBaseState
     public EnemyStats stats;
     public override void EnterState(EnemyStateManager enemy)
     {
-        Debug.Log("Entered Retreat State");
+        //Debug.Log("Entered Retreat State");
         player = enemy.player;
         stats = enemy.stats;
     }

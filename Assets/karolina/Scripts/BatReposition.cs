@@ -43,7 +43,7 @@ public class BatReposition : BatBaseState
 
         if (timer >= repositionTime)
         {
-            Debug.Log("enter attack state");
+            //Debug.Log("enter attack state");
             enemy.currentState = enemy.attackState;
             enemy.currentState.EnterState(enemy);
         }

@@ -207,7 +207,7 @@ public class PlayerController : MonoBehaviour
         }
 
         stunCoroutine = StartCoroutine(StunCoroutine(duration));
-        Debug.Log("started coroutine " + stunCoroutine);
+        //Debug.Log("started coroutine " + stunCoroutine);
     }
     public void ApplyStunImmunity(float duration)
     {
@@ -215,7 +215,7 @@ public class PlayerController : MonoBehaviour
     }
 public void Cleanse() //swierk tu był naprawiać sry za grzebanie u ciebie uwu
 {
-    Debug.Log("Cleanse!");
+    //Debug.Log("Cleanse!");
 
     if (stunCoroutine != null)
     {
@@ -224,7 +224,7 @@ public void Cleanse() //swierk tu był naprawiać sry za grzebanie u ciebie uwu
     }
 
     isStunned = false;
-    Debug.Log("Is stunned: " + isStunned);
+    //Debug.Log("Is stunned: " + isStunned);
 }
     IEnumerator StunCoroutine(float duration)
     {

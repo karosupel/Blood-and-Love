@@ -27,7 +27,7 @@ public class SuccubiAttack : EnemyBaseState
     
     public override void EnterState(EnemyStateManager enemy)
     {
-        Debug.Log("Entered Attack State");
+        //Debug.Log("Entered Attack State");
         isAttacking = true;
         player = enemy.player;
         stats = enemy.stats;
@@ -177,7 +177,7 @@ public class SuccubiAttack : EnemyBaseState
         bool inAngle = angle <= attackAngle / 2f;
         bool inRange = distance <= stats.attackRange;
 
-        Debug.Log($"Angle: {angle}");
+        //Debug.Log($"Angle: {angle}");
 
         return inAngle && inRange;
     }

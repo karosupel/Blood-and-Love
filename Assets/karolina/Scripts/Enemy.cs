@@ -52,7 +52,7 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         
         isDead = true;
-        Debug.Log("Enemy died");
+        //Debug.Log("Enemy died");
         if (animator != null)
         {
             animator.SetBool("isDead", true);
