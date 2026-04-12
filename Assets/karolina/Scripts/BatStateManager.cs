@@ -14,17 +14,30 @@ public class BatStateManager : MonoBehaviour
     public bool isPlayerAttacked = false;
     Enemy enemy;
     private bool hasStarted = false;
+    private SpriteRenderer spriteRenderer;
+    private Vector3 lastPosition;
+    private float leftFacingScaleX = 1f;
+    private const float horizontalDirectionThreshold = 0.001f;
 
      void Awake()
     {
         enemy = GetComponent<Enemy>();
         player = GameObject.FindGameObjectWithTag("Player");
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        leftFacingScaleX = transform.localScale.x;
+        if (Mathf.Approximately(leftFacingScaleX, 0f))
+        {
+            leftFacingScaleX = 1f;
+        }
+        lastPosition = transform.position;
     }
 
     public void Start()
     {
         hasStarted = true;
         ResetToRepositionState();
+        FaceLeft();
+        lastPosition = transform.position;
     }
 
     private void OnEnable()
@@ -45,6 +58,8 @@ public class BatStateManager : MonoBehaviour
         }
 
         ResetToRepositionState();
+        FaceLeft();
+        lastPosition = transform.position;
     }
 
     public void Update()
@@ -55,6 +70,7 @@ public class BatStateManager : MonoBehaviour
         }
 
         currentState.UpdateState(this);
+        UpdateFacingDirection();
     }
 
     // Rysowanie range'a odbywa się teraz w UpdateState() przy użyciu LineRenderer
@@ -84,6 +100,49 @@ public class BatStateManager : MonoBehaviour
         isPlayerAttacked = false;
         currentState = repositionState;
         currentState.EnterState(this);
+    }
+
+    private void UpdateFacingDirection()
+    {
+        Vector3 currentPosition = transform.position;
+        float horizontalDelta = currentPosition.x - lastPosition.x;
+
+        if (horizontalDelta > horizontalDirectionThreshold)
+        {
+            FaceRight();
+        }
+        else if (horizontalDelta < -horizontalDirectionThreshold)
+        {
+            FaceLeft();
+        }
+
+        lastPosition = currentPosition;
+    }
+
+    private void FaceLeft()
+    {
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.flipX = false;
+            return;
+        }
+
+        Vector3 localScale = transform.localScale;
+        localScale.x = leftFacingScaleX;
+        transform.localScale = localScale;
+    }
+
+    private void FaceRight()
+    {
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.flipX = true;
+            return;
+        }
+
+        Vector3 localScale = transform.localScale;
+        localScale.x = -leftFacingScaleX;
+        transform.localScale = localScale;
     }
 
     // void OnCollisionEnter2D(Collision2D collision)
