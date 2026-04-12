@@ -88,6 +88,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
             return;
         }
         animator.SetBool("isHellish", true);
+        animator.ResetTrigger("die");
         Debug.Log("Player's soul goes to afterlife!");
         deathPlace = transform.position;
         isInAfterlife = true;
@@ -309,6 +310,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     public void Annihilate()
     {
+        animator.ResetTrigger("die");
         Debug.Log("Player's soul got annihilated!");
         Destroy(gameObject);
     }
