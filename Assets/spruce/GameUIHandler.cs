@@ -47,6 +47,9 @@ public class GameUIHandler : MonoBehaviour
     [SerializeField] private GameObject gameOverRoot;
     [SerializeField] private Button gameOverMainMenuButton;
     [SerializeField] private Button gameOverRestartBossButton;
+    [SerializeField] private bool allowRetryOutsideBossScene = true;
+    [SerializeField] private string fallbackRetryButtonLabel = "Retry";
+    [SerializeField] private Vector2 fallbackRetryButtonOffset = new Vector2(-420f, 0f);
     [SerializeField] private int mainMenuBuildIndex = 0;
     [SerializeField] private bool freezeTimeOnGameOver = true;
     [SerializeField] private float gameOverFadeDuration = 0.3f;
@@ -124,6 +127,7 @@ public class GameUIHandler : MonoBehaviour
         SetRestartButtonVisible(false);
 
         EnsureGameOverAudioSource();
+        EnsureFallbackRetryButton();
         BindGameOverButton();
 
         ConfigureHelpButtonHitZone();
@@ -161,14 +165,57 @@ public class GameUIHandler : MonoBehaviour
 
         if (gameOverRestartBossButton != null)
         {
-            gameOverRestartBossButton.onClick.RemoveListener(RestartBossFight);
-            gameOverRestartBossButton.onClick.AddListener(RestartBossFight);
+            gameOverRestartBossButton.onClick.RemoveListener(RestartFromGameOver);
+            gameOverRestartBossButton.onClick.AddListener(RestartFromGameOver);
         }
 
         if (bossVictoryMainMenuButton != null)
         {
             bossVictoryMainMenuButton.onClick.RemoveListener(ReturnToMainMenu);
             bossVictoryMainMenuButton.onClick.AddListener(ReturnToMainMenu);
+        }
+    }
+
+    private void EnsureFallbackRetryButton()
+    {
+        if (gameOverRestartBossButton != null || gameOverMainMenuButton == null)
+        {
+            return;
+        }
+
+        RectTransform mainMenuRect = gameOverMainMenuButton.GetComponent<RectTransform>();
+        if (mainMenuRect == null || mainMenuRect.parent == null)
+        {
+            return;
+        }
+
+        GameObject retryButtonObject = Instantiate(gameOverMainMenuButton.gameObject, mainMenuRect.parent);
+        retryButtonObject.name = gameOverMainMenuButton.gameObject.name + "_Retry";
+
+        RectTransform retryRect = retryButtonObject.GetComponent<RectTransform>();
+        if (retryRect != null)
+        {
+            retryRect.anchoredPosition = mainMenuRect.anchoredPosition + fallbackRetryButtonOffset;
+        }
+
+        TMP_Text retryTmpText = retryButtonObject.GetComponentInChildren<TMP_Text>(true);
+        if (retryTmpText != null)
+        {
+            retryTmpText.text = fallbackRetryButtonLabel;
+        }
+        else
+        {
+            Text retryLegacyText = retryButtonObject.GetComponentInChildren<Text>(true);
+            if (retryLegacyText != null)
+            {
+                retryLegacyText.text = fallbackRetryButtonLabel;
+            }
+        }
+
+        gameOverRestartBossButton = retryButtonObject.GetComponent<Button>();
+        if (gameOverRestartBossButton == null)
+        {
+            Destroy(retryButtonObject);
         }
     }
 
@@ -631,7 +678,8 @@ public class GameUIHandler : MonoBehaviour
             roomChoiceRoot.SetActive(false);
         }
 
-        SetRestartButtonVisible(isBossFightScene);
+        bool canRetryCurrentScene = isBossFightScene || allowRetryOutsideBossScene;
+        SetRestartButtonVisible(canRetryCurrentScene);
         SetUiVisible(bossVictoryRoot, false);
 
         if (freezeTimeOnGameOver)
@@ -695,11 +743,14 @@ public class GameUIHandler : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
     }
 
-    private void RestartBossFight()
+    private void RestartFromGameOver()
     {
-        int fallbackHearts = PlayerHealth != null ? PlayerHealth.hearts : 0;
-        int restoredHearts = BossFightRestartState.GetPreFightHeartsOrDefault(fallbackHearts);
-        BossFightRestartState.ScheduleHeartRestore(restoredHearts);
+        if (isBossFightScene)
+        {
+            int fallbackHearts = PlayerHealth != null ? PlayerHealth.hearts : 0;
+            int restoredHearts = BossFightRestartState.GetPreFightHeartsOrDefault(fallbackHearts);
+            BossFightRestartState.ScheduleHeartRestore(restoredHearts);
+        }
 
 
         RestoreTimeAndAudioIfNeeded();

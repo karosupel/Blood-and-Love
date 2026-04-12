@@ -90,7 +90,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     {
         if (ShouldShowImmediateGameOverInBossPhaseOne())
         {
-            Debug.Log("Player died in boss phase 1. Showing Game Over without sending player to afterlife.");
+            Debug.Log("Player died in tutorial or boss phase 1. Showing Game Over without sending player to afterlife.");
             TriggerImmediateGameOver();
             return;
         }
@@ -101,6 +101,11 @@ public class PlayerHealth : MonoBehaviour, IDamageable
 
     bool ShouldShowImmediateGameOverInBossPhaseOne()
     {
+        if (SceneManager.GetActiveScene().name == tutorialSceneName)
+        {
+            return true;
+        }
+
         BossHealth bossHealth = FindObjectOfType<BossHealth>();
         if (bossHealth == null)
         {
