@@ -40,6 +40,9 @@ public class CutsceneManager : MonoBehaviour
     [SerializeField] private bool playOnStart = true;
     [SerializeField] private bool skipRepeatedBoundaryDialogues = true;
 
+    [Header("Skip")]
+    [SerializeField] private KeyCode skipToEndKey = KeyCode.Q;
+
     private Coroutine cutsceneRoutine;
     private bool waitingForFullscreenClick;
     private float cachedTimeScale = 1f;
@@ -58,6 +61,19 @@ public class CutsceneManager : MonoBehaviour
         if (playOnStart)
         {
             StartCutsceneSequence(startCutsceneIndex);
+        }
+    }
+
+    private void Update()
+    {
+        if (cutsceneRoutine == null)
+        {
+            return;
+        }
+
+        if (Input.GetKeyDown(skipToEndKey))
+        {
+            SkipToLastCutsceneTransition();
         }
     }
 
@@ -107,6 +123,50 @@ public class CutsceneManager : MonoBehaviour
         }
 
         cutsceneRoutine = StartCoroutine(CutsceneRoutine(fromIndex));
+    }
+
+    private void SkipToLastCutsceneTransition()
+    {
+        if (cutscenes == null || cutscenes.Count == 0)
+        {
+            return;
+        }
+
+        CutsceneEntry lastEntry = cutscenes[cutscenes.Count - 1];
+        if (lastEntry == null)
+        {
+            Debug.LogWarning("CutsceneManager: last cutscene entry is null.");
+            return;
+        }
+
+        if (!lastEntry.transitionToScene)
+        {
+            Debug.LogWarning("CutsceneManager: last cutscene has no transition enabled.");
+            return;
+        }
+
+        if (cutsceneRoutine != null)
+        {
+            StopCoroutine(cutsceneRoutine);
+            cutsceneRoutine = null;
+        }
+
+        if (dialogue != null && dialogue.IsPlaying)
+        {
+            dialogue.StopDialogue();
+        }
+
+        if (waitingForFullscreenClick)
+        {
+            Time.timeScale = cachedTimeScale;
+            waitingForFullscreenClick = false;
+        }
+
+        ShowBackgroundImage(lastEntry.backgroundImage);
+        ShowForegroundImage(lastEntry.foregroundImage);
+        MoveAllImagesToBackgroundLayer();
+
+        cutsceneRoutine = StartCoroutine(TransitionFromEntryRoutine(lastEntry));
     }
 
     private IEnumerator CutsceneRoutine(int fromIndex)
@@ -168,6 +228,17 @@ public class CutsceneManager : MonoBehaviour
             }
         }
 
+        cutsceneRoutine = null;
+    }
+
+    private IEnumerator TransitionFromEntryRoutine(CutsceneEntry entry)
+    {
+        if (entry.sceneTransitionDelaySeconds > 0f)
+        {
+            yield return new WaitForSecondsRealtime(entry.sceneTransitionDelaySeconds);
+        }
+
+        TryLoadScene(entry.nextSceneBuildIndex);
         cutsceneRoutine = null;
     }
 
