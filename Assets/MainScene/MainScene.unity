@@ -11859,14 +11859,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1196204657}
     - target: {fileID: 1893873750689975605, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
-      propertyPath: panicCooldown
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 1893873750689975605, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
-      propertyPath: panicDuration
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1893873750689975605, guid: 7fdcadf8de28c5e47ac1ca31b855bd85, type: 3}
       propertyPath: basicAttackIcon
       value: 
       objectReference: {fileID: 190755696}
@@ -58584,6 +58576,7 @@ MonoBehaviour:
   roomTypeId: 
   areEnemiesDead: 0
   tutorialSceneName: Tutorial
+  materialReturnEnemyFreezeDuration: 2
 --- !u!4 &1389584689
 Transform:
   m_ObjectHideFlags: 0

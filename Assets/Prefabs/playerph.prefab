@@ -235,8 +235,8 @@ MonoBehaviour:
   ultimateRadius: 4.5
   ultimateMaxHealthCost: 0.5
   ultimateLifesteal: 0.1
-  panicDuration: 3
-  panicCooldown: 60
+  panicDuration: 5
+  panicCooldown: 20
   panicSpeedMultiplier: 1.5
   defaultLayer: 6
   immunityLayer: 7
