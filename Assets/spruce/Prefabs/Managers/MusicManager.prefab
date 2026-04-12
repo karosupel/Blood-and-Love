@@ -141,7 +141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f813f948ee2f6f64589962fa41ffc520, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backgroudMusic: {fileID: 8300000, guid: b9a873296dd06da4a9d514bfa8d9a244, type: 3}
-  hellMusic: {fileID: 8300000, guid: 188fbc96be4ca4b44affc47602c049ae, type: 3}
+  backgroudMusic: {fileID: 8300000, guid: 848c34c4ff72c4c48b0b0081d16e70c0, type: 3}
+  hellMusic: {fileID: 0}
   musicSlider: {fileID: 0}
   autoFindMusicSliderOnSceneLoad: 1

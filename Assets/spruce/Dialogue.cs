@@ -84,6 +84,20 @@ public class Dialogue : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (!IsPlaying)
+        {
+            return;
+        }
+
+        // Keep gameplay paused for the entire dialogue, even if other systems try to resume time.
+        if (!Mathf.Approximately(Time.timeScale, 0f))
+        {
+            Time.timeScale = 0f;
+        }
+    }
+
     public void PlayDialogue(string sequenceId)
     {
         if (string.IsNullOrWhiteSpace(sequenceId))

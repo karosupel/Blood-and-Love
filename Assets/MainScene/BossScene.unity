@@ -11090,8 +11090,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3015.9985, y: 9.999878}
-  m_SizeDelta: {x: 200, y: 50}
+  m_AnchoredPosition: {x: 3176.2798, y: -16.965}
+  m_SizeDelta: {x: 526.8344, y: 166.42}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1643803512
 MonoBehaviour:
@@ -11140,15 +11140,15 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 64
-  m_fontSizeBase: 64
+  m_fontSize: 58
+  m_fontSizeBase: 58
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -13975,6 +13975,10 @@ PrefabInstance:
       propertyPath: portraitPanel
       value: 
       objectReference: {fileID: 665767487}
+    - target: {fileID: 1840014530239347126, guid: a553583edd8f4ae46b8883c3c6c0c1c2, type: 3}
+      propertyPath: defaultSequenceId
+      value: boss_1
+      objectReference: {fileID: 0}
     - target: {fileID: 6686152694471831616, guid: a553583edd8f4ae46b8883c3c6c0c1c2, type: 3}
       propertyPath: m_Name
       value: DialogueManager

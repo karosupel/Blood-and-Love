@@ -51,10 +51,265 @@ MonoBehaviour:
   portraitFrame: {fileID: 0}
   portraitPanel: {fileID: 0}
   dialogueLibrary:
-  - id: 
+  - id: intro_1
     entries:
     - speaker: 
       portrait: {fileID: 0}
-      text: 
+      text: The story you will hear today, happened a long time ago.
+    - speaker: 
+      portrait: {fileID: 0}
+      text: The story of two women, who loved each other more than life.
+  - id: intro_2
+    entries:
+    - speaker: 
+      portrait: {fileID: 0}
+      text: "The first of them, Isobel\u2014powerful, ruthless, living in her cold,
+        lonely castle away from others. "
+    - speaker: 
+      portrait: {fileID: 0}
+      text: Despite her wealth and the legion of servants there was no one that could
+        bring her the warmth of human touch, she craved so immensely.
+    - speaker: 
+      portrait: {fileID: 0}
+      text: That was until Bella came into her life.
+  - id: intro_3
+    entries:
+    - speaker: 
+      portrait: {fileID: 0}
+      text: Bella was kind, warm and gentle, bringing Isobel everything the castle
+        was missing.
+    - speaker: 
+      portrait: {fileID: 0}
+      text: It didn't take long for Bella's warmth to melt Isobel's long-frozen heart.
+  - id: intro_4
+    entries:
+    - speaker: 
+      portrait: {fileID: 0}
+      text: They lived happily for a long time, away from people and in peace.
+    - speaker: 
+      portrait: {fileID: 0}
+      text: They didn't yet know that their peace would soon be disturbed by an unwelcome
+        guest.
+  - id: intro_5
+    entries:
+    - speaker: ???
+      portrait: {fileID: 21300000, guid: af5ca1375eda175488ddfb7bc39519cd, type: 3}
+      text: Foul beast! Come out and face me, so that I can end your wretched existence!
+    - speaker: ???
+      portrait: {fileID: 21300000, guid: af5ca1375eda175488ddfb7bc39519cd, type: 3}
+      text: I have found your lair at last, and came here to free this poor, innocent
+        girl!
+    - speaker: Isobel
+      portrait: {fileID: 21300000, guid: d399970142ec43649bff3c67c0951c0d, type: 3}
+      text: What nonsense you utter, she is happy here. Happier than she ever was
+        amongst your kind.
+    - speaker: ???
+      portrait: {fileID: 21300000, guid: af5ca1375eda175488ddfb7bc39519cd, type: 3}
+      text: Lies! No one could be happy with a monster like you!
+    - speaker: ???
+      portrait: {fileID: 21300000, guid: af5ca1375eda175488ddfb7bc39519cd, type: 3}
+      text: I, Sonnet, the greatest mage in the land, will make sure this fair maiden
+        is rescued from your claws.
+    - speaker: Sonnet
+      portrait: {fileID: 21300000, guid: af5ca1375eda175488ddfb7bc39519cd, type: 3}
+      text: A beautiful girl like her deserves to be much more than just a blood
+        supply for a monster.
+    - speaker: Isobel
+      portrait: {fileID: 21300000, guid: d399970142ec43649bff3c67c0951c0d, type: 3}
+      text: What?! You would dare-! Bella, stay back, let me rid us of this pest.
+    - speaker: Bella
+      portrait: {fileID: 21300000, guid: d335b890e318bee44aae2f2616ef1db0, type: 3}
+      text: Isa... be careful...
+    - speaker: Isobel
+      portrait: {fileID: 21300000, guid: d399970142ec43649bff3c67c0951c0d, type: 3}
+      text: Worry not, my love, I promise, I will hurry back into your arms.
+  - id: intro_6
+    entries:
+    - speaker: 
+      portrait: {fileID: 0}
+      text: But hurry back she did not. The mage's attack brought her down, and before
+        she knew, her body was broken, her soul starting to slip away.
+    - speaker: Bella
+      portrait: {fileID: 21300000, guid: d335b890e318bee44aae2f2616ef1db0, type: 3}
+      text: ISOBEL!
+    - speaker: Sonnet
+      portrait: {fileID: 21300000, guid: af5ca1375eda175488ddfb7bc39519cd, type: 3}
+      text: Be calm, dear maiden, the foul beast is no more.
+    - speaker: Bella
+      portrait: {fileID: 21300000, guid: d335b890e318bee44aae2f2616ef1db0, type: 3}
+      text: No...! No... please, no...
+    - speaker: Sonnet
+      portrait: {fileID: 21300000, guid: af5ca1375eda175488ddfb7bc39519cd, type: 3}
+      text: What? You would weep after that monster?
+    - speaker: Sonnet
+      portrait: {fileID: 21300000, guid: af5ca1375eda175488ddfb7bc39519cd, type: 3}
+      text: You must be enthralled, nothing else could explain this.
+    - speaker: Sonnet
+      portrait: {fileID: 21300000, guid: af5ca1375eda175488ddfb7bc39519cd, type: 3}
+      text: I must lock you here, for your own safety, until the creature's spell
+        wears off.
+    - speaker: 
+      portrait: {fileID: 0}
+      text: "That very same \u201Ccreature\u201D was struggling to hold on, the last
+        sparks of her undead life being extinguished."
+    - speaker: 
+      portrait: {fileID: 0}
+      text: The last thing she saw before dying was her beloved, being dragged away
+        from her corpse, crying out for her.
+  - id: intro_7
+    entries:
+    - speaker: 
+      portrait: {fileID: 0}
+      text: The next thing she saw was red walls and flowing magma, as she woke up
+        in Hell.
+    - speaker: 
+      portrait: {fileID: 0}
+      text: Even though her body fell, her soul persevered, holding on, dragging
+        her to the fiery pits.
+  - id: tutorial_1
+    entries:
+    - speaker: Isobel
+      portrait: {fileID: 21300000, guid: d399970142ec43649bff3c67c0951c0d, type: 3}
+      text: Argh! That fucking mage!
+    - speaker: Isobel
+      portrait: {fileID: 21300000, guid: d399970142ec43649bff3c67c0951c0d, type: 3}
+      text: "I need to get out of here. I can\u2019t let this \u201CSonnet\u201D
+        harm my Bella."
+  - id: tutorial_2
+    entries:
+    - speaker: Succubus
+      portrait: {fileID: 21300000, guid: 09607f1ffa6381e498030ddc7f03ba9b, type: 3}
+      text: "Well, well, hello there, pretty. My name is Vellaia, who might you be?\r"
+    - speaker: Isobel
+      portrait: {fileID: 21300000, guid: d399970142ec43649bff3c67c0951c0d, type: 3}
+      text: "Can you tell me how I can leave this accursed place?\r\r"
+    - speaker: Vellaia
+      portrait: {fileID: 21300000, guid: 09607f1ffa6381e498030ddc7f03ba9b, type: 3}
+      text: "Why in such a rush, darling? Stay for a bit, relax, have some fun.\r\r\r"
+    - speaker: Isobel
+      portrait: {fileID: 21300000, guid: d399970142ec43649bff3c67c0951c0d, type: 3}
+      text: "I have no time for your foolishness, fiend. I need to leave.\r\r\r"
+    - speaker: Vellaia
+      portrait: {fileID: 21300000, guid: 09607f1ffa6381e498030ddc7f03ba9b, type: 3}
+      text: "This is paradise. No duties, nothing but pleasure\u2026 and sometimes
+        pain. Why would you want to leave? You got someone waiting for you?\r\r\r"
+    - speaker: Isobel
+      portrait: {fileID: 21300000, guid: d399970142ec43649bff3c67c0951c0d, type: 3}
+      text: "Yes. I have to get back to my beloved.\r\r\r"
+    - speaker: Vellaia
+      portrait: {fileID: 21300000, guid: 09607f1ffa6381e498030ddc7f03ba9b, type: 3}
+      text: "How boring. I was hoping you\u2019d stay here for a while with me. But
+        I have bad news for you, sweetheart. You\u2019re not leaving this place,
+        until there is a soul back in your body.\r\r\r"
+    - speaker: Isobel
+      portrait: {fileID: 21300000, guid: d399970142ec43649bff3c67c0951c0d, type: 3}
+      text: A soul? Any soul you say?
+  - id: tutorial_3
+    entries:
+    - speaker: Succubus
+      portrait: {fileID: 21300000, guid: 09607f1ffa6381e498030ddc7f03ba9b, type: 3}
+      text: "Hm? Where did you come from? \r"
+    - speaker: Isobel
+      portrait: {fileID: 21300000, guid: d399970142ec43649bff3c67c0951c0d, type: 3}
+      text: "Where did you come from? Why are you in my castle?\r\r"
+    - speaker: Succubus
+      portrait: {fileID: 21300000, guid: 09607f1ffa6381e498030ddc7f03ba9b, type: 3}
+      text: "We were summoned to protect the castle and the girl, Bella, the mage\u2019s
+        paramour.\r\r\r"
+    - speaker: Isobel
+      portrait: {fileID: 21300000, guid: d399970142ec43649bff3c67c0951c0d, type: 3}
+      text: "The mage\u2019s WHAT?!\r\r"
+  - id: tutorial_4
+    entries:
+    - speaker: Isobel
+      portrait: {fileID: 21300000, guid: d399970142ec43649bff3c67c0951c0d, type: 3}
+      text: "This cannot be. I have to save my Bella. I will save her, no matter
+        how many times I have to crawl out of Hell.\r\r\r"
+  - id: main_1
+    entries:
+    - speaker: Isobel
+      portrait: {fileID: 21300000, guid: d399970142ec43649bff3c67c0951c0d, type: 3}
+      text: "What the-? That fucking\u2026 casting some spell, changing all the corridors
+        in my castle. No matter. I\u2019ll always find my way to my Bella. Nothing
+        will stop me.\r\r\r"
+  - id: boss_1
+    entries:
+    - speaker: Bella
+      portrait: {fileID: 21300000, guid: d335b890e318bee44aae2f2616ef1db0, type: 3}
+      text: "I can\u2019t believe she\u2019s gone... my Isa..."
+    - speaker: Sonnet
+      portrait: {fileID: 21300000, guid: af5ca1375eda175488ddfb7bc39519cd, type: 3}
+      text: Quit your sobbing, my dear. Soon the spell will fade, and you will see
+        that your so-called lover was nothing but a bloodsucking monster.
+    - speaker: Bella
+      portrait: {fileID: 21300000, guid: d335b890e318bee44aae2f2616ef1db0, type: 3}
+      text: The only monster here is you.
+    - speaker: Sonnet
+      portrait: {fileID: 21300000, guid: af5ca1375eda175488ddfb7bc39519cd, type: 3}
+      text: "We\u2019ll work on that attitude."
+    - speaker: Isobel
+      portrait: {fileID: 21300000, guid: d399970142ec43649bff3c67c0951c0d, type: 3}
+      text: You'll do no such thing, scum.
+    - speaker: Bella
+      portrait: {fileID: 21300000, guid: d335b890e318bee44aae2f2616ef1db0, type: 3}
+      text: Isa...!
+    - speaker: Sonnet
+      portrait: {fileID: 21300000, guid: af5ca1375eda175488ddfb7bc39519cd, type: 3}
+      text: What?! How?! I killed you!
+    - speaker: Isobel
+      portrait: {fileID: 21300000, guid: d399970142ec43649bff3c67c0951c0d, type: 3}
+      text: Clearly not well enough.
+    - speaker: Sonnet
+      portrait: {fileID: 21300000, guid: af5ca1375eda175488ddfb7bc39519cd, type: 3}
+      text: "Ugh! Doesn\u2019t matter. I\u2019ll do it again."
+    - speaker: Sonnet
+      portrait: {fileID: 21300000, guid: af5ca1375eda175488ddfb7bc39519cd, type: 3}
+      text: "And this time you\u2019re not coming back."
+  - id: boss_2
+    entries:
+    - speaker: Sonnet
+      portrait: {fileID: 21300000, guid: af5ca1375eda175488ddfb7bc39519cd, type: 3}
+      text: NO! I will not be defeated by a lowly monster.
+  - id: final_1
+    entries:
+    - speaker: Bella
+      portrait: {fileID: 21300000, guid: d335b890e318bee44aae2f2616ef1db0, type: 3}
+      text: Isa!
+    - speaker: Bella
+      portrait: {fileID: 21300000, guid: d335b890e318bee44aae2f2616ef1db0, type: 3}
+      text: You...
+    - speaker: Bella
+      portrait: {fileID: 21300000, guid: d335b890e318bee44aae2f2616ef1db0, type: 3}
+      text: I...
+    - speaker: Bella
+      portrait: {fileID: 21300000, guid: d335b890e318bee44aae2f2616ef1db0, type: 3}
+      text: I was sure I lost you.
+    - speaker: Isobel
+      portrait: {fileID: 21300000, guid: d399970142ec43649bff3c67c0951c0d, type: 3}
+      text: I promised you I would be back, didn't I?
+  - id: final_2
+    entries:
+    - speaker: Bella
+      portrait: {fileID: 21300000, guid: d335b890e318bee44aae2f2616ef1db0, type: 3}
+      text: Never scare me like that again.
+    - speaker: Isobel
+      portrait: {fileID: 21300000, guid: d399970142ec43649bff3c67c0951c0d, type: 3}
+      text: I will do my best.
+    - speaker: 
+      portrait: {fileID: 0}
+      text: And that is how this story ends.
+    - speaker: 
+      portrait: {fileID: 0}
+      text: The Lovers reunited.
+  - id: final_3
+    entries:
+    - speaker: 
+      portrait: {fileID: 0}
+      text: The Magician defeated.
+  - id: final_4
+    entries: []
+  - id: final_5
+    entries: []
   defaultSequenceId: 
   letterDelaySeconds: 0.03
+  disableDialoguePanelObjectWhenHidden: 0
