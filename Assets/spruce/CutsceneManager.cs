@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -11,7 +12,8 @@ public class CutsceneManager : MonoBehaviour
     {
         [Header("Content")]
         public string enterDialogueId;
-        public Sprite image;
+        public Sprite backgroundImage;
+        [FormerlySerializedAs("image")] public Sprite foregroundImage;
         public string exitDialogueId;
 
         [Header("Optional Scene Transition")]
@@ -28,12 +30,15 @@ public class CutsceneManager : MonoBehaviour
     [SerializeField, Min(0)] private int startCutsceneIndex;
 
     [Header("Cutscene Image")]
-    [SerializeField] private Image cutsceneImage;
+    [FormerlySerializedAs("cutsceneImage")]
+    [SerializeField] private Image foregroundCutsceneImage;
+    [SerializeField] private Image backgroundCutsceneImage;
     [SerializeField] private Transform foregroundImageParent;
     [SerializeField] private Transform backgroundImageParent;
 
     [Header("Flow")]
     [SerializeField] private bool playOnStart = true;
+    [SerializeField] private bool skipRepeatedBoundaryDialogues = true;
 
     private Coroutine cutsceneRoutine;
     private bool waitingForFullscreenClick;
@@ -41,7 +46,11 @@ public class CutsceneManager : MonoBehaviour
 
     private void Awake()
     {
-        SetCutsceneImageVisible(false);
+        AttachImageToParent(foregroundCutsceneImage, foregroundImageParent, "foreground");
+        AttachImageToParent(backgroundCutsceneImage, backgroundImageParent, "background");
+
+        SetForegroundImageVisible(false);
+        SetBackgroundImageVisible(false);
     }
 
     private void Start()
@@ -110,11 +119,20 @@ public class CutsceneManager : MonoBehaviour
                 continue;
             }
 
-            yield return PlayDialogueAndWait(entry.enterDialogueId);
-
-            if (entry.image != null)
+            bool skipEnterDialogue = ShouldSkipEnterDialogueAtBoundary(i, fromIndex, entry);
+            if (!skipEnterDialogue)
             {
-                ShowFullscreenImage(entry.image);
+                yield return PlayDialogueAndWait(entry.enterDialogueId);
+            }
+
+            ShowBackgroundImage(entry.backgroundImage);
+
+            ShowForegroundImage(entry.foregroundImage);
+
+            bool hasAnyCutsceneImage = entry.backgroundImage != null || entry.foregroundImage != null;
+            if (hasAnyCutsceneImage)
+            {
+                MoveAllImagesToForegroundLayer();
 
                 cachedTimeScale = Time.timeScale;
                 waitingForFullscreenClick = true;
@@ -125,11 +143,12 @@ public class CutsceneManager : MonoBehaviour
                 Time.timeScale = cachedTimeScale;
                 waitingForFullscreenClick = false;
 
-                MoveImageToBackground(entry.image);
+                MoveAllImagesToBackgroundLayer();
             }
             else
             {
-                SetCutsceneImageVisible(false);
+                SetForegroundImageVisible(false);
+                SetBackgroundImageVisible(false);
             }
 
             yield return PlayDialogueAndWait(entry.exitDialogueId);
@@ -150,6 +169,32 @@ public class CutsceneManager : MonoBehaviour
         }
 
         cutsceneRoutine = null;
+    }
+
+    private bool ShouldSkipEnterDialogueAtBoundary(int cutsceneIndex, int startIndex, CutsceneEntry currentEntry)
+    {
+        if (!skipRepeatedBoundaryDialogues)
+        {
+            return false;
+        }
+
+        if (currentEntry == null || cutsceneIndex <= startIndex)
+        {
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(currentEntry.enterDialogueId))
+        {
+            return false;
+        }
+
+        CutsceneEntry previousEntry = cutscenes[cutsceneIndex - 1];
+        if (previousEntry == null || string.IsNullOrWhiteSpace(previousEntry.exitDialogueId))
+        {
+            return false;
+        }
+
+        return string.Equals(previousEntry.exitDialogueId, currentEntry.enterDialogueId, System.StringComparison.Ordinal);
     }
 
     private IEnumerator PlayDialogueAndWait(string dialogueId)
@@ -173,40 +218,36 @@ public class CutsceneManager : MonoBehaviour
         yield return new WaitUntil(() => !dialogue.IsPlaying);
     }
 
-    private void ShowFullscreenImage(Sprite spriteToUse)
+    private void ShowForegroundImage(Sprite spriteToUse)
     {
-        if (cutsceneImage != null)
+        if (foregroundCutsceneImage != null)
         {
-            cutsceneImage.sprite = spriteToUse;
+            foregroundCutsceneImage.sprite = spriteToUse;
         }
 
-        SetForegroundLayerOrder();
-        MoveCutsceneImageToParent(foregroundImageParent);
-        SetCutsceneImageVisible(spriteToUse != null);
+        SetForegroundImageVisible(spriteToUse != null);
     }
 
-    private void MoveImageToBackground(Sprite spriteToUse)
+    private void ShowBackgroundImage(Sprite spriteToUse)
     {
-        if (cutsceneImage != null)
+        if (backgroundCutsceneImage != null)
         {
-            cutsceneImage.sprite = spriteToUse;
+            backgroundCutsceneImage.sprite = spriteToUse;
         }
 
-        SetBackgroundLayerOrder();
-        MoveCutsceneImageToParent(backgroundImageParent);
-        SetCutsceneImageVisible(spriteToUse != null);
+        SetBackgroundImageVisible(spriteToUse != null);
     }
 
     private IEnumerator WaitForFreshLeftClick()
     {
         // Ignore the click that may have just advanced dialogue.
-        yield return new WaitUntil(() => !Input.GetMouseButton(0));
-        yield return new WaitUntil(() => Input.GetMouseButtonDown(0));
+        yield return new WaitUntil(() => !Input.GetMouseButton(0)||!Input.GetKey(KeyCode.Space));
+        yield return new WaitUntil(() => Input.GetMouseButtonDown(0)||Input.GetKey(KeyCode.Space));
     }
 
-    private void MoveCutsceneImageToParent(Transform parent)
+    private void AttachImageToParent(Image image, Transform parent, string imageKind)
     {
-        if (cutsceneImage == null || parent == null)
+        if (image == null || parent == null)
         {
             return;
         }
@@ -214,47 +255,71 @@ public class CutsceneManager : MonoBehaviour
         RectTransform parentRect = parent as RectTransform;
         if (parentRect == null)
         {
-            Debug.LogWarning("CutsceneManager: image parent should be a UI RectTransform under a Canvas.");
+            Debug.LogWarning($"CutsceneManager: {imageKind} image parent should be a UI RectTransform under a Canvas.");
             return;
         }
 
-        RectTransform imageRect = cutsceneImage.rectTransform;
-        imageRect.SetParent(parentRect, false);
-        imageRect.localScale = Vector3.one;
-        imageRect.localRotation = Quaternion.identity;
-        imageRect.anchoredPosition = Vector2.zero;
-
-        // Stretch to fill the chosen layer parent so ordering is controlled by hierarchy.
-        imageRect.anchorMin = Vector2.zero;
-        imageRect.anchorMax = Vector2.one;
-        imageRect.offsetMin = Vector2.zero;
-        imageRect.offsetMax = Vector2.zero;
+        image.rectTransform.SetParent(parentRect, false);
     }
 
-    private void SetCutsceneImageVisible(bool isVisible)
+    private void SetForegroundImageVisible(bool isVisible)
     {
-        if (cutsceneImage == null)
+        if (foregroundCutsceneImage == null)
         {
             return;
         }
 
-        cutsceneImage.gameObject.SetActive(isVisible);
-        cutsceneImage.enabled = isVisible && cutsceneImage.sprite != null;
+        foregroundCutsceneImage.gameObject.SetActive(isVisible);
+        foregroundCutsceneImage.enabled = isVisible && foregroundCutsceneImage.sprite != null;
     }
 
-    private void SetForegroundLayerOrder()
+    private void SetBackgroundImageVisible(bool isVisible)
     {
+        if (backgroundCutsceneImage == null)
+        {
+            return;
+        }
+
+        backgroundCutsceneImage.gameObject.SetActive(isVisible);
+        backgroundCutsceneImage.enabled = isVisible && backgroundCutsceneImage.sprite != null;
+    }
+
+    private void MoveAllImagesToForegroundLayer()
+    {
+        AttachImageToParent(backgroundCutsceneImage, foregroundImageParent, "background");
+        AttachImageToParent(foregroundCutsceneImage, foregroundImageParent, "foreground");
+
+        EnsureForegroundDrawnAboveBackground();
+
         if (foregroundImageParent != null)
         {
             foregroundImageParent.SetAsLastSibling();
         }
     }
 
-    private void SetBackgroundLayerOrder()
+    private void MoveAllImagesToBackgroundLayer()
     {
+        AttachImageToParent(backgroundCutsceneImage, backgroundImageParent, "background");
+        AttachImageToParent(foregroundCutsceneImage, backgroundImageParent, "foreground");
+
+        EnsureForegroundDrawnAboveBackground();
+
         if (backgroundImageParent != null)
         {
             backgroundImageParent.SetAsFirstSibling();
+        }
+    }
+
+    private void EnsureForegroundDrawnAboveBackground()
+    {
+        if (backgroundCutsceneImage != null)
+        {
+            backgroundCutsceneImage.rectTransform.SetAsFirstSibling();
+        }
+
+        if (foregroundCutsceneImage != null)
+        {
+            foregroundCutsceneImage.rectTransform.SetAsLastSibling();
         }
     }
 

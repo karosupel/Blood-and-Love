@@ -10182,14 +10182,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1055999715}
     - target: {fileID: 6690964016327386971, guid: 38bfd206a6f6c0542ae7c8119b36803a, type: 3}
-      propertyPath: gameOverMusicClip
-      value: 
-      objectReference: {fileID: 8300000, guid: 3328e29d38e4cab4cbe45f302d1407c0, type: 3}
-    - target: {fileID: 6690964016327386971, guid: 38bfd206a6f6c0542ae7c8119b36803a, type: 3}
-      propertyPath: gameOverMusicVolume
-      value: 0.394
-      objectReference: {fileID: 0}
-    - target: {fileID: 6690964016327386971, guid: 38bfd206a6f6c0542ae7c8119b36803a, type: 3}
       propertyPath: HelpCanvasHellButton
       value: 
       objectReference: {fileID: 495536164}
@@ -10221,6 +10213,10 @@ PrefabInstance:
       propertyPath: roomTypeButtons.Array.data[4].button
       value: 
       objectReference: {fileID: 1625682404}
+    - target: {fileID: 6922712429937384137, guid: 38bfd206a6f6c0542ae7c8119b36803a, type: 3}
+      propertyPath: sparkleStrength
+      value: 0.8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

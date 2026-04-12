@@ -240,13 +240,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   liquidFillImage: {fileID: 8009781651547306655}
   playerHealth: {fileID: 0}
+  bossHealth: {fileID: 0}
   healthBarCanvasGroup: {fileID: 0}
+  preferBossWhenAutoDetected: 0
   smoothSpeed: 1
   healthyColor: {r: 0.4339623, g: 0.10030261, b: 0.1581824, a: 1}
   damagedColor: {r: 0.4887373, g: 0.1954432, b: 0.6792453, a: 1}
   criticalColor: {r: 0.19759786, g: 0.18783373, b: 0.6320754, a: 1}
   sparkleSpeed: 8
   sparkleStrength: 0.35
+  bossHealthBar: 0
 --- !u!1 &931806298420965832
 GameObject:
   m_ObjectHideFlags: 0
@@ -2062,12 +2065,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
-  m_ReferencePixelsPerUnit: 100
+  m_UiScaleMode: 1
+  m_ReferencePixelsPerUnit: 32
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 3840, y: 2160}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -2134,6 +2137,20 @@ MonoBehaviour:
   HelpCanvasHellButton: {fileID: 0}
   helpButtonRaycastPadding: {x: 24, y: 24, z: 24, w: 24}
   helpHideDelaySeconds: 0.08
+  gameOverRoot: {fileID: 0}
+  gameOverMainMenuButton: {fileID: 0}
+  gameOverRestartBossButton: {fileID: 0}
+  mainMenuBuildIndex: 0
+  freezeTimeOnGameOver: 1
+  gameOverFadeDuration: 0.3
+  gameOverScaleDuration: 0.22
+  gameOverStartScale: 0.9
+  gameOverMusicClip: {fileID: 8300000, guid: 3328e29d38e4cab4cbe45f302d1407c0, type: 3}
+  gameOverMusicVolume: 0.394
+  loopGameOverMusic: 0
+  bossVictoryRoot: {fileID: 0}
+  bossVictoryMainMenuButton: {fileID: 0}
+  bossUIHandler: {fileID: 0}
 --- !u!1 &7060150413706648961
 GameObject:
   m_ObjectHideFlags: 0
