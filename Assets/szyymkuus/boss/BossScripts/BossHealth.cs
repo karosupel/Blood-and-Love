@@ -101,7 +101,7 @@ public class BossHealth : MonoBehaviour, IDamageable
         currentHearts--;
         OnHeartsChanged?.Invoke(currentHearts);
         Debug.Log("Boss Hearts left: " + currentHearts + "/" + maxHearts);
-        if (currentHearts < 0)
+        if (currentHearts < 1)
         {
             BeginAnnihilate();
         }
