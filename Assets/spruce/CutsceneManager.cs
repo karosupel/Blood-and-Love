@@ -42,6 +42,7 @@ public class CutsceneManager : MonoBehaviour
 
     [Header("Skip")]
     [SerializeField] private KeyCode skipToEndKey = KeyCode.Q;
+    [SerializeField] private Button skipToEndButton;
 
     private Coroutine cutsceneRoutine;
     private bool waitingForFullscreenClick;
@@ -51,6 +52,7 @@ public class CutsceneManager : MonoBehaviour
     {
         AttachImageToParent(foregroundCutsceneImage, foregroundImageParent, "foreground");
         AttachImageToParent(backgroundCutsceneImage, backgroundImageParent, "background");
+        BindSkipButton();
 
         SetForegroundImageVisible(false);
         SetBackgroundImageVisible(false);
@@ -73,7 +75,7 @@ public class CutsceneManager : MonoBehaviour
 
         if (Input.GetKeyDown(skipToEndKey))
         {
-            SkipToLastCutsceneTransition();
+            RequestSkipToEnd();
         }
     }
 
@@ -90,6 +92,13 @@ public class CutsceneManager : MonoBehaviour
             Time.timeScale = cachedTimeScale;
             waitingForFullscreenClick = false;
         }
+
+        SetSkipButtonInteractable(false);
+    }
+
+    private void OnDestroy()
+    {
+        UnbindSkipButton();
     }
 
     public void StartCutscene()
@@ -123,6 +132,17 @@ public class CutsceneManager : MonoBehaviour
         }
 
         cutsceneRoutine = StartCoroutine(CutsceneRoutine(fromIndex));
+        SetSkipButtonInteractable(true);
+    }
+
+    private void RequestSkipToEnd()
+    {
+        if (cutsceneRoutine == null)
+        {
+            return;
+        }
+
+        SkipToLastCutsceneTransition();
     }
 
     private void SkipToLastCutsceneTransition()
@@ -223,12 +243,14 @@ public class CutsceneManager : MonoBehaviour
                 if (TryLoadScene(entry.nextSceneBuildIndex))
                 {
                     cutsceneRoutine = null;
+                    SetSkipButtonInteractable(false);
                     yield break;
                 }
             }
         }
 
         cutsceneRoutine = null;
+        SetSkipButtonInteractable(false);
     }
 
     private IEnumerator TransitionFromEntryRoutine(CutsceneEntry entry)
@@ -240,6 +262,7 @@ public class CutsceneManager : MonoBehaviour
 
         TryLoadScene(entry.nextSceneBuildIndex);
         cutsceneRoutine = null;
+        SetSkipButtonInteractable(false);
     }
 
     private bool ShouldSkipEnterDialogueAtBoundary(int cutsceneIndex, int startIndex, CutsceneEntry currentEntry)
@@ -331,6 +354,38 @@ public class CutsceneManager : MonoBehaviour
         }
 
         image.rectTransform.SetParent(parentRect, false);
+    }
+
+    private void BindSkipButton()
+    {
+        if (skipToEndButton == null)
+        {
+            return;
+        }
+
+        skipToEndButton.onClick.RemoveListener(RequestSkipToEnd);
+        skipToEndButton.onClick.AddListener(RequestSkipToEnd);
+        SetSkipButtonInteractable(false);
+    }
+
+    private void UnbindSkipButton()
+    {
+        if (skipToEndButton == null)
+        {
+            return;
+        }
+
+        skipToEndButton.onClick.RemoveListener(RequestSkipToEnd);
+    }
+
+    private void SetSkipButtonInteractable(bool isInteractable)
+    {
+        if (skipToEndButton == null)
+        {
+            return;
+        }
+
+        skipToEndButton.interactable = isInteractable;
     }
 
     private void SetForegroundImageVisible(bool isVisible)

@@ -546,7 +546,7 @@ TextureImporter:
         width: 64
         height: 82
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -554,6 +554,27 @@ TextureImporter:
       bones: []
       spriteID: d70b9b40dbd06c5429d5f54e3674ad25
       internalID: -1235794259
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: gothic_pixel_ui_free-v1-0-2_22
+      rect:
+        serializedVersion: 2
+        x: 813
+        y: 638
+        width: 34
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c994f424f799f49448d3cb0e0e36847d
+      internalID: -1175059785
       vertices: []
       indices: 
       edges: []
@@ -584,6 +605,7 @@ TextureImporter:
       gothic_pixel_ui_free-v1-0-2_2: -1266465781
       gothic_pixel_ui_free-v1-0-2_20: 671897234
       gothic_pixel_ui_free-v1-0-2_21: -1235794259
+      gothic_pixel_ui_free-v1-0-2_22: -1175059785
       gothic_pixel_ui_free-v1-0-2_3: 150675218
       gothic_pixel_ui_free-v1-0-2_4: -336420722
       gothic_pixel_ui_free-v1-0-2_5: 1473975801
