@@ -14137,6 +14137,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1840014530239347126, guid: a553583edd8f4ae46b8883c3c6c0c1c2, type: 3}
+      propertyPath: bossHealth
+      value: 
+      objectReference: {fileID: 451985160}
+    - target: {fileID: 1840014530239347126, guid: a553583edd8f4ae46b8883c3c6c0c1c2, type: 3}
       propertyPath: speakerText
       value: 
       objectReference: {fileID: 548554007}
@@ -14189,6 +14193,10 @@ PrefabInstance:
       value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 1840014530239347126, guid: a553583edd8f4ae46b8883c3c6c0c1c2, type: 3}
+      propertyPath: bossFirstPhaseEndedDialogueId
+      value: boss_3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1840014530239347126, guid: a553583edd8f4ae46b8883c3c6c0c1c2, type: 3}
       propertyPath: useBossSceneDialogueSelection
       value: 1
       objectReference: {fileID: 0}
@@ -14231,6 +14239,10 @@ PrefabInstance:
     - target: {fileID: 1840014530239347126, guid: a553583edd8f4ae46b8883c3c6c0c1c2, type: 3}
       propertyPath: additionalBossUiHandlers.Array.size
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1840014530239347126, guid: a553583edd8f4ae46b8883c3c6c0c1c2, type: 3}
+      propertyPath: playDialogueAfterBossFirstPhaseEnds
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1840014530239347126, guid: a553583edd8f4ae46b8883c3c6c0c1c2, type: 3}
       propertyPath: disableDialoguePanelObjectWhenHidden

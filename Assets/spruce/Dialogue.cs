@@ -53,6 +53,13 @@ public class Dialogue : MonoBehaviour
     [SerializeField] private string bossSceneSecondDialogueId;
     [SerializeField, Min(-1)] private int bossSceneSecondDialogueUiRootIndex = -1;
 
+    [Header("Boss Phase Transition Dialogue")]
+    [SerializeField] private BossHealth bossHealth;
+    [SerializeField] private bool playDialogueAfterBossFirstPhaseEnds;
+    [SerializeField] private string bossFirstPhaseEndedDialogueId;
+    [SerializeField, Min(-1)] private int bossFirstPhaseEndedUiRootIndex = -1;
+    [SerializeField] private bool triggerBossFirstPhaseEndedDialogueOnlyOnce = true;
+
     [Header("Typewriter")]
     [SerializeField, Min(0.001f)] private float letterDelaySeconds = 0.03f;
 
@@ -65,6 +72,9 @@ public class Dialogue : MonoBehaviour
     private readonly Dictionary<GameObject, bool> uiRootActiveStateBeforeDialogue = new Dictionary<GameObject, bool>();
     private readonly HashSet<GameObject> uiRootsAllowedDuringDialogue = new HashSet<GameObject>();
     private string activeSequenceId;
+    private bool isBossHealthSubscribed;
+    private bool bossFirstPhaseDialogueTriggered;
+    private bool pendingBossFirstPhaseEndedDialogue;
 
     public bool IsPlaying { get; private set; }
 
@@ -74,6 +84,11 @@ public class Dialogue : MonoBehaviour
         if (bossUIHandler == null)
         {
             bossUIHandler = FindObjectOfType<BossUIHandler>(true);
+        }
+
+        if (bossHealth == null)
+        {
+            bossHealth = FindObjectOfType<BossHealth>(true);
         }
 
 
@@ -99,6 +114,11 @@ public class Dialogue : MonoBehaviour
         SetPortraitUiVisible(false);
     }
 
+    private void OnEnable()
+    {
+        TryBindBossHealthEvents();
+    }
+
     private void Start()
     {
         if (useBossSceneDialogueSelection && playBossSceneFirstDialogueOnStart && IsBossSceneActive())
@@ -115,6 +135,8 @@ public class Dialogue : MonoBehaviour
 
     private void OnDisable()
     {
+        UnbindBossHealthEvents();
+
         if (IsPlaying)
         {
             StopDialogue();
@@ -125,6 +147,12 @@ public class Dialogue : MonoBehaviour
     {
         if (!IsPlaying)
         {
+            if (pendingBossFirstPhaseEndedDialogue)
+            {
+                pendingBossFirstPhaseEndedDialogue = false;
+                PlayBossFirstPhaseEndedDialogue();
+            }
+
             return;
         }
 
@@ -219,6 +247,17 @@ public class Dialogue : MonoBehaviour
         }
 
         PlayDialogue(bossSceneSecondDialogueId);
+    }
+
+    public void PlayBossFirstPhaseEndedDialogue()
+    {
+        if (bossFirstPhaseEndedUiRootIndex >= 0)
+        {
+            PlayDialogueKeepingUiVisible(bossFirstPhaseEndedDialogueId, bossFirstPhaseEndedUiRootIndex);
+            return;
+        }
+
+        PlayDialogue(bossFirstPhaseEndedDialogueId);
     }
 
     private bool IsBossSceneActive()
@@ -404,6 +443,61 @@ public class Dialogue : MonoBehaviour
         }
 
         return string.Equals(finishedSequenceId, bossSceneFirstDialogueId, System.StringComparison.Ordinal);
+    }
+
+    private void TryBindBossHealthEvents()
+    {
+        if (isBossHealthSubscribed)
+        {
+            return;
+        }
+
+        if (bossHealth == null)
+        {
+            bossHealth = FindObjectOfType<BossHealth>(true);
+        }
+
+        if (bossHealth == null)
+        {
+            return;
+        }
+
+        bossHealth.OnAfterlifeStateChanged += HandleBossAfterlifeStateChanged;
+        isBossHealthSubscribed = true;
+    }
+
+    private void UnbindBossHealthEvents()
+    {
+        if (!isBossHealthSubscribed || bossHealth == null)
+        {
+            return;
+        }
+
+        bossHealth.OnAfterlifeStateChanged -= HandleBossAfterlifeStateChanged;
+        isBossHealthSubscribed = false;
+    }
+
+    private void HandleBossAfterlifeStateChanged(bool isInAfterlife)
+    {
+        if (!playDialogueAfterBossFirstPhaseEnds || !isInAfterlife)
+        {
+            return;
+        }
+
+        if (triggerBossFirstPhaseEndedDialogueOnlyOnce && bossFirstPhaseDialogueTriggered)
+        {
+            return;
+        }
+
+        bossFirstPhaseDialogueTriggered = true;
+
+        if (IsPlaying)
+        {
+            pendingBossFirstPhaseEndedDialogue = true;
+            return;
+        }
+
+        PlayBossFirstPhaseEndedDialogue();
     }
 
     private bool ShouldForceShowBossUiAfterSecondDialogue(string finishedSequenceId)

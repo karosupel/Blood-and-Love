@@ -329,7 +329,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     {
         Color basicColor = Color.white;
         spriteRenderer.color = targetColor;
-        yield return new WaitForSeconds(duration);
+        yield return new WaitForSecondsRealtime(duration);
         spriteRenderer.color = basicColor;
     }
 
@@ -365,7 +365,7 @@ public class PlayerHealth : MonoBehaviour, IDamageable
     IEnumerator InvincibilityCoroutine(float duration)
     {
         isInvincible = true;
-        yield return new WaitForSeconds(duration);
+        yield return new WaitForSecondsRealtime(duration);
         isInvincible = false;
     }
 

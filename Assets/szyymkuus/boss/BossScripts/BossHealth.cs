@@ -89,7 +89,7 @@ public class BossHealth : MonoBehaviour, IDamageable
         }
 
         spriteRenderer.color = Color.red;
-        yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSecondsRealtime(0.1f);
         spriteRenderer.color = Color.white;
 
 
@@ -140,7 +140,7 @@ public class BossHealth : MonoBehaviour, IDamageable
      IEnumerator InvincibilityCoroutine(float duration)
     {
         isInvincible = true;
-        yield return new WaitForSeconds(duration);
+        yield return new WaitForSecondsRealtime(duration);
         isInvincible = false;
     }
 
@@ -159,7 +159,7 @@ public class BossHealth : MonoBehaviour, IDamageable
 
     IEnumerator BarrierCastHeartImmunityFallbackCoroutine()
     {
-        yield return new WaitForSeconds(Mathf.Max(0.1f, barrierCastHeartImmunityFallback));
+        yield return new WaitForSecondsRealtime(Mathf.Max(0.1f, barrierCastHeartImmunityFallback));
         barrierCastImmunityFallbackCoroutine = null;
         EndBarrierCastHeartImmunity();
     }
