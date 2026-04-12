@@ -48,6 +48,7 @@ public class SpawnerManagerScript : MonoBehaviour
     private bool wasInAfterlife = false;
 
     [SerializeField] private string tutorialSceneName = "Tutorial";
+    [SerializeField] private float materialReturnEnemyFreezeDuration = 2f;
 
     private void Start()
     {
@@ -174,7 +175,14 @@ public class SpawnerManagerScript : MonoBehaviour
             {
                 continue;
             }
+
             enemy.SetActive(true);
+
+            Enemy enemyComponent = enemy.GetComponent<Enemy>();
+            if (enemyComponent != null)
+            {
+                enemyComponent.FreezeFor(materialReturnEnemyFreezeDuration);
+            }
         }
     }
 

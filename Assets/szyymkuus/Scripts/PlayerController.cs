@@ -194,9 +194,15 @@ public class PlayerController : MonoBehaviour
         speed = basicSpeed;
     }
 
-    public void ApplyStun(float duration)
+    public void ApplyForcedStun(float duration)
     {
-        if (stunImmune > 0)
+        ApplyStun(duration, true);
+    }
+
+
+    public void ApplyStun(float duration, bool force = false)
+    {
+        if (stunImmune > 0 && !force)
         {
             return;
         }

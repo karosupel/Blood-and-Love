@@ -13,6 +13,7 @@ public class BatStateManager : MonoBehaviour
 
     public bool isPlayerAttacked = false;
     Enemy enemy;
+    private bool hasStarted = false;
 
      void Awake()
     {
@@ -22,8 +23,28 @@ public class BatStateManager : MonoBehaviour
 
     public void Start()
     {
-        currentState = repositionState;
-        currentState.EnterState(this);
+        hasStarted = true;
+        ResetToRepositionState();
+    }
+
+    private void OnEnable()
+    {
+        if (!hasStarted)
+        {
+            return;
+        }
+
+        if (enemy == null)
+        {
+            enemy = GetComponent<Enemy>();
+        }
+
+        if (enemy != null && enemy.IsDead())
+        {
+            return;
+        }
+
+        ResetToRepositionState();
     }
 
     public void Update()
@@ -56,6 +77,13 @@ public class BatStateManager : MonoBehaviour
             yield return new WaitForSeconds(1f);
             isPlayerAttacked = false;
         }
+    }
+
+    private void ResetToRepositionState()
+    {
+        isPlayerAttacked = false;
+        currentState = repositionState;
+        currentState.EnterState(this);
     }
 
     // void OnCollisionEnter2D(Collision2D collision)

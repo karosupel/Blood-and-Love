@@ -19,7 +19,8 @@ public class Enemy : MonoBehaviour, IDamageable
     Animator animator;
     bool isDead = false;
     bool isFrozen = false;
-    private Coroutine delayedUnfreezeCoroutine;
+    private bool hasScheduledUnfreeze = false;
+    private float scheduledUnfreezeRealtime = -1f;
 
     //public Animator animator;
 
@@ -79,7 +80,12 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void Update()
     {
+        TryUnfreezeIfDue();
+    }
 
+    private void OnEnable()
+    {
+        TryUnfreezeIfDue();
     }
 
     public void DealDamage(GameObject player, float damage)
@@ -111,25 +117,34 @@ public class Enemy : MonoBehaviour, IDamageable
             rb.velocity = Vector2.zero;
             rb.angularVelocity = 0f;
         }
+
+        if (!freeze)
+        {
+            hasScheduledUnfreeze = false;
+            scheduledUnfreezeRealtime = -1f;
+        }
     }
 
     public void FreezeFor(float duration)
     {
         Freeze(true);
 
-        if (delayedUnfreezeCoroutine != null)
-        {
-            StopCoroutine(delayedUnfreezeCoroutine);
-        }
-
-        delayedUnfreezeCoroutine = StartCoroutine(UnfreezeAfterDelay(duration));
+        hasScheduledUnfreeze = true;
+        scheduledUnfreezeRealtime = Time.realtimeSinceStartup + Mathf.Max(0f, duration);
+        TryUnfreezeIfDue();
     }
 
-    private IEnumerator UnfreezeAfterDelay(float delay)
+    private void TryUnfreezeIfDue()
     {
-        yield return new WaitForSecondsRealtime(delay);
-        Freeze(false);
-        delayedUnfreezeCoroutine = null;
+        if (!isFrozen || !hasScheduledUnfreeze)
+        {
+            return;
+        }
+
+        if (Time.realtimeSinceStartup >= scheduledUnfreezeRealtime)
+        {
+            Freeze(false);
+        }
     }
 
     public bool IsFrozen()

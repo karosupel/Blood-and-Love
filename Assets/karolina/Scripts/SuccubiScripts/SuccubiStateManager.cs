@@ -19,6 +19,7 @@ public class EnemyStateManager : MonoBehaviour
     public Animator animator;
 
     [SerializeField] public float offsetTime;
+    private bool hasStarted = false;
 
     void Awake()
     {
@@ -30,8 +31,28 @@ public class EnemyStateManager : MonoBehaviour
 
     void Start()
     {
-        currentState = new SuccubiChase();
-        currentState.EnterState(this);
+        hasStarted = true;
+        ResetToChaseState();
+    }
+
+    void OnEnable()
+    {
+        if (!hasStarted)
+        {
+            return;
+        }
+
+        if (enemy == null)
+        {
+            enemy = GetComponent<Enemy>();
+        }
+
+        if (enemy != null && enemy.IsDead())
+        {
+            return;
+        }
+
+        ResetToChaseState();
     }
 
     void Update()
@@ -61,6 +82,12 @@ public class EnemyStateManager : MonoBehaviour
         }
 
         attackState.OnAttackAnimationHit(this);
+    }
+
+    private void ResetToChaseState()
+    {
+        currentState = chaseState;
+        currentState.EnterState(this);
     }
 
     // Rysowanie range'a odbywa się teraz w UpdateState() przy użyciu LineRenderer

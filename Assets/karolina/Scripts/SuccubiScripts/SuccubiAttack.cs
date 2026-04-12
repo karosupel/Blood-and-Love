@@ -29,6 +29,10 @@ public class SuccubiAttack : EnemyBaseState
     {
         //Debug.Log("Entered Attack State");
         isAttacking = true;
+        waitingForAnimationHit = false;
+        animationHitReceived = false;
+        showAttackRange = false;
+        hasLockedAttackData = false;
         player = enemy.player;
         stats = enemy.stats;
         enemyReference = enemy.enemy;
