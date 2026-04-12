@@ -8891,12 +8891,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
-  m_ReferencePixelsPerUnit: 100
+  m_UiScaleMode: 1
+  m_ReferencePixelsPerUnit: 32
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 3840, y: 2160}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -13321,6 +13321,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2370781629302672243, guid: 6d4263a16f57b804e8a75534dedbbfa0, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2370781629302672243, guid: 6d4263a16f57b804e8a75534dedbbfa0, type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2370781629302672243, guid: 6d4263a16f57b804e8a75534dedbbfa0, type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 3840
+      objectReference: {fileID: 0}
+    - target: {fileID: 2370781629302672243, guid: 6d4263a16f57b804e8a75534dedbbfa0, type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 2160
+      objectReference: {fileID: 0}
+    - target: {fileID: 2370781629302672243, guid: 6d4263a16f57b804e8a75534dedbbfa0, type: 3}
+      propertyPath: m_ReferencePixelsPerUnit
+      value: 32
+      objectReference: {fileID: 0}
     - target: {fileID: 3475968446412653034, guid: 6d4263a16f57b804e8a75534dedbbfa0, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -13421,6 +13441,26 @@ PrefabInstance:
     - target: {fileID: 1640620883403105478, guid: dc116f682a2db0a44b4a25d7f5954c43, type: 3}
       propertyPath: m_Name
       value: HelpCanvasHell
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384134681379695258, guid: dc116f682a2db0a44b4a25d7f5954c43, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384134681379695258, guid: dc116f682a2db0a44b4a25d7f5954c43, type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384134681379695258, guid: dc116f682a2db0a44b4a25d7f5954c43, type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 3840
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384134681379695258, guid: dc116f682a2db0a44b4a25d7f5954c43, type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 2160
+      objectReference: {fileID: 0}
+    - target: {fileID: 2384134681379695258, guid: dc116f682a2db0a44b4a25d7f5954c43, type: 3}
+      propertyPath: m_ReferencePixelsPerUnit
+      value: 32
       objectReference: {fileID: 0}
     - target: {fileID: 2523808679905815479, guid: dc116f682a2db0a44b4a25d7f5954c43, type: 3}
       propertyPath: m_Pivot.x
@@ -13685,6 +13725,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: PauseMenuCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 2758323844270360557, guid: 6d7ddf5d1a3db424cb0f3fee94a62948, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2758323844270360557, guid: 6d7ddf5d1a3db424cb0f3fee94a62948, type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2758323844270360557, guid: 6d7ddf5d1a3db424cb0f3fee94a62948, type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 3840
+      objectReference: {fileID: 0}
+    - target: {fileID: 2758323844270360557, guid: 6d7ddf5d1a3db424cb0f3fee94a62948, type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 2160
+      objectReference: {fileID: 0}
+    - target: {fileID: 2758323844270360557, guid: 6d7ddf5d1a3db424cb0f3fee94a62948, type: 3}
+      propertyPath: m_ReferencePixelsPerUnit
+      value: 32
+      objectReference: {fileID: 0}
     - target: {fileID: 5220554573157567003, guid: 6d7ddf5d1a3db424cb0f3fee94a62948, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -13778,6 +13838,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 309250338686917060, guid: 9f5bced7284243a4787706ea3835578d, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 309250338686917060, guid: 9f5bced7284243a4787706ea3835578d, type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 309250338686917060, guid: 9f5bced7284243a4787706ea3835578d, type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 3840
+      objectReference: {fileID: 0}
+    - target: {fileID: 309250338686917060, guid: 9f5bced7284243a4787706ea3835578d, type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 2160
+      objectReference: {fileID: 0}
+    - target: {fileID: 309250338686917060, guid: 9f5bced7284243a4787706ea3835578d, type: 3}
+      propertyPath: m_ReferencePixelsPerUnit
+      value: 32
+      objectReference: {fileID: 0}
     - target: {fileID: 4929684786617375956, guid: 9f5bced7284243a4787706ea3835578d, type: 3}
       propertyPath: m_Name
       value: HelpCanvas
@@ -14141,6 +14221,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2707867437518377411, guid: 0743e0679d53d3640b75e5b40a022720, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2707867437518377411, guid: 0743e0679d53d3640b75e5b40a022720, type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2707867437518377411, guid: 0743e0679d53d3640b75e5b40a022720, type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 3840
+      objectReference: {fileID: 0}
+    - target: {fileID: 2707867437518377411, guid: 0743e0679d53d3640b75e5b40a022720, type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 2160
+      objectReference: {fileID: 0}
+    - target: {fileID: 2707867437518377411, guid: 0743e0679d53d3640b75e5b40a022720, type: 3}
+      propertyPath: m_ReferencePixelsPerUnit
+      value: 32
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -14363,6 +14463,26 @@ PrefabInstance:
     - target: {fileID: 697213145753656357, guid: 86240356b65dac64c8832a984cdb4e17, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4235152578435083165, guid: 86240356b65dac64c8832a984cdb4e17, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4235152578435083165, guid: 86240356b65dac64c8832a984cdb4e17, type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4235152578435083165, guid: 86240356b65dac64c8832a984cdb4e17, type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 3840
+      objectReference: {fileID: 0}
+    - target: {fileID: 4235152578435083165, guid: 86240356b65dac64c8832a984cdb4e17, type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 2160
+      objectReference: {fileID: 0}
+    - target: {fileID: 4235152578435083165, guid: 86240356b65dac64c8832a984cdb4e17, type: 3}
+      propertyPath: m_ReferencePixelsPerUnit
+      value: 32
       objectReference: {fileID: 0}
     - target: {fileID: 5468273920242072971, guid: 86240356b65dac64c8832a984cdb4e17, type: 3}
       propertyPath: m_Name
