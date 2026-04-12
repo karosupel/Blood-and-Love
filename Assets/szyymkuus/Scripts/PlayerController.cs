@@ -85,25 +85,25 @@ public class PlayerController : MonoBehaviour
             abilities.UseSpecialAttack();
         }
 
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            health.GoToHell();
-        }
+        // if (Input.GetKeyDown(KeyCode.K))
+        // {
+        //     health.GoToHell();
+        // }
 
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            health.GoToMaterialPlane();
-        }
+        // if (Input.GetKeyDown(KeyCode.L))
+        // {
+        //     health.GoToMaterialPlane();
+        // }
 
-        if (Input.GetKeyDown(KeyCode.C))
-        {
-            health.TakeDamage(10f);
-        }
+        // if (Input.GetKeyDown(KeyCode.C))
+        // {
+        //     health.TakeDamage(10f);
+        // }
 
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            health.Heal(10f);
-        }
+        // if (Input.GetKeyDown(KeyCode.H))
+        // {
+        //     health.Heal(10f);
+        // }
         if (Input.GetKeyDown(KeyCode.Space) && lastDashTime + dashCooldown <= Time.time)
         {
             if (movementDirection != Vector2.zero)
