@@ -46,6 +46,7 @@ public class GameUIHandler : MonoBehaviour
     [Header("Game Over UI")]
     [SerializeField] private GameObject gameOverRoot;
     [SerializeField] private Button gameOverMainMenuButton;
+    [SerializeField] private Button gameOverRestartBossButton;
     [SerializeField] private int mainMenuBuildIndex = 0;
     [SerializeField] private bool freezeTimeOnGameOver = true;
     [SerializeField] private float gameOverFadeDuration = 0.3f;
@@ -56,15 +57,23 @@ public class GameUIHandler : MonoBehaviour
     [SerializeField] private float gameOverMusicVolume = 1f;
     [SerializeField] private bool loopGameOverMusic = false;
 
+    [Header("Boss Victory UI")]
+    [SerializeField] private GameObject bossVictoryRoot;
+    [SerializeField] private Button bossVictoryMainMenuButton;
+
+    [SerializeField] private BossUIHandler bossUIHandler;
+
 
     private Action<int> onRoomChoiceSelected;
     private int helpHoverCounter;
     private Coroutine helpHideCoroutine;
-    private bool isGameOverShown;
+    private bool isEndScreenShown;
     private float previousTimeScale = 1f;
     private bool previousAudioPaused;
     private Coroutine gameOverAnimationCoroutine;
     private AudioSource gameOverAudioSource;
+    private bool isBossFightScene;
+    private BossHealth trackedBossHealth;
 
     public bool IsChoosingRoom { get; private set; }
 
@@ -107,6 +116,13 @@ public class GameUIHandler : MonoBehaviour
             gameOverRoot.SetActive(false);
         }
 
+        if (bossVictoryRoot != null)
+        {
+            bossVictoryRoot.SetActive(false);
+        }
+
+        SetRestartButtonVisible(false);
+
         EnsureGameOverAudioSource();
         BindGameOverButton();
 
@@ -137,13 +153,23 @@ public class GameUIHandler : MonoBehaviour
 
     private void BindGameOverButton()
     {
-        if (gameOverMainMenuButton == null)
+        if (gameOverMainMenuButton != null)
         {
-            return;
+            gameOverMainMenuButton.onClick.RemoveListener(ReturnToMainMenu);
+            gameOverMainMenuButton.onClick.AddListener(ReturnToMainMenu);
         }
 
-        gameOverMainMenuButton.onClick.RemoveListener(ReturnToMainMenu);
-        gameOverMainMenuButton.onClick.AddListener(ReturnToMainMenu);
+        if (gameOverRestartBossButton != null)
+        {
+            gameOverRestartBossButton.onClick.RemoveListener(RestartBossFight);
+            gameOverRestartBossButton.onClick.AddListener(RestartBossFight);
+        }
+
+        if (bossVictoryMainMenuButton != null)
+        {
+            bossVictoryMainMenuButton.onClick.RemoveListener(ReturnToMainMenu);
+            bossVictoryMainMenuButton.onClick.AddListener(ReturnToMainMenu);
+        }
     }
 
     private void ConfigureHelpButtonHover()
@@ -497,6 +523,15 @@ public class GameUIHandler : MonoBehaviour
             PlayerHealth.OnHeartsChanged += HeartsChanged;
         }
 
+        trackedBossHealth = FindObjectOfType<BossHealth>();
+        isBossFightScene = trackedBossHealth != null;
+        if (trackedBossHealth != null)
+        {
+            trackedBossHealth.OnBossDefeated += HandleBossDefeated;
+        }
+
+        SetRestartButtonVisible(false);
+
         HealthChanged();
         HeartsChanged(PlayerHealth != null ? PlayerHealth.hearts : 0);
         AfterlifeStateChanged(PlayerHealth != null && PlayerHealth.IsInAfterlife);
@@ -511,7 +546,18 @@ public class GameUIHandler : MonoBehaviour
             PlayerHealth.OnHeartsChanged -= HeartsChanged;
         }
 
+        if (trackedBossHealth != null)
+        {
+            trackedBossHealth.OnBossDefeated -= HandleBossDefeated;
+            trackedBossHealth = null;
+        }
+
         RestoreTimeAndAudioIfNeeded();
+    }
+
+    private void HandleBossDefeated()
+    {
+        ShowBossVictory();
     }
 
 
@@ -569,12 +615,12 @@ public class GameUIHandler : MonoBehaviour
 
     private void ShowGameOver()
     {
-        if (isGameOverShown)
+        if (isEndScreenShown)
         {
             return;
         }
 
-        isGameOverShown = true;
+        isEndScreenShown = true;
         IsChoosingRoom = false;
         onRoomChoiceSelected = null;
 
@@ -584,6 +630,9 @@ public class GameUIHandler : MonoBehaviour
         {
             roomChoiceRoot.SetActive(false);
         }
+
+        SetRestartButtonVisible(isBossFightScene);
+        SetUiVisible(bossVictoryRoot, false);
 
         if (freezeTimeOnGameOver)
         {
@@ -609,6 +658,52 @@ public class GameUIHandler : MonoBehaviour
 
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+    }
+
+    private void ShowBossVictory()
+    {
+        if (isEndScreenShown)
+        {
+            return;
+        }
+
+        isEndScreenShown = true;
+        IsChoosingRoom = false;
+        onRoomChoiceSelected = null;
+
+        HideAllHelpCanvases();
+
+        if (roomChoiceRoot != null)
+        {
+            roomChoiceRoot.SetActive(false);
+        }
+
+        SetRestartButtonVisible(false);
+        SetUiVisible(gameOverRoot, false);
+
+        if (freezeTimeOnGameOver)
+        {
+            previousTimeScale = Time.timeScale;
+            previousAudioPaused = AudioListener.pause;
+            Time.timeScale = 0f;
+            AudioListener.pause = true;
+        }
+
+        SetUiVisible(bossVictoryRoot, true);
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
+    private void RestartBossFight()
+    {
+        int fallbackHearts = PlayerHealth != null ? PlayerHealth.hearts : 0;
+        int restoredHearts = BossFightRestartState.GetPreFightHeartsOrDefault(fallbackHearts);
+        BossFightRestartState.ScheduleHeartRestore(restoredHearts);
+
+
+        RestoreTimeAndAudioIfNeeded();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private IEnumerator AnimateGameOverUi()
@@ -701,13 +796,21 @@ public class GameUIHandler : MonoBehaviour
 
     private void RestoreTimeAndAudioIfNeeded()
     {
-        if (!freezeTimeOnGameOver || !isGameOverShown)
+        if (!freezeTimeOnGameOver || !isEndScreenShown)
         {
             return;
         }
 
         Time.timeScale = previousTimeScale;
         AudioListener.pause = previousAudioPaused;
+    }
+
+    private void SetRestartButtonVisible(bool isVisible)
+    {
+        if (gameOverRestartBossButton != null)
+        {
+            SetUiVisible(gameOverRestartBossButton.gameObject, isVisible);
+        }
     }
 
     private void SetBorderChildrenColor(Color targetColor)

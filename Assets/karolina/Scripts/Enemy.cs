@@ -41,12 +41,28 @@ public class Enemy : MonoBehaviour, IDamageable
             return;
         }
         currentHealth -= damage;
-        //Debug.Log("Enemy took " + damage);
+        StartCoroutine(QuickRecolor());
+        Debug.Log("Enemy took " + damage);
         Knockback((Vector2)(gameObject.transform.position - playerObject.transform.position).normalized, stats.knockbackForce*knockback);
         if (currentHealth <= 0)
         {
             Die();
         }
+    }
+
+    public IEnumerator QuickRecolor()
+    {
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer == null)
+        {
+            yield break;
+        }
+
+        spriteRenderer.color = Color.red;
+        yield return new WaitForSeconds(0.1f);
+        spriteRenderer.color = Color.white;
+
+
     }
 
     public void Die()

@@ -389,7 +389,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Ultimate attack
+  m_text: Ultimate attack.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f325123383638c843936fbb6a197c880, type: 2}
   m_sharedMaterial: {fileID: -1782856417380607065, guid: f325123383638c843936fbb6a197c880, type: 2}
@@ -8033,7 +8033,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Use RMB to attack with tentacles
+  m_text: Use RMB to attack with a beam.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f325123383638c843936fbb6a197c880, type: 2}
   m_sharedMaterial: {fileID: -1782856417380607065, guid: f325123383638c843936fbb6a197c880, type: 2}
@@ -8169,7 +8169,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Aim with mouse, use LMB to attack with claws
+  m_text: Aim with mouse, use LMB to attack with claws.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f325123383638c843936fbb6a197c880, type: 2}
   m_sharedMaterial: {fileID: -1782856417380607065, guid: f325123383638c843936fbb6a197c880, type: 2}
@@ -16498,7 +16498,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Dash
+  m_text: Dash.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f325123383638c843936fbb6a197c880, type: 2}
   m_sharedMaterial: {fileID: -1782856417380607065, guid: f325123383638c843936fbb6a197c880, type: 2}

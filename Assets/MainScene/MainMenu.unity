@@ -1969,6 +1969,7 @@ MonoBehaviour:
   backgroudMusic: {fileID: 8300000, guid: 848c34c4ff72c4c48b0b0081d16e70c0, type: 3}
   hellMusic: {fileID: 0}
   musicSlider: {fileID: 826183214}
+  autoFindMusicSliderOnSceneLoad: 1
 --- !u!82 &997529350
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3540,7 +3541,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: The game makes use of free assets, available for personal and commercial
+  m_text: This game makes use of free assets, available for personal and commercial
     use. No generative AI had been used to create assets for this game.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: aed9aa37bca440848b95f25fec65d262, type: 2}
@@ -3736,8 +3737,8 @@ MonoBehaviour:
   creditsBackButton: {fileID: 1352710427}
   creditsBackButtonName: CreditsExitButton
   menuInSeparateScene: 1
-  firstStageSceneName: Tutorial
-  firstStageBuildIndex: 2
+  firstStageSceneName: Cutscene
+  firstStageBuildIndex: 4
   pauseGameWhileOpen: 1
 --- !u!4 &1648378431
 Transform:

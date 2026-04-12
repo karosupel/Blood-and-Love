@@ -81,7 +81,10 @@ public class BossAbilities : MonoBehaviour
         for (int i = 0; i < meteors; i++)
         {
             Vector2 randomOffset = Random.insideUnitCircle.normalized * Random.Range(innerRadius, outerRadius);
-            Vector3 randomPos = new Vector3(player.transform.position.x + randomOffset.x, player.transform.position.y + randomOffset.y, 0);
+            if (player != null)
+            {
+                Vector3 randomPos = new Vector3(player.transform.position.x + randomOffset.x, player.transform.position.y + randomOffset.y, 0);
+            
             GameObject newMeteor = Instantiate(meteorPrefab, randomPos, Quaternion.identity);
             newMeteor.transform.localScale *= meteorSizeMultiplier;
             if (hellishVariant)
@@ -92,7 +95,7 @@ public class BossAbilities : MonoBehaviour
             bossController.SetMeteorStormTimer(Time.time);
         }
         bossAnimator.SetBool("isCastingMeteorStorm", false);
-    }
+    }}
     #endregion
 
     #region Projectile Storm
