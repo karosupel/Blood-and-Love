@@ -49,7 +49,8 @@ public class GameUIHandler : MonoBehaviour
     [SerializeField] private Button gameOverRestartBossButton;
     [SerializeField] private bool allowRetryOutsideBossScene = true;
     [SerializeField] private string fallbackRetryButtonLabel = "Retry";
-    [SerializeField] private Vector2 fallbackRetryButtonOffset = new Vector2(-420f, 0f);
+    [SerializeField] private float fallbackRetryButtonSpacing = 40f;
+    [SerializeField] private Vector2 fallbackRetryButtonOffset = Vector2.zero;
     [SerializeField] private int mainMenuBuildIndex = 0;
     [SerializeField] private bool freezeTimeOnGameOver = true;
     [SerializeField] private float gameOverFadeDuration = 0.3f;
@@ -195,7 +196,9 @@ public class GameUIHandler : MonoBehaviour
         RectTransform retryRect = retryButtonObject.GetComponent<RectTransform>();
         if (retryRect != null)
         {
-            retryRect.anchoredPosition = mainMenuRect.anchoredPosition + fallbackRetryButtonOffset;
+            float retryStride = GetRetryButtonStride(mainMenuRect);
+            Vector2 baseOffset = new Vector2(-retryStride, 0f);
+            retryRect.anchoredPosition = mainMenuRect.anchoredPosition + baseOffset + fallbackRetryButtonOffset;
         }
 
         TMP_Text retryTmpText = retryButtonObject.GetComponentInChildren<TMP_Text>(true);
@@ -217,6 +220,22 @@ public class GameUIHandler : MonoBehaviour
         {
             Destroy(retryButtonObject);
         }
+    }
+
+    private float GetRetryButtonStride(RectTransform mainMenuRect)
+    {
+        if (mainMenuRect == null)
+        {
+            return 300f;
+        }
+
+        float scaledWidth = Mathf.Abs(mainMenuRect.rect.width * mainMenuRect.localScale.x);
+        if (scaledWidth <= 0.01f)
+        {
+            scaledWidth = 300f;
+        }
+
+        return scaledWidth + Mathf.Max(0f, fallbackRetryButtonSpacing);
     }
 
     private void ConfigureHelpButtonHover()
