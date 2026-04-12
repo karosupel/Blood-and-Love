@@ -14204,7 +14204,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 38650036905330197, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 13.46
+      value: 12.78
       objectReference: {fileID: 0}
     - target: {fileID: 38650036905330197, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
       propertyPath: m_LocalPosition.z
@@ -14268,7 +14268,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4818951867835841841, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
       propertyPath: maxHealth
-      value: 50
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 7085965799371856217, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
       propertyPath: barrierCooldownMaximum
