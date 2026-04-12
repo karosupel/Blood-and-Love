@@ -77,8 +77,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 1789328477
-  m_SortingLayer: 3
+  m_SortingLayerID: -997090627
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: -1016063983, guid: d1e87fb0f1d375e4f999133c3d0f01a8, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -175,10 +175,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a4c24c887b4f2842b90579ab7e272d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 200
+  maxHealth: 300
   currentHealth: 0
   maxHearts: 5
   afterlifeInvincibilityDuration: 1
+  barrierCastHeartImmunityFallback: 3
+  isInvincible: 0
 --- !u!114 &9055043999144588531
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -207,11 +209,12 @@ MonoBehaviour:
   meteorStormCooldownMaximum: 8
   projectileStormCooldownMinimum: 6
   projectileStormCooldownMaximum: 15
-  barrierCooldownMinimum: 5
-  barrierCooldownMaximum: 10
+  barrierCooldownMinimum: 4
+  barrierCooldownMaximum: 6
   sp_MeteorSizeMultiplier: 2
   sp_AdditionalProjectileOrigins: 2
-  sp_ProjectileSpeedMultiplier: 1.3
+  sp_ProjectileSpeedMultiplier: 0.75
+  pauseCasting: 0
 --- !u!114 &792780677661824108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,26 +227,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2141eea6927ab3449e5ad4fba2eb796, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  farMeteors: 15
+  farMeteors: 17
   meteorStormFarInnerRadius: 2
   meteorStormFarOuterRadius: 5
-  closeMeteors: 10
+  closeMeteors: 12
   meteorStormCloseInnerRadius: 0
   meteorStormCloseOuterRadius: 2
-  meteorStormDuration: 10
+  meteorStormDuration: 6
   meteorSizeMultiplier: 1
   meteorPrefab: {fileID: 3506804384546487156, guid: 9616d141fdef7284b835e8d1684578b7, type: 3}
-  projectileStormDuration: 6
-  projectileStormRateOfFire: 4
+  projectileStormDuration: 5
+  projectileStormRateOfFire: 3.5
   projectileStormProjectileSpeed: 4
   projectileStormOrigins: 4
-  minimumProjectileStormRotationSpeed: 50
-  maximumProjectileStormRotationSpeed: 80
+  minimumProjectileStormRotationSpeed: 30
+  maximumProjectileStormRotationSpeed: 120
   projectilePrefab: {fileID: 1555893908944981107, guid: 4125bc34ad8dc28439d152ba89498767, type: 3}
   minimumCrystalDistance: 2
   maximumCrystalDistance: 5
-  minimumCrystals: 4
-  maximumCrystals: 6
+  minimumCrystals: 5
+  maximumCrystals: 7
   barrierCrysalPrefab: {fileID: 6492046923172771251, guid: 0ddcdddaf9ae95c4393dff42779cd67b, type: 3}
   barrierPrefab: {fileID: 1082306054906996894, guid: a79eec3718b7a0847aa2b6809ffe16d8, type: 3}
   player: {fileID: 0}

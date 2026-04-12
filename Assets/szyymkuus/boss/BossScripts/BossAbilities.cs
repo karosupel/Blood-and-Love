@@ -38,6 +38,7 @@ public class BossAbilities : MonoBehaviour
     [SerializeField] GameObject barrierPrefab;
     [Header("Other")]
     [SerializeField] GameObject player;
+    [SerializeField] float delayAfterStartAnimationBeforeCast = 1f;
 
     int activeCrystalCount;
     GameObject activeBarrierInstance;
@@ -59,6 +60,15 @@ public class BossAbilities : MonoBehaviour
     private int projectileCastId = 0;
     private const float projectileAnimationEventFallbackDelay = 1f;
     private const float projectileCastFailSafeBuffer = 1.5f;
+    private const float startAnimationExitTimeout = 2f;
+    private static readonly int meteorStartStateHash = Animator.StringToHash("WizardMeteorStormStart");
+    private static readonly int meteorStartSpStateHash = Animator.StringToHash("WizardMeteorStormStartSP");
+    private static readonly int projectileStartStateHash = Animator.StringToHash("WizardProjectileStormStart");
+    private static readonly int projectileStartSpStateHash = Animator.StringToHash("WizardProjectileStormStartSP");
+    private Coroutine pendingMeteorCastCoroutine;
+    private Coroutine pendingProjectileCastCoroutine;
+    private bool meteorCastQueued = false;
+    private bool projectileCastQueued = false;
 
 
     void Awake()
@@ -91,6 +101,38 @@ public class BossAbilities : MonoBehaviour
     // AnimationEvent wrapper to avoid relying on non-void return signatures.
     public void MeteorStormAnimationEvent()
     {
+        QueueMeteorStormCast();
+    }
+
+    private void QueueMeteorStormCast()
+    {
+        if (meteorCastQueued || activeOffensiveCast == OffensiveCastType.MeteorStorm)
+        {
+            return;
+        }
+
+        meteorCastQueued = true;
+        if (pendingMeteorCastCoroutine != null)
+        {
+            StopCoroutine(pendingMeteorCastCoroutine);
+        }
+
+        pendingMeteorCastCoroutine = StartCoroutine(DelayedMeteorStormCastCoroutine());
+    }
+
+    private IEnumerator DelayedMeteorStormCastCoroutine()
+    {
+        yield return WaitForStartAnimationToFinish(meteorStartStateHash, meteorStartSpStateHash);
+        yield return new WaitForSeconds(Mathf.Max(0f, delayAfterStartAnimationBeforeCast));
+
+        meteorCastQueued = false;
+        pendingMeteorCastCoroutine = null;
+
+        if (bossAnimator != null && !bossAnimator.GetBool("isCastingMeteorStorm"))
+        {
+            yield break;
+        }
+
         MeteorStorm();
     }
 
@@ -199,7 +241,7 @@ public class BossAbilities : MonoBehaviour
 
         bool meteorAnimationFlag = bossAnimator.GetBool("isCastingMeteorStorm");
 
-        if (meteorAnimationFlag && activeOffensiveCast == OffensiveCastType.None)
+        if (meteorAnimationFlag && activeOffensiveCast == OffensiveCastType.None && !meteorCastQueued)
         {
             meteorAnimationEventFallbackTimer += Time.deltaTime;
             if (meteorAnimationEventFallbackTimer >= meteorAnimationEventFallbackDelay)
@@ -232,6 +274,38 @@ public class BossAbilities : MonoBehaviour
     #region Projectile Storm
     public void ProjectileStormAnimationEvent()
     {
+        QueueProjectileStormCast();
+    }
+
+    private void QueueProjectileStormCast()
+    {
+        if (projectileCastQueued || activeOffensiveCast == OffensiveCastType.ProjectileStorm)
+        {
+            return;
+        }
+
+        projectileCastQueued = true;
+        if (pendingProjectileCastCoroutine != null)
+        {
+            StopCoroutine(pendingProjectileCastCoroutine);
+        }
+
+        pendingProjectileCastCoroutine = StartCoroutine(DelayedProjectileStormCastCoroutine());
+    }
+
+    private IEnumerator DelayedProjectileStormCastCoroutine()
+    {
+        yield return WaitForStartAnimationToFinish(projectileStartStateHash, projectileStartSpStateHash);
+        yield return new WaitForSeconds(Mathf.Max(0f, delayAfterStartAnimationBeforeCast));
+
+        projectileCastQueued = false;
+        pendingProjectileCastCoroutine = null;
+
+        if (bossAnimator != null && !bossAnimator.GetBool("isCastingProjectileStorm"))
+        {
+            yield break;
+        }
+
         ProjectileStorm();
     }
 
@@ -346,7 +420,7 @@ public class BossAbilities : MonoBehaviour
 
         bool projectileAnimationFlag = bossAnimator.GetBool("isCastingProjectileStorm");
 
-        if (projectileAnimationFlag && activeOffensiveCast == OffensiveCastType.None)
+        if (projectileAnimationFlag && activeOffensiveCast == OffensiveCastType.None && !projectileCastQueued)
         {
             projectileAnimationEventFallbackTimer += Time.deltaTime;
             if (projectileAnimationEventFallbackTimer >= projectileAnimationEventFallbackDelay)
@@ -372,6 +446,28 @@ public class BossAbilities : MonoBehaviour
         else
         {
             projectileCastTimeoutTimer = 0f;
+        }
+    }
+
+    private IEnumerator WaitForStartAnimationToFinish(int normalStartStateHash, int secondPhaseStartStateHash)
+    {
+        if (bossAnimator == null)
+        {
+            yield break;
+        }
+
+        float elapsed = 0f;
+        while (elapsed < startAnimationExitTimeout)
+        {
+            AnimatorStateInfo currentState = bossAnimator.GetCurrentAnimatorStateInfo(0);
+            int currentStateHash = currentState.shortNameHash;
+            if (currentStateHash != normalStartStateHash && currentStateHash != secondPhaseStartStateHash)
+            {
+                yield break;
+            }
+
+            elapsed += Time.deltaTime;
+            yield return null;
         }
     }
     #endregion
@@ -570,6 +666,20 @@ public class BossAbilities : MonoBehaviour
         meteorCastTimeoutTimer = 0f;
         projectileAnimationEventFallbackTimer = 0f;
         projectileCastTimeoutTimer = 0f;
+        meteorCastQueued = false;
+        projectileCastQueued = false;
+
+        if (pendingMeteorCastCoroutine != null)
+        {
+            StopCoroutine(pendingMeteorCastCoroutine);
+            pendingMeteorCastCoroutine = null;
+        }
+
+        if (pendingProjectileCastCoroutine != null)
+        {
+            StopCoroutine(pendingProjectileCastCoroutine);
+            pendingProjectileCastCoroutine = null;
+        }
 
         if (bossAnimator != null)
         {

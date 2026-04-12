@@ -11,6 +11,8 @@ public class BossController : MonoBehaviour
     [SerializeField] float projectileStormCooldownMaximum;
     [SerializeField] float barrierCooldownMinimum;
     [SerializeField] float barrierCooldownMaximum;
+    [Header("Ability Pacing")]
+    [SerializeField] float extraDelayBetweenOffensiveAbilities = 2.5f;
 
     [Header("Second Phase Settings")]
     [SerializeField] float sp_MeteorSizeMultiplier = 2f;
@@ -30,6 +32,7 @@ public class BossController : MonoBehaviour
     float cooldown = 0f;
     public bool pauseCasting = false;
     float timer = 0;
+    float nextOffensiveAbilityAllowedTime = 0f;
 
 
     BossAbilities abilities;
@@ -41,6 +44,7 @@ public class BossController : MonoBehaviour
         abilities = GetComponent<BossAbilities>();;
         bossAnimator = GetComponent<Animator>();
         bossHealth = GetComponent<BossHealth>();
+        nextOffensiveAbilityAllowedTime = Time.time;
         lastBarrierTime = float.MinValue;
         if (Random.value < 0.5f)
         {
@@ -79,7 +83,8 @@ public class BossController : MonoBehaviour
         if (!pauseCasting
             && !abilities.IsOffensiveAbilityActive()
             && bossAnimator.GetBool("isCastingMeteorStorm") == false
-            && bossAnimator.GetBool("isCastingProjectileStorm") == false)
+            && bossAnimator.GetBool("isCastingProjectileStorm") == false
+            && Time.time >= nextOffensiveAbilityAllowedTime)
             {
                 if (Random.value < 0.5f)
                 {
@@ -206,6 +211,7 @@ public class BossController : MonoBehaviour
     {
         lastMeteorStormTime = time;
         isMeteorStormActive = false;
+        nextOffensiveAbilityAllowedTime = Mathf.Max(nextOffensiveAbilityAllowedTime, time + Mathf.Max(0f, extraDelayBetweenOffensiveAbilities));
 
     }
 
@@ -246,6 +252,7 @@ public class BossController : MonoBehaviour
     {
         lastProjectileStormTime = time;
         isProjectileStormActive = false;
+        nextOffensiveAbilityAllowedTime = Mathf.Max(nextOffensiveAbilityAllowedTime, time + Mathf.Max(0f, extraDelayBetweenOffensiveAbilities));
 
     }
 
@@ -255,6 +262,7 @@ public class BossController : MonoBehaviour
     {
         bossHealth.isInvincible = true;
         pauseCasting = true;
+        nextOffensiveAbilityAllowedTime = Time.time + Mathf.Max(0f, extraDelayBetweenOffensiveAbilities);
         bossAnimator.SetBool("secondPhase", true);
         abilities.StopAllCoroutines();
         abilities.ResetOffensiveCastState();

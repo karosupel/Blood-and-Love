@@ -14306,14 +14306,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 488812783470877084, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: m_SortingLayer
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 488812783470877084, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: m_SortingLayerID
-      value: -997090627
-      objectReference: {fileID: 0}
     - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
       propertyPath: player
       value: 
@@ -14325,38 +14317,6 @@ PrefabInstance:
     - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
       propertyPath: sizeMultiplier
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: meteorStormDuration
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: projectileStormRateOfFire
-      value: 3.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: maximumProjectileStormRotationSpeed
-      value: 120
-      objectReference: {fileID: 0}
-    - target: {fileID: 792780677661824108, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: minimumProjectileStormRotationSpeed
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 4818951867835841841, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: maxHealth
-      value: 200
-      objectReference: {fileID: 0}
-    - target: {fileID: 7085965799371856217, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: barrierCooldownMaximum
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 7085965799371856217, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: barrierCooldownMinimum
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 7085965799371856217, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
-      propertyPath: sp_ProjectileSpeedMultiplier
-      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 7093814002770204106, guid: 40f5d2ad9bdc0d64ca08a1eccd339cee, type: 3}
       propertyPath: maxHealth
