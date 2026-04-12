@@ -54,6 +54,11 @@ public class BossAbilities : MonoBehaviour
     private int meteorCastId = 0;
     private const float meteorAnimationEventFallbackDelay = 1f;
     private const float meteorCastFailSafeBuffer = 1.5f;
+    private float projectileAnimationEventFallbackTimer = 0f;
+    private float projectileCastTimeoutTimer = 0f;
+    private int projectileCastId = 0;
+    private const float projectileAnimationEventFallbackDelay = 1f;
+    private const float projectileCastFailSafeBuffer = 1.5f;
 
 
     void Awake()
@@ -79,6 +84,7 @@ public class BossAbilities : MonoBehaviour
         }
 
         HandleMeteorStormFailSafes();
+        HandleProjectileStormFailSafes();
     }
     
     #region Meteor Storm
@@ -224,6 +230,11 @@ public class BossAbilities : MonoBehaviour
     #endregion
 
     #region Projectile Storm
+    public void ProjectileStormAnimationEvent()
+    {
+        ProjectileStorm();
+    }
+
     public float ProjectileStorm()
     {
         if (!TryBeginOffensiveCast(OffensiveCastType.ProjectileStorm))
@@ -232,55 +243,136 @@ public class BossAbilities : MonoBehaviour
             return 0f;
         }
 
-        StartCoroutine(ProjectileStormCoroutine());
+        projectileCastId++;
+        projectileCastTimeoutTimer = 0f;
+
+        if (projectileStormDuration <= 0f)
+        {
+            CompleteProjectileStormCast(projectileCastId);
+            return 0f;
+        }
+
+        StartCoroutine(ProjectileStormCoroutine(projectileCastId));
         return projectileStormDuration;
     }
-    IEnumerator ProjectileStormCoroutine()
+
+    IEnumerator ProjectileStormCoroutine(int castId)
     {
-        float elapsed = 0f;
-        float fireInterval = 1f / projectileStormRateOfFire; // Convert projectiles/second to interval
-        float nextFireTime = 0f;
-        float radius = 1f;
-        float currentRotation = 0f;
-        float rotationSpeed = Random.Range(minimumProjectileStormRotationSpeed, maximumProjectileStormRotationSpeed) * (Random.value < 0.5f ? -1 : 1); // Randomize rotation direction
-
-        while (elapsed < projectileStormDuration)
+        try
         {
-            elapsed += Time.deltaTime;
+            float elapsed = 0f;
+            float safeRateOfFire = Mathf.Max(0.01f, projectileStormRateOfFire);
+            float fireInterval = 1f / safeRateOfFire; // Convert projectiles/second to interval
+            float nextFireTime = 0f;
+            float radius = 1f;
+            float currentRotation = 0f;
+            float rotationSpeed = Random.Range(minimumProjectileStormRotationSpeed, maximumProjectileStormRotationSpeed) * (Random.value < 0.5f ? -1 : 1); // Randomize rotation direction
 
-            // Rotate the origins around the boss
-            currentRotation += rotationSpeed * Time.deltaTime;
-
-            // Fire projectiles at intervals
-            if (elapsed >= nextFireTime)
+            while (elapsed < projectileStormDuration)
             {
-                for (int i = 0; i < projectileStormOrigins; i++)
+                elapsed += Time.deltaTime;
+
+                // Rotate the origins around the boss
+                currentRotation += rotationSpeed * Time.deltaTime;
+
+                // Fire projectiles at intervals
+                if (elapsed >= nextFireTime)
                 {
-                    float angle = currentRotation + (i * 360f / projectileStormOrigins);
-                    Vector3 originPos = transform.position + Quaternion.Euler(0, 0, angle) * Vector3.up * radius;
-
-                    // Calculate direction outward from center
-                    Vector3 direction = (originPos - transform.position).normalized;
-
-                    GameObject projectile = Instantiate(projectilePrefab, originPos, Quaternion.identity);
-                    if (hellishVariant)
+                    for (int i = 0; i < projectileStormOrigins; i++)
                     {
-                        projectile.GetComponent<SpriteRenderer>().color = Color.blue;
+                        if (projectilePrefab == null)
+                        {
+                            continue;
+                        }
+
+                        float angle = currentRotation + (i * 360f / projectileStormOrigins);
+                        Vector3 originPos = transform.position + Quaternion.Euler(0, 0, angle) * Vector3.up * radius;
+
+                        // Calculate direction outward from center
+                        Vector3 direction = (originPos - transform.position).normalized;
+
+                        GameObject projectile = Instantiate(projectilePrefab, originPos, Quaternion.identity);
+                        if (hellishVariant)
+                        {
+                            SpriteRenderer projectileRenderer = projectile.GetComponent<SpriteRenderer>();
+                            if (projectileRenderer != null)
+                            {
+                                projectileRenderer.color = Color.blue;
+                            }
+                        }
+                        Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
+                        if (rb != null)
+                        {
+                            rb.velocity = direction * projectileStormProjectileSpeed;
+                        }
                     }
-                    Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
-                    if (rb != null)
-                    {
-                        rb.velocity = direction * projectileStormProjectileSpeed;
-                    }
+                    nextFireTime += fireInterval;
                 }
-                nextFireTime += fireInterval;
+
+                yield return null;
             }
-            yield return null;
+
+            Debug.Log($"Projectile Storm Elapsed Time: {elapsed}");
         }
-        bossAnimator.SetBool("isCastingProjectileStorm", false);
-        Debug.Log($"Projectile Storm Elapsed Time: {elapsed}");
-        bossController.SetProjectileStormTimer(Time.time);
+        finally
+        {
+            CompleteProjectileStormCast(castId);
+        }
+    }
+
+    private void CompleteProjectileStormCast(int castId)
+    {
+        if (castId != projectileCastId)
+        {
+            return;
+        }
+
+        projectileCastTimeoutTimer = 0f;
+        if (bossAnimator != null)
+        {
+            bossAnimator.SetBool("isCastingProjectileStorm", false);
+        }
+
+        bossController?.SetProjectileStormTimer(Time.time);
         EndOffensiveCast(OffensiveCastType.ProjectileStorm);
+    }
+
+    private void HandleProjectileStormFailSafes()
+    {
+        if (bossAnimator == null)
+        {
+            return;
+        }
+
+        bool projectileAnimationFlag = bossAnimator.GetBool("isCastingProjectileStorm");
+
+        if (projectileAnimationFlag && activeOffensiveCast == OffensiveCastType.None)
+        {
+            projectileAnimationEventFallbackTimer += Time.deltaTime;
+            if (projectileAnimationEventFallbackTimer >= projectileAnimationEventFallbackDelay)
+            {
+                projectileAnimationEventFallbackTimer = 0f;
+                ProjectileStorm();
+            }
+        }
+        else
+        {
+            projectileAnimationEventFallbackTimer = 0f;
+        }
+
+        if (activeOffensiveCast == OffensiveCastType.ProjectileStorm)
+        {
+            projectileCastTimeoutTimer += Time.deltaTime;
+            float projectileCastMaxDuration = Mathf.Max(1f, projectileStormDuration + projectileCastFailSafeBuffer);
+            if (projectileCastTimeoutTimer >= projectileCastMaxDuration)
+            {
+                CompleteProjectileStormCast(projectileCastId);
+            }
+        }
+        else
+        {
+            projectileCastTimeoutTimer = 0f;
+        }
     }
     #endregion
 
@@ -476,10 +568,13 @@ public class BossAbilities : MonoBehaviour
         activeMeteorCoroutines = 0;
         meteorAnimationEventFallbackTimer = 0f;
         meteorCastTimeoutTimer = 0f;
+        projectileAnimationEventFallbackTimer = 0f;
+        projectileCastTimeoutTimer = 0f;
 
         if (bossAnimator != null)
         {
             bossAnimator.SetBool("isCastingMeteorStorm", false);
+            bossAnimator.SetBool("isCastingProjectileStorm", false);
         }
     }
 
