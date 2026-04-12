@@ -65,6 +65,11 @@ public class GameUIHandler : MonoBehaviour
     [SerializeField] private GameObject bossVictoryRoot;
     [SerializeField] private Button bossVictoryMainMenuButton;
 
+    [Header("Boss Defeat Transition")]
+    [SerializeField] private string bossDefeatSceneName = string.Empty;
+    [SerializeField] private int bossDefeatSceneBuildIndex = -1;
+    [SerializeField] private bool loadNextSceneInBuildSettingsIfUnset = true;
+
     [SerializeField] private BossUIHandler bossUIHandler;
 
 
@@ -623,7 +628,10 @@ public class GameUIHandler : MonoBehaviour
 
     private void HandleBossDefeated()
     {
-        ShowBossVictory();
+        if (!TryLoadBossDefeatScene())
+        {
+            ShowBossVictory();
+        }
     }
 
 
@@ -862,6 +870,55 @@ public class GameUIHandler : MonoBehaviour
         }
 
         Debug.LogWarning("GameUIHandler: Main menu build index is out of range. Set Main Menu Build Index on GameUIHandler.");
+    }
+
+    private bool TryLoadBossDefeatScene()
+    {
+        if (TryLoadSceneByName(bossDefeatSceneName))
+        {
+            return true;
+        }
+
+        if (IsValidSceneBuildIndex(bossDefeatSceneBuildIndex))
+        {
+            SceneManager.LoadScene(bossDefeatSceneBuildIndex);
+            return true;
+        }
+
+        if (loadNextSceneInBuildSettingsIfUnset)
+        {
+            int nextSceneBuildIndex = SceneManager.GetActiveScene().buildIndex + 1;
+            if (IsValidSceneBuildIndex(nextSceneBuildIndex))
+            {
+                SceneManager.LoadScene(nextSceneBuildIndex);
+                return true;
+            }
+        }
+
+        Debug.LogWarning("GameUIHandler: Boss Defeat scene is not configured. Assign Boss Defeat Scene Name or Build Index. Falling back to Boss Victory UI.");
+        return false;
+    }
+
+    private static bool TryLoadSceneByName(string sceneName)
+    {
+        if (string.IsNullOrWhiteSpace(sceneName))
+        {
+            return false;
+        }
+
+        if (!Application.CanStreamedLevelBeLoaded(sceneName))
+        {
+            Debug.LogWarning("GameUIHandler: Boss Defeat Scene Name '" + sceneName + "' is not in Build Settings.");
+            return false;
+        }
+
+        SceneManager.LoadScene(sceneName);
+        return true;
+    }
+
+    private static bool IsValidSceneBuildIndex(int sceneBuildIndex)
+    {
+        return sceneBuildIndex >= 0 && sceneBuildIndex < SceneManager.sceneCountInBuildSettings;
     }
 
     private void RestoreTimeAndAudioIfNeeded()

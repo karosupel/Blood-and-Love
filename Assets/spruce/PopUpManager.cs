@@ -65,12 +65,11 @@ public class PopUpManager : MonoBehaviour
             popUpIndex = 0;
             popUps[popUpIndex].SetActive(true);
             yield return waitForKeyPress(new KeyCode[] { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D });
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(1);
             popUps[popUpIndex].SetActive(false);
             popUpIndex = 1;
             popUps[popUpIndex].SetActive(true);
-            yield return waitForKeyPress(new KeyCode[] { KeyCode.Space });
-            phase++;
+            phase = 2;
             yield return new WaitForSeconds(1);
             popUps[popUpIndex].SetActive(false);
             popUpIndex = 2;
@@ -85,11 +84,11 @@ public class PopUpManager : MonoBehaviour
         {
             popUpIndex = 2;
             popUps[popUpIndex].SetActive(true);
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(1);
             popUps[popUpIndex].SetActive(false);
             popUpIndex = 3;
             popUps[popUpIndex].SetActive(true);
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(1);
             popUps[popUpIndex].SetActive(false);
             if (!player.GetComponent<PlayerHealth>().IsInAfterlife)
             {
@@ -100,28 +99,23 @@ public class PopUpManager : MonoBehaviour
 
         while(phase == 4)
         {
-            if (player.GetComponent<PlayerHealth>().CurrentHealth <= 25f)
-            {
                 popUps[popUpIndex].SetActive(true);
-                yield return new WaitForSeconds(3);
+                yield return new WaitForSeconds(1);
                 popUps[popUpIndex].SetActive(false);
                 popUpIndex = 5;
                 player.GetComponent<PlayerHealth>().Heal(100f);
                 phase = 5;
-            }
-            else
-            {
+            
                 yield return null;
             }
-        }
 
         while(phase == 5)
         {
             popUps[popUpIndex].SetActive(true);
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(1);
             if (spawnerManagerScript.GetActiveEnemiesInScene().Count > 0)
             {
-                yield return new WaitForSeconds(3);
+                yield return new WaitForSeconds(1);
                 player.GetComponent<PlayerHealth>().Heal(100f);
             }
             else

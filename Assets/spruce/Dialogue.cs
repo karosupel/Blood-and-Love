@@ -25,6 +25,14 @@ public class Dialogue : MonoBehaviour
         public DialogueEntry[] entries;
     }
 
+    [System.Serializable]
+    public class TutorialPhaseDialogueBinding
+    {
+        public int phase;
+        public string dialogueId;
+        [Min(-1)] public int uiRootIndexInHideList = -1;
+    }
+
     [Header("References")]
     [SerializeField] private GameObject dialoguePanel;
     [SerializeField] private TMP_Text speakerText;
@@ -60,6 +68,14 @@ public class Dialogue : MonoBehaviour
     [SerializeField, Min(-1)] private int bossFirstPhaseEndedUiRootIndex = -1;
     [SerializeField] private bool triggerBossFirstPhaseEndedDialogueOnlyOnce = true;
 
+    [Header("Tutorial Phase Dialogues")]
+    [SerializeField] private bool useTutorialPhaseDialogues;
+    [SerializeField] private PopUpManager tutorialPopUpManager;
+    [SerializeField] private bool triggerTutorialDialoguesOnlyInTutorialScene = true;
+    [SerializeField] private string tutorialSceneName = "Tutorial";
+    [SerializeField] private bool playEachTutorialPhaseDialogueOnlyOnce = true;
+    [SerializeField] private TutorialPhaseDialogueBinding[] tutorialPhaseDialogues;
+
     [Header("Typewriter")]
     [SerializeField, Min(0.001f)] private float letterDelaySeconds = 0.03f;
 
@@ -75,6 +91,11 @@ public class Dialogue : MonoBehaviour
     private bool isBossHealthSubscribed;
     private bool bossFirstPhaseDialogueTriggered;
     private bool pendingBossFirstPhaseEndedDialogue;
+    private readonly HashSet<int> triggeredTutorialDialoguePhases = new HashSet<int>();
+    private int lastObservedTutorialPhase = int.MinValue;
+    private bool hasPendingTutorialPhaseDialogue;
+    private string pendingTutorialDialogueId;
+    private int pendingTutorialUiRootIndex = -1;
 
     public bool IsPlaying { get; private set; }
 
@@ -89,6 +110,11 @@ public class Dialogue : MonoBehaviour
         if (bossHealth == null)
         {
             bossHealth = FindObjectOfType<BossHealth>(true);
+        }
+
+        if (tutorialPopUpManager == null)
+        {
+            tutorialPopUpManager = FindObjectOfType<PopUpManager>(true);
         }
 
 
@@ -127,6 +153,16 @@ public class Dialogue : MonoBehaviour
             return;
         }
 
+        if (useTutorialPhaseDialogues && IsTutorialPhaseDialogueContextValid())
+        {
+            TryQueueTutorialPhaseDialogueForCurrentPhase();
+            if (hasPendingTutorialPhaseDialogue)
+            {
+                PlayQueuedTutorialPhaseDialogue();
+                return;
+            }
+        }
+
         PlayDefaultDialogue();
     }
 
@@ -151,6 +187,17 @@ public class Dialogue : MonoBehaviour
             {
                 pendingBossFirstPhaseEndedDialogue = false;
                 PlayBossFirstPhaseEndedDialogue();
+
+                if (IsPlaying)
+                {
+                    return;
+                }
+            }
+
+            TryQueueTutorialPhaseDialogueForCurrentPhase();
+            if (hasPendingTutorialPhaseDialogue)
+            {
+                PlayQueuedTutorialPhaseDialogue();
             }
 
             return;
@@ -260,6 +307,17 @@ public class Dialogue : MonoBehaviour
         PlayDialogue(bossFirstPhaseEndedDialogueId);
     }
 
+    public void PlayTutorialDialogueForCurrentPhase()
+    {
+        hasPendingTutorialPhaseDialogue = false;
+        QueueTutorialDialogueForPhase(GetCurrentTutorialPhase());
+
+        if (!IsPlaying && hasPendingTutorialPhaseDialogue)
+        {
+            PlayQueuedTutorialPhaseDialogue();
+        }
+    }
+
     private bool IsBossSceneActive()
     {
         Scene activeScene = SceneManager.GetActiveScene();
@@ -275,6 +333,22 @@ public class Dialogue : MonoBehaviour
         bool matchesName = hasSceneNameRule && string.Equals(activeScene.name, bossSceneName, System.StringComparison.Ordinal);
         bool matchesBuildIndex = hasBuildIndexRule && activeScene.buildIndex == bossSceneBuildIndex;
         return matchesName || matchesBuildIndex;
+    }
+
+    private bool IsTutorialPhaseDialogueContextValid()
+    {
+        if (!triggerTutorialDialoguesOnlyInTutorialScene)
+        {
+            return true;
+        }
+
+        if (string.IsNullOrWhiteSpace(tutorialSceneName))
+        {
+            return true;
+        }
+
+        Scene activeScene = SceneManager.GetActiveScene();
+        return string.Equals(activeScene.name, tutorialSceneName, System.StringComparison.Ordinal);
     }
 
     public void StopDialogue()
@@ -540,6 +614,113 @@ public class Dialogue : MonoBehaviour
         {
             PlayBossSceneSecondDialogue();
         }
+    }
+
+    private void TryQueueTutorialPhaseDialogueForCurrentPhase()
+    {
+        if (!useTutorialPhaseDialogues || !IsTutorialPhaseDialogueContextValid())
+        {
+            return;
+        }
+
+        int phase = GetCurrentTutorialPhase();
+        if (phase == int.MinValue)
+        {
+            return;
+        }
+
+        if (phase == lastObservedTutorialPhase)
+        {
+            return;
+        }
+
+        lastObservedTutorialPhase = phase;
+        QueueTutorialDialogueForPhase(phase);
+    }
+
+    private int GetCurrentTutorialPhase()
+    {
+        if (tutorialPopUpManager == null)
+        {
+            tutorialPopUpManager = FindObjectOfType<PopUpManager>(true);
+        }
+
+        if (tutorialPopUpManager == null)
+        {
+            return int.MinValue;
+        }
+
+        return tutorialPopUpManager.phase;
+    }
+
+    private void QueueTutorialDialogueForPhase(int phase)
+    {
+        TutorialPhaseDialogueBinding binding = FindTutorialBindingForPhase(phase);
+        if (binding == null || string.IsNullOrWhiteSpace(binding.dialogueId))
+        {
+            return;
+        }
+
+        if (playEachTutorialPhaseDialogueOnlyOnce && triggeredTutorialDialoguePhases.Contains(phase))
+        {
+            return;
+        }
+
+        if (playEachTutorialPhaseDialogueOnlyOnce)
+        {
+            triggeredTutorialDialoguePhases.Add(phase);
+        }
+
+        hasPendingTutorialPhaseDialogue = true;
+        pendingTutorialDialogueId = binding.dialogueId;
+        pendingTutorialUiRootIndex = binding.uiRootIndexInHideList;
+    }
+
+    private TutorialPhaseDialogueBinding FindTutorialBindingForPhase(int phase)
+    {
+        if (tutorialPhaseDialogues == null)
+        {
+            return null;
+        }
+
+        for (int i = 0; i < tutorialPhaseDialogues.Length; i++)
+        {
+            TutorialPhaseDialogueBinding binding = tutorialPhaseDialogues[i];
+            if (binding != null && binding.phase == phase)
+            {
+                return binding;
+            }
+        }
+
+        return null;
+    }
+
+    private void PlayQueuedTutorialPhaseDialogue()
+    {
+        if (!hasPendingTutorialPhaseDialogue)
+        {
+            return;
+        }
+
+        string dialogueId = pendingTutorialDialogueId;
+        int uiRootIndex = pendingTutorialUiRootIndex;
+
+        hasPendingTutorialPhaseDialogue = false;
+        pendingTutorialDialogueId = null;
+        pendingTutorialUiRootIndex = -1;
+
+        if (string.IsNullOrWhiteSpace(dialogueId))
+        {
+            return;
+        }
+
+        if (uiRootIndex >= 0)
+        {
+            PlayDialogueKeepingUiVisible(dialogueId, uiRootIndex);
+            return;
+        }
+
+        PlayDialogue(dialogueId);
     }
 
     private void HideBossUiForDialogue()

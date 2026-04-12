@@ -50,6 +50,11 @@ MonoBehaviour:
   portraitImage: {fileID: 0}
   portraitFrame: {fileID: 0}
   portraitPanel: {fileID: 0}
+  dialogueVisualRoot: {fileID: 0}
+  additionalDialogueObjectsToToggle: []
+  bossUIHandler: {fileID: 0}
+  additionalBossUiHandlers: []
+  additionalUiRootsToHideDuringDialogue: []
   dialogueLibrary:
   - id: intro_1
     entries:
@@ -247,6 +252,8 @@ MonoBehaviour:
     - speaker: Sonnet
       portrait: {fileID: 21300000, guid: af5ca1375eda175488ddfb7bc39519cd, type: 3}
       text: "We\u2019ll work on that attitude."
+  - id: boss_2
+    entries:
     - speaker: Isobel
       portrait: {fileID: 21300000, guid: d399970142ec43649bff3c67c0951c0d, type: 3}
       text: You'll do no such thing, scum.
@@ -265,7 +272,7 @@ MonoBehaviour:
     - speaker: Sonnet
       portrait: {fileID: 21300000, guid: af5ca1375eda175488ddfb7bc39519cd, type: 3}
       text: "And this time you\u2019re not coming back."
-  - id: boss_2
+  - id: boss_3
     entries:
     - speaker: Sonnet
       portrait: {fileID: 21300000, guid: af5ca1375eda175488ddfb7bc39519cd, type: 3}
@@ -311,5 +318,25 @@ MonoBehaviour:
   - id: final_5
     entries: []
   defaultSequenceId: 
+  useBossSceneDialogueSelection: 0
+  bossSceneName: 
+  bossSceneBuildIndex: -1
+  playBossSceneFirstDialogueOnStart: 1
+  autoPlayBossSceneSecondDialogueAfterFirst: 1
+  forceShowBossUiAfterSecondBossDialogue: 1
+  bossSceneFirstDialogueId: 
+  bossSceneSecondDialogueId: 
+  bossSceneSecondDialogueUiRootIndex: -1
+  bossHealth: {fileID: 0}
+  playDialogueAfterBossFirstPhaseEnds: 0
+  bossFirstPhaseEndedDialogueId: 
+  bossFirstPhaseEndedUiRootIndex: -1
+  triggerBossFirstPhaseEndedDialogueOnlyOnce: 1
+  useTutorialPhaseDialogues: 0
+  tutorialPopUpManager: {fileID: 0}
+  triggerTutorialDialoguesOnlyInTutorialScene: 1
+  tutorialSceneName: Tutorial
+  playEachTutorialPhaseDialogueOnlyOnce: 1
+  tutorialPhaseDialogues: []
   letterDelaySeconds: 0.03
   disableDialoguePanelObjectWhenHidden: 0

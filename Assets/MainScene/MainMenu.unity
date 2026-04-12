@@ -749,7 +749,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_UiScaleMode: 1
-  m_ReferencePixelsPerUnit: 32
+  m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 3840, y: 2160}
   m_ScreenMatchMode: 0
@@ -1968,6 +1968,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   backgroudMusic: {fileID: 8300000, guid: 848c34c4ff72c4c48b0b0081d16e70c0, type: 3}
   hellMusic: {fileID: 0}
+  loopBackgroundMusic: 1
   musicSlider: {fileID: 826183214}
   autoFindMusicSliderOnSceneLoad: 1
 --- !u!82 &997529350
@@ -2268,7 +2269,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 3840, y: 2160}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96

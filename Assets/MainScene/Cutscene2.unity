@@ -454,6 +454,30 @@ PrefabInstance:
       propertyPath: portraitPanel
       value: 
       objectReference: {fileID: 46212113}
+    - target: {fileID: 1840014530239347126, guid: a553583edd8f4ae46b8883c3c6c0c1c2, type: 3}
+      propertyPath: dialogueLibrary.Array.data[17].entries.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1840014530239347126, guid: a553583edd8f4ae46b8883c3c6c0c1c2, type: 3}
+      propertyPath: dialogueLibrary.Array.data[18].entries.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1840014530239347126, guid: a553583edd8f4ae46b8883c3c6c0c1c2, type: 3}
+      propertyPath: dialogueLibrary.Array.data[19].entries.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1840014530239347126, guid: a553583edd8f4ae46b8883c3c6c0c1c2, type: 3}
+      propertyPath: dialogueLibrary.Array.data[17].entries.Array.data[1].text
+      value: Which begs the question...
+      objectReference: {fileID: 0}
+    - target: {fileID: 1840014530239347126, guid: a553583edd8f4ae46b8883c3c6c0c1c2, type: 3}
+      propertyPath: dialogueLibrary.Array.data[18].entries.Array.data[0].text
+      value: Who was the real monster all along?
+      objectReference: {fileID: 0}
+    - target: {fileID: 1840014530239347126, guid: a553583edd8f4ae46b8883c3c6c0c1c2, type: 3}
+      propertyPath: dialogueLibrary.Array.data[19].entries.Array.data[0].text
+      value: Thank you for playing our game!
+      objectReference: {fileID: 0}
     - target: {fileID: 6686152694471831616, guid: a553583edd8f4ae46b8883c3c6c0c1c2, type: 3}
       propertyPath: m_Name
       value: DialogueManager
@@ -479,17 +503,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4825376004022329514, guid: 1e996a43d697f0147ac41ef7ec9d7811, type: 3}
   m_PrefabInstance: {fileID: 1504015197}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1150690633 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3612253077602116209, guid: 1e996a43d697f0147ac41ef7ec9d7811, type: 3}
-  m_PrefabInstance: {fileID: 1504015197}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &1460338184 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1597248726780351230, guid: 1e996a43d697f0147ac41ef7ec9d7811, type: 3}
@@ -588,7 +601,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 6752121520824819245, guid: 1e996a43d697f0147ac41ef7ec9d7811, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1e996a43d697f0147ac41ef7ec9d7811, type: 3}
@@ -653,47 +667,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogue: {fileID: 793989118}
   cutscenes:
-  - enterDialogueId: intro_1
-    backgroundImage: {fileID: 21300000, guid: d4ef31e6e115c524e91b19d6f4ba3d4d, type: 3}
-    foregroundImage: {fileID: 21300000, guid: ff893917e3081a0499d856f2f6daa1a1, type: 3}
-    exitDialogueId: intro_2
-    transitionToScene: 0
-    nextSceneBuildIndex: 0
-    sceneTransitionDelaySeconds: 0
-  - enterDialogueId: intro_2
-    backgroundImage: {fileID: 21300000, guid: d4ef31e6e115c524e91b19d6f4ba3d4d, type: 3}
-    foregroundImage: {fileID: 21300000, guid: 2544d779dbaa1814ab742dc78371ea46, type: 3}
-    exitDialogueId: intro_3
-    transitionToScene: 0
-    nextSceneBuildIndex: 0
-    sceneTransitionDelaySeconds: 0
-  - enterDialogueId: intro_3
-    backgroundImage: {fileID: 21300000, guid: d4ef31e6e115c524e91b19d6f4ba3d4d, type: 3}
-    foregroundImage: {fileID: 21300000, guid: f46b1848097905c4d98ebf9cb01b2f79, type: 3}
-    exitDialogueId: intro_4
-    transitionToScene: 0
-    nextSceneBuildIndex: 0
-    sceneTransitionDelaySeconds: 0
-  - enterDialogueId: intro_4
-    backgroundImage: {fileID: 21300000, guid: ddc136b3ef617784db3a33c34745635e, type: 3}
-    foregroundImage: {fileID: 0}
-    exitDialogueId: intro_5
-    transitionToScene: 0
-    nextSceneBuildIndex: 0
-    sceneTransitionDelaySeconds: 0
-  - enterDialogueId: intro_5
-    backgroundImage: {fileID: 0}
-    foregroundImage: {fileID: 21300000, guid: 1a25a307113c8d94bbdc9c75d93ffb07, type: 3}
-    exitDialogueId: intro_6
-    transitionToScene: 0
-    nextSceneBuildIndex: 0
-    sceneTransitionDelaySeconds: 0
-  - enterDialogueId: intro_6
+  - enterDialogueId: final_1
     backgroundImage: {fileID: 21300000, guid: 2c3202e57ded9ef4da001309abe3b419, type: 3}
-    foregroundImage: {fileID: 21300000, guid: 90ad32bbb80c8a946b984bbc4ea30dd9, type: 3}
-    exitDialogueId: intro_7
+    foregroundImage: {fileID: 21300000, guid: f46b1848097905c4d98ebf9cb01b2f79, type: 3}
+    exitDialogueId: final_2
+    transitionToScene: 0
+    nextSceneBuildIndex: 0
+    sceneTransitionDelaySeconds: 0
+  - enterDialogueId: final_2
+    backgroundImage: {fileID: 21300000, guid: 2c3202e57ded9ef4da001309abe3b419, type: 3}
+    foregroundImage: {fileID: 21300000, guid: 10b0950b417fb0f43ac4973deaebaa47, type: 3}
+    exitDialogueId: final_3
+    transitionToScene: 0
+    nextSceneBuildIndex: 0
+    sceneTransitionDelaySeconds: 0
+  - enterDialogueId: final_3
+    backgroundImage: {fileID: 21300000, guid: 2c3202e57ded9ef4da001309abe3b419, type: 3}
+    foregroundImage: {fileID: 21300000, guid: 56899535f7640cb478f1f8b4386365e9, type: 3}
+    exitDialogueId: final_4
+    transitionToScene: 0
+    nextSceneBuildIndex: 0
+    sceneTransitionDelaySeconds: 0
+  - enterDialogueId: final_4
+    backgroundImage: {fileID: 21300000, guid: 2c3202e57ded9ef4da001309abe3b419, type: 3}
+    foregroundImage: {fileID: 21300000, guid: bc34957692831744eb3530e0f06b5411, type: 3}
+    exitDialogueId: final_5
     transitionToScene: 1
-    nextSceneBuildIndex: 2
+    nextSceneBuildIndex: 0
     sceneTransitionDelaySeconds: 0
   startCutsceneIndex: 0
   foregroundCutsceneImage: {fileID: 45127313}
@@ -703,7 +703,7 @@ MonoBehaviour:
   playOnStart: 1
   skipRepeatedBoundaryDialogues: 1
   skipToEndKey: 113
-  skipToEndButton: {fileID: 1150690633}
+  skipToEndButton: {fileID: 0}
 --- !u!114 &2125372478
 MonoBehaviour:
   m_ObjectHideFlags: 0
