@@ -36,7 +36,7 @@ public class EnemyStateManager : MonoBehaviour
 
     void Update()
     {
-        if (enemy.IsDead())
+        if (enemy.IsDead() || enemy.IsFrozen())
         {
             return;
         }
@@ -45,7 +45,7 @@ public class EnemyStateManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (enemy.IsDead())
+        if (enemy.IsDead() || enemy.IsFrozen())
         {
             return;
         }

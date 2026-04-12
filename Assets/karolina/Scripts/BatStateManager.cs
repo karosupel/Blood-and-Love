@@ -12,10 +12,11 @@ public class BatStateManager : MonoBehaviour
     public EnemyStats stats;
 
     public bool isPlayerAttacked = false;
+    Enemy enemy;
 
      void Awake()
     {
-        Enemy enemy = GetComponent<Enemy>();
+        enemy = GetComponent<Enemy>();
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
@@ -27,6 +28,11 @@ public class BatStateManager : MonoBehaviour
 
     public void Update()
     {
+        if (enemy.IsDead() || enemy.IsFrozen())
+        {
+            return;
+        }
+
         currentState.UpdateState(this);
     }
 

@@ -18,6 +18,8 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] public Color afterlifeColor;
     Animator animator;
     bool isDead = false;
+    bool isFrozen = false;
+    private Coroutine delayedUnfreezeCoroutine;
 
     //public Animator animator;
 
@@ -26,6 +28,10 @@ public class Enemy : MonoBehaviour, IDamageable
         playerObject = GameObject.FindGameObjectWithTag("Player");
         currentHealth = stats.health;
         animator = GetComponent<Animator>();
+        if (rb == null)
+        {
+            rb = GetComponent<Rigidbody2D>();
+        }
     }
     public void TakeDamage(float damage, float knockback = 1f)
     {
@@ -34,7 +40,7 @@ public class Enemy : MonoBehaviour, IDamageable
             return;
         }
         currentHealth -= damage;
-        Debug.Log("Enemy took " + damage);
+        //Debug.Log("Enemy took " + damage);
         Knockback((Vector2)(gameObject.transform.position - playerObject.transform.position).normalized, stats.knockbackForce*knockback);
         if (currentHealth <= 0)
         {
@@ -83,10 +89,10 @@ public class Enemy : MonoBehaviour, IDamageable
         }
         if (player.layer != playerLayerIndex)
         {
-            Debug.Log("WrongLayer! player layer: " + player.layer + " , expected: " + playerLayerIndex);
+            //Debug.Log("WrongLayer! player layer: " + player.layer + " , expected: " + playerLayerIndex);
             return;
         }
-        Debug.Log("Enemy deals damage");
+        //Debug.Log("Enemy deals damage");
         player.GetComponent<IDamageable>()?.TakeDamage(damage);
     }
 
@@ -94,5 +100,42 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         return isDead;
     }
+
+
+    public void Freeze(bool freeze)
+    {
+        isFrozen = freeze;
+
+        if (freeze && rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+        }
+    }
+
+    public void FreezeFor(float duration)
+    {
+        Freeze(true);
+
+        if (delayedUnfreezeCoroutine != null)
+        {
+            StopCoroutine(delayedUnfreezeCoroutine);
+        }
+
+        delayedUnfreezeCoroutine = StartCoroutine(UnfreezeAfterDelay(duration));
+    }
+
+    private IEnumerator UnfreezeAfterDelay(float delay)
+    {
+        yield return new WaitForSecondsRealtime(delay);
+        Freeze(false);
+        delayedUnfreezeCoroutine = null;
+    }
+
+    public bool IsFrozen()
+    {
+        return isFrozen;
+    }
 }
+
 

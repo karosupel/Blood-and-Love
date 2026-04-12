@@ -29,7 +29,7 @@ public class MaidStateManager : MonoBehaviour
 
     public void Update()
     {
-        if (enemy.IsDead())
+        if (enemy.IsDead() || enemy.IsFrozen())
         {
             return;
         }

@@ -100,23 +100,8 @@ public class SpawnerManagerScript : MonoBehaviour
             }
         }
 
-        foreach (GameObject enemy in ActiveEnemiesInScene)
-        {
-            if (enemy == null)
-            {
-                ActiveEnemiesInScene.Remove(enemy);
-                break;
-            }
-        }
-
-        foreach (GameObject enemy in EnemiesInAfterlife)
-        {
-            if (enemy == null)
-            {
-                EnemiesInAfterlife.Remove(enemy);
-                break;
-            }
-        }
+        ActiveEnemiesInScene.RemoveAll(enemy => enemy == null);
+        EnemiesInAfterlife.RemoveAll(enemy => enemy == null);
 
         // Sprawdzenie czy IsInAfterlife się zmieniła
         if(playerHealthScript.IsInAfterlife != wasInAfterlife)
@@ -202,7 +187,12 @@ public class SpawnerManagerScript : MonoBehaviour
         foreach (var spawn in data.spawnPoints)
         {
             var enemy = Instantiate(spawn.enemyHellPrefab, spawn.position + offset, Quaternion.identity);
-            enemy.GetComponent<SpriteRenderer>().color = enemy.GetComponent<Enemy>().afterlifeColor;
+            Enemy enemyComponent = enemy.GetComponent<Enemy>();
+            if (enemyComponent != null)
+            {
+                enemyComponent.FreezeFor(2f);
+                enemy.GetComponent<SpriteRenderer>().color = enemyComponent.afterlifeColor;
+            }
             EnemiesInAfterlife.Add(enemy);
         }
     }
